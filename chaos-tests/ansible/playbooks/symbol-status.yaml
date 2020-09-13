@@ -9,3 +9,13 @@
     register: result
   - debug:
       var: result
+
+- hosts: api*:!spammer*
+  gather_facts: no
+  tasks:
+  - name: chain height and node info
+    shell: |
+      curl localhost:3000/chain/height && curl localhost:3000/node/info
+    register: result
+  - debug:
+      var: result
