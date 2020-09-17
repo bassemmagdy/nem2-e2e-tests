@@ -6,7 +6,8 @@
     shell: |
       cd ~/symbol-testnet/{{type}}
       docker-compose ps
-      docker-compose logs --tail 20
+      docker-compose logs --tail 50
     register: result
   - debug:
-      var: result
+      msg: "{{ result.stderr }}"
+      msg: "{{ result.stdout }}"
