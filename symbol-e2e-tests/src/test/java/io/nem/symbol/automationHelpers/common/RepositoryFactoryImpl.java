@@ -21,18 +21,13 @@
 package io.nem.symbol.automationHelpers.common;
 
 import io.nem.symbol.automationHelpers.config.ConfigFileReader;
-import io.nem.symbol.core.crypto.PublicKey;
-import io.nem.symbol.core.utils.ExceptionUtils;
 import io.nem.symbol.sdk.api.RepositoryFactory;
 import io.nem.symbol.sdk.infrastructure.common.CatapultContext;
 import io.nem.symbol.sdk.infrastructure.directconnect.DirectConnectRepositoryFactoryImpl;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.common.DataAccessContext;
-import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoDb.BlocksCollection;
-import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoDb.FullBlockInfo;
 import io.nem.symbol.sdk.infrastructure.directconnect.network.BrokerNodeContext;
 import io.nem.symbol.sdk.infrastructure.directconnect.network.CatapultNodeContext;
 import io.nem.symbol.sdk.infrastructure.vertx.RepositoryFactoryVertxImpl;
-import io.nem.symbol.sdk.model.account.Account;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -81,8 +76,14 @@ public class RepositoryFactoryImpl {
             configFileReader.getApiServerCertificateFile(),
             configFileReader.getApiHost(),
             configFileReader.getApiPort());
-    final BrokerNodeContext brokerNodeContext = new BrokerNodeContext(configFileReader.getBrokerHost(), configFileReader.getBrokerPort());
-    final CatapultContext catapultContext = new CatapultContext(apiNodeContext, dataAccessContext, brokerNodeContext, configFileReader.getSymbolConfigPath());
+    final BrokerNodeContext brokerNodeContext =
+        new BrokerNodeContext(configFileReader.getBrokerHost(), configFileReader.getBrokerPort());
+    final CatapultContext catapultContext =
+        new CatapultContext(
+            apiNodeContext,
+            dataAccessContext,
+            brokerNodeContext,
+            configFileReader.getSymbolConfigPath());
     return new DirectConnectRepositoryFactoryImpl(catapultContext);
   }
 

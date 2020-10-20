@@ -43,7 +43,10 @@ public class NodeKeyLinkHelper extends BaseHelper<NodeKeyLinkHelper> {
       final PublicKey linkedPublicKey, final LinkAction linkAction) {
     final NodeKeyLinkTransactionFactory accountLinkTransactionFactory =
         NodeKeyLinkTransactionFactory.create(
-            testContext.getNetworkType(), linkedPublicKey, linkAction);
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            linkedPublicKey,
+            linkAction);
     return buildTransaction(accountLinkTransactionFactory);
   }
 

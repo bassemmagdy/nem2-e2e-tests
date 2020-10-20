@@ -44,7 +44,7 @@ public class AggregateHelper extends BaseHelper<AggregateHelper> {
       final Mosaic mosaic, final BigInteger duration, final SignedTransaction signedTransaction) {
     final HashLockTransactionFactory hashLockTransactionFactory =
         HashLockTransactionFactory.create(
-            testContext.getNetworkType(), mosaic, duration, signedTransaction);
+            testContext.getNetworkType(), transactionHelper.getDefaultDeadline(), mosaic, duration, signedTransaction);
     return buildTransaction(hashLockTransactionFactory);
   }
 
@@ -68,7 +68,7 @@ public class AggregateHelper extends BaseHelper<AggregateHelper> {
       final List<AggregateTransactionCosignature> cosignatures) {
     final AggregateTransactionFactory aggregateTransactionFactory =
         AggregateTransactionFactory.create(
-            transactionType, testContext.getNetworkType(), innerTransaction, cosignatures);
+            transactionType, testContext.getNetworkType(), transactionHelper.getDefaultDeadline(), innerTransaction, cosignatures);
     buildFactoryTransaction(aggregateTransactionFactory);
     return buildAggregateTransaction(aggregateTransactionFactory, cosignatures.size());
   }
@@ -82,7 +82,7 @@ public class AggregateHelper extends BaseHelper<AggregateHelper> {
   public AggregateTransaction createAggregateCompleteTransaction(
       final List<Transaction> innerTransaction, final int numberOfCosigners) {
     final AggregateTransactionFactory aggregateTransactionFactory =
-        AggregateTransactionFactory.createComplete(testContext.getNetworkType(), innerTransaction);
+        AggregateTransactionFactory.createComplete(testContext.getNetworkType(), transactionHelper.getDefaultDeadline(), innerTransaction);
     return buildAggregateTransaction(aggregateTransactionFactory, numberOfCosigners);
   }
 
@@ -95,7 +95,7 @@ public class AggregateHelper extends BaseHelper<AggregateHelper> {
   public AggregateTransaction createAggregateBondedTransaction(
       final List<Transaction> innerTransaction, final int numberOfCosigners) {
     final AggregateTransactionFactory aggregateTransactionFactory =
-        AggregateTransactionFactory.createBonded(testContext.getNetworkType(), innerTransaction);
+        AggregateTransactionFactory.createBonded(testContext.getNetworkType(), transactionHelper.getDefaultDeadline(), innerTransaction);
     buildFactoryTransaction(aggregateTransactionFactory);
     return buildAggregateTransaction(aggregateTransactionFactory, numberOfCosigners);
   }

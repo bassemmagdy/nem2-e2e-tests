@@ -29,7 +29,7 @@ public class MetadataEntryMapper implements Function<JsonObject, Metadata> {
         final String value =
                 new String(Hex.decode(metadataEntryJsonObject.getString("value")), StandardCharsets.UTF_8);
         final BigInteger scopedMetadataKey =
-                MapperUtils.toBigInteger(metadataEntryJsonObject, "scopedMetadataKey");
+                MapperUtils.toUnsignedBigInteger(metadataEntryJsonObject, "scopedMetadataKey");
         final String targetIdHex =
                 ConvertUtils.toHex(ByteUtils.longToBytes(metadataEntryJsonObject.getLong("targetId")));
         final MetadataType metadataType =

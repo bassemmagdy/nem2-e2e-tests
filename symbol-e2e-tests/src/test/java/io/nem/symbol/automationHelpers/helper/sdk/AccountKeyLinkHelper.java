@@ -43,7 +43,10 @@ public class AccountKeyLinkHelper extends BaseHelper<AccountKeyLinkHelper> {
       final PublicAccount remoteAccount, final LinkAction linkAction) {
     final AccountKeyLinkTransactionFactory accountLinkTransactionFactory =
         AccountKeyLinkTransactionFactory.create(
-            testContext.getNetworkType(), remoteAccount.getPublicKey(), linkAction);
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            remoteAccount.getPublicKey(),
+            linkAction);
     return buildTransaction(accountLinkTransactionFactory);
   }
 

@@ -83,7 +83,7 @@ public class TransactionConnection {
   public void announceAggregateBondedCosignature(
       final CosignatureSignedTransaction cosignatureSignedTransaction) {
     final byte[] signerBytes =
-        PublicKey.fromHexString(cosignatureSignedTransaction.getSignerPublicKey()).getBytes();
+        cosignatureSignedTransaction.getSigner().getPublicKey().getBytes();
     final ByteBuffer signerBuffer = ByteBuffer.wrap(signerBytes);
     final byte[] signatureBytes =
         ConvertUtils.getBytes(cosignatureSignedTransaction.getSignature());

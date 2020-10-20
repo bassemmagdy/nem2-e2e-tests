@@ -120,7 +120,7 @@ public class LinkAssetToNamespace extends BaseTest {
         senderAccount,
         recipientAccount.getAddress(),
         Arrays.asList(new Mosaic(namespaceId, BigInteger.valueOf(amount))),
-        PlainMessage.Empty);
+        null);
     CommonHelper.verifyAccountBalance(
         getTestContext(), senderInfo, mosaicInfo.getMosaicId(), -amount);
     CommonHelper.verifyAccountBalance(
@@ -141,7 +141,6 @@ public class LinkAssetToNamespace extends BaseTest {
     transferHelper.createTransferAndAnnounce(
         senderAccount,
         recipientAccount.getAddress(),
-        Arrays.asList(new Mosaic(namespaceId, BigInteger.valueOf(amount))),
-        PlainMessage.Empty);
+        Arrays.asList(new Mosaic(namespaceId, BigInteger.valueOf(amount))));
   }
 }

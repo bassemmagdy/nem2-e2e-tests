@@ -22,20 +22,27 @@ package io.nem.symbol.sdk.infrastructure.directconnect;
 
 import io.nem.symbol.sdk.api.*;
 import io.nem.symbol.sdk.infrastructure.common.CatapultContext;
+import io.nem.symbol.sdk.infrastructure.common.ConfigurationHelper;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.dao.*;
 import io.nem.symbol.sdk.infrastructure.directconnect.listener.ListenerImpl;
 import io.nem.symbol.sdk.model.blockchain.BlockInfo;
+import io.nem.symbol.sdk.model.mosaic.MosaicId;
+import io.nem.symbol.sdk.model.mosaic.MosaicInfo;
 import io.nem.symbol.sdk.model.mosaic.NetworkCurrency;
+import io.nem.symbol.sdk.model.mosaic.NetworkCurrencyBuilder;
+import io.nem.symbol.sdk.model.network.NetworkConfiguration;
 import io.nem.symbol.sdk.model.network.NetworkType;
 import io.reactivex.Observable;
 
 import java.math.BigInteger;
+import java.time.Duration;
 
 /** Implementation for the direct connect. */
 public class DirectConnectRepositoryFactoryImpl implements RepositoryFactory {
 
   private final CatapultContext context;
   private final BlockInfo firstBlock;
+  private final NetworkConfiguration networkConfiguration;
 
   /**
    * Constructor.
@@ -45,6 +52,16 @@ public class DirectConnectRepositoryFactoryImpl implements RepositoryFactory {
   public DirectConnectRepositoryFactoryImpl(CatapultContext context) {
     this.context = context;
     this.firstBlock = createBlockRepository().getBlockByHeight(BigInteger.ONE).blockingFirst();
+    this.networkConfiguration = createNetworkRepository().getNetworkProperties().blockingFirst();
+  }
+
+  private NetworkCurrency getNetworkCurrency(final String mosaicIdValue) {
+    final MosaicId mosaicId = new MosaicId(toHex(mosaicIdValue));
+    final MosaicInfo mosaicInfo = createMosaicRepository().getMosaic(mosaicId).blockingFirst();
+    return new NetworkCurrencyBuilder(mosaicId, mosaicInfo.getDivisibility())
+        .withSupplyMutable(mosaicInfo.isSupplyMutable())
+        .withTransferable(mosaicInfo.isTransferable())
+        .build();
   }
 
   /**
@@ -69,12 +86,27 @@ public class DirectConnectRepositoryFactoryImpl implements RepositoryFactory {
 
   @Override
   public Observable<NetworkCurrency> getNetworkCurrency() {
-    throw new UnsupportedOperationException("Method not implemented");
+    return Observable.fromCallable(
+        () -> getNetworkCurrency(networkConfiguration.getChain().getCurrencyMosaicId()));
   }
 
   @Override
   public Observable<NetworkCurrency> getHarvestCurrency() {
-    throw new UnsupportedOperationException("Method not implemented");
+    return Observable.fromCallable(
+        () -> getNetworkCurrency(networkConfiguration.getChain().getHarvestingMosaicId()));
+  }
+
+  /**
+   * @return the configured server epochAdjustment. This method uses the user configured properties
+   *     if provided. If it's not provided, it resolves the configuration from the
+   *     /network/properties endpoint. This method is cached, the server is only called the first
+   *     time. The network currency configuration
+   * @see RepositoryFactoryConfiguration
+   */
+  @Override
+  public Observable<Duration> getEpochAdjustment() {
+    return Observable.fromCallable(
+        () -> toDuration(networkConfiguration.getNetwork().getEpochAdjustment()));
   }
 
   /**
@@ -157,9 +189,7 @@ public class DirectConnectRepositoryFactoryImpl implements RepositoryFactory {
     return new TransactionDao(context);
   }
 
-  /**
-   * @return a newly created {@link TransactionStatusRepository}
-   */
+  /** @return a newly created {@link TransactionStatusRepository} */
   @Override
   public TransactionStatusRepository createTransactionStatusRepository() {
     return new TransactionDao(context);
@@ -180,9 +210,21 @@ public class DirectConnectRepositoryFactoryImpl implements RepositoryFactory {
     throw new UnsupportedOperationException("Method not implemented");
   }
 
+  /** @return a newly created {@link HashLockRepository} */
+  @Override
+  public HashLockRepository createHashLockRepository() {
+    throw new UnsupportedOperationException("Method not implemented");
+  }
+
+  /** @return a newly created {@link SecretLockRepository} */
+  @Override
+  public SecretLockRepository createSecretLockRepository() {
+    throw new UnsupportedOperationException("Method not implemented");
+  }
+
   @Override
   public Listener createListener() {
-    return new ListenerImpl(context.getBrokerNodeContext());
+    return new ListenerImpl(context.getBrokerNodeContext(), getNetworkType().blockingFirst());
   }
 
   @Override
@@ -195,5 +237,13 @@ public class DirectConnectRepositoryFactoryImpl implements RepositoryFactory {
 
   public CatapultContext getContext() {
     return context;
+  }
+
+  private String toHex(final String value) {
+    return ConfigurationHelper.toHex(value);
+  }
+
+  private Duration toDuration(final String value) {
+    return ConfigurationHelper.toDuration(value);
   }
 }

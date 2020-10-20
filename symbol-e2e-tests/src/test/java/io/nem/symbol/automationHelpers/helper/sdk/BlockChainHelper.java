@@ -58,9 +58,9 @@ public class BlockChainHelper {
                         testContext
                                 .getRepositoryFactory()
                                 .createChainRepository()
-                                .getBlockchainHeight()
-                                .toFuture()
-                                .get());
+                                .getChainInfo()
+                                .blockingFirst()
+                                .getHeight());
     }
 
     /**

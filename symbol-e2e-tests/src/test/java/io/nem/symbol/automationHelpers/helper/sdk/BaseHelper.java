@@ -13,6 +13,7 @@ public abstract class BaseHelper<U extends BaseHelper> {
   protected final TestContext testContext;
   private Supplier<Deadline> deadlineSupplier;
   private BigInteger maxFee;
+  protected final TransactionHelper transactionHelper;
 
   /**
    * Constructor.
@@ -21,7 +22,8 @@ public abstract class BaseHelper<U extends BaseHelper> {
    */
   BaseHelper(final TestContext testContext) {
     this.testContext = testContext;
-    deadlineSupplier = () -> TransactionHelper.getDefaultDeadline();
+    this.transactionHelper = new TransactionHelper(testContext);
+    deadlineSupplier = () -> transactionHelper.getDefaultDeadline();
     maxFee = BigInteger.ZERO;
   }
 

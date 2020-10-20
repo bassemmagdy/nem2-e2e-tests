@@ -24,6 +24,7 @@ import io.nem.symbol.sdk.api.NamespaceRepository;
 import io.nem.symbol.sdk.api.NamespaceSearchCriteria;
 import io.nem.symbol.sdk.api.Page;
 import io.nem.symbol.sdk.infrastructure.common.CatapultContext;
+import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoDb.MosaicsCollection;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoDb.NamespacesCollection;
 import io.nem.symbol.sdk.model.account.AccountNames;
 import io.nem.symbol.sdk.model.account.Address;
@@ -133,6 +134,6 @@ public class NamespaceDao implements NamespaceRepository {
      */
     @Override
     public Observable<Page<NamespaceInfo>> search(NamespaceSearchCriteria criteria) {
-        return null;
+        return Observable.fromCallable(() -> new Page<>(new NamespacesCollection(catapultContext.getDataAccessContext()).search(criteria)));
     }
 }

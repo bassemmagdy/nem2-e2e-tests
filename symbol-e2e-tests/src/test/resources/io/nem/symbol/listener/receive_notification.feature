@@ -8,6 +8,11 @@ Feature: Receive a notification
     When Alice waits for a next block
     Then Alice should receive a block notification
 
+  Scenario: Alice gets notify when a next block is finalized on the chain.
+    Given Alice is register to receive notification from the blockchain
+    When Alice waits for a next finalized block
+    Then Alice should receive a finalized block notification
+
   @bvt
   Scenario: Alice gets notification when transaction in unconfirmed state
     Given Alice register to receive unconfirmed transaction notification

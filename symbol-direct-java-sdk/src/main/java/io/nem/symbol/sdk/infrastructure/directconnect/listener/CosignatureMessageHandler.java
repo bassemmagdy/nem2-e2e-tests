@@ -22,6 +22,8 @@ package io.nem.symbol.sdk.infrastructure.directconnect.listener;
 
 import io.nem.symbol.catapult.builders.DetachedCosignatureBuilder;
 import io.nem.symbol.core.utils.ConvertUtils;
+import io.nem.symbol.sdk.model.account.PublicAccount;
+import io.nem.symbol.sdk.model.network.NetworkType;
 import io.nem.symbol.sdk.model.transaction.CosignatureSignedTransaction;
 import org.zeromq.ZMQ.Socket;
 
@@ -32,10 +34,11 @@ public class CosignatureMessageHandler extends MessageBaseHandler {
   /**
    * Handle a message from the broker
    *
-   * @param subscriber Subscriber for the message
+   * @param subscriber Subscriber for the message.
+   * @param networkType Network type.
    */
   @Override
-  public CosignatureSignedTransaction handleMessage(final Socket subscriber) {
+  public CosignatureSignedTransaction handleMessage(final Socket subscriber, final NetworkType networkType) {
     final DetachedCosignatureBuilder detachedCosignatureBuilder =
         DetachedCosignatureBuilder.loadFromBinary(toInputStream(subscriber.recv()));
     failIfMoreMessageAvailable(subscriber, "Detached cosignature message is not correct.");
@@ -44,6 +47,7 @@ public class CosignatureMessageHandler extends MessageBaseHandler {
         BigInteger.valueOf(detachedCosignatureBuilder.getVersion()),
         ConvertUtils.toHex(detachedCosignatureBuilder.getParentHash().getHash256().array()),
         ConvertUtils.toHex(detachedCosignatureBuilder.getSignature().getSignature().array()),
-        ConvertUtils.toHex(detachedCosignatureBuilder.getSignerPublicKey().getKey().array()));
+        PublicAccount.createFromPublicKey(ConvertUtils.toHex(detachedCosignatureBuilder.getSignerPublicKey().getKey().array()),
+                networkType));
   }
 }

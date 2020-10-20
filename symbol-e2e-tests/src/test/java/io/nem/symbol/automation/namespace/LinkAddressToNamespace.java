@@ -111,8 +111,7 @@ public class LinkAddressToNamespace extends BaseTest {
     transferHelper.submitTransferAndWait(
         senderAccount,
         namespaceId,
-        Arrays.asList(new Mosaic(mosaicInfo.getMosaicId(), BigInteger.valueOf(amount))),
-        PlainMessage.Empty);
+        Arrays.asList(new Mosaic(mosaicInfo.getMosaicId(), BigInteger.valueOf(amount))));
     CommonHelper.verifyAccountBalance(
         getTestContext(), senderInfo, mosaicInfo.getMosaicId(), -amount);
     CommonHelper.verifyAccountBalance(
@@ -135,7 +134,6 @@ public class LinkAddressToNamespace extends BaseTest {
     transferHelper.createTransferAndAnnounce(
         senderAccount,
         namespaceId,
-        Arrays.asList(new Mosaic(mosaicInfo.getMosaicId(), BigInteger.valueOf(amount))),
-        PlainMessage.Empty);
+        Arrays.asList(new Mosaic(mosaicInfo.getMosaicId(), BigInteger.valueOf(amount))));
   }
 }

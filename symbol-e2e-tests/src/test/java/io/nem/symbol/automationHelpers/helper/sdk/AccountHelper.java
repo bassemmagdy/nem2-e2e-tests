@@ -103,8 +103,7 @@ public class AccountHelper {
     transferHelper.submitTransferAndWait(
         testContext.getDefaultSignerAccount(),
         account.getAddress(),
-        Arrays.asList(mosaic),
-        PlainMessage.Empty);
+        Arrays.asList(mosaic));
     return account;
   }
 

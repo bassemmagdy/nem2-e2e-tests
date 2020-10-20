@@ -23,7 +23,7 @@ package io.nem.symbol.automationHelpers.helper.sdk;
 import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.account.Address;
-import io.nem.symbol.sdk.model.transaction.LockHashAlgorithmType;
+import io.nem.symbol.sdk.model.transaction.LockHashAlgorithm;
 import io.nem.symbol.sdk.model.transaction.SecretProofTransaction;
 import io.nem.symbol.sdk.model.transaction.SecretProofTransactionFactory;
 import io.nem.symbol.sdk.model.transaction.SignedTransaction;
@@ -40,13 +40,18 @@ public class SecretProofHelper extends BaseHelper<SecretProofHelper> {
   }
 
   private SecretProofTransaction createSecretProofTransaction(
-      final LockHashAlgorithmType hashType,
+      final LockHashAlgorithm hashType,
       final Address recipient,
       final String secret,
       final String proof) {
     final SecretProofTransactionFactory secretProofTransactionFactory =
         SecretProofTransactionFactory.create(
-            testContext.getNetworkType(), hashType, recipient, secret, proof);
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            hashType,
+            recipient,
+            secret,
+            proof);
     return buildTransaction(secretProofTransactionFactory);
   }
 
@@ -63,7 +68,7 @@ public class SecretProofHelper extends BaseHelper<SecretProofHelper> {
    */
   public SignedTransaction createSecretProofAndAnnounce(
       final Account account,
-      final LockHashAlgorithmType hashType,
+      final LockHashAlgorithm hashType,
       final Address recipient,
       final String secret,
       final String proof) {
@@ -85,7 +90,7 @@ public class SecretProofHelper extends BaseHelper<SecretProofHelper> {
    */
   public SecretProofTransaction submitSecretProofTransactionAndWait(
       final Account account,
-      final LockHashAlgorithmType hashType,
+      final LockHashAlgorithm hashType,
       final Address recipient,
       final String secret,
       final String proof) {

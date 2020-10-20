@@ -43,12 +43,13 @@ public class SecretLockHelper extends BaseHelper<SecretLockHelper> {
   private SecretLockTransaction createSecretLockTransaction(
       final Mosaic mosaic,
       final BigInteger duration,
-      final LockHashAlgorithmType lockHashAlgorithmType,
+      final LockHashAlgorithm lockHashAlgorithmType,
       final String secret,
       final Address recipient) {
     final SecretLockTransactionFactory secretLockTransactionFactory =
             SecretLockTransactionFactory.create(
                     testContext.getNetworkType(),
+                    transactionHelper.getDefaultDeadline(),
                     mosaic,
                     duration,
                     lockHashAlgorithmType,
@@ -58,7 +59,7 @@ public class SecretLockHelper extends BaseHelper<SecretLockHelper> {
   }
 
   private byte[] getHash(
-      final LockHashAlgorithmType lockHashAlgorithmType, final byte[] inputBytes) {
+      final LockHashAlgorithm lockHashAlgorithmType, final byte[] inputBytes) {
     switch (lockHashAlgorithmType) {
       case SHA3_256:
         return Hashes.sha3_256(inputBytes);
@@ -72,7 +73,7 @@ public class SecretLockHelper extends BaseHelper<SecretLockHelper> {
   }
 
   public byte[] createHash(
-      final LockHashAlgorithmType hashType, final byte[] inputBytes) {
+      final LockHashAlgorithm hashType, final byte[] inputBytes) {
     return getHash(hashType, inputBytes);
   }
 
@@ -91,7 +92,7 @@ public class SecretLockHelper extends BaseHelper<SecretLockHelper> {
       final Account account,
       final Mosaic mosaic,
       final BigInteger duration,
-      final LockHashAlgorithmType hashType,
+      final LockHashAlgorithm hashType,
       final String secret,
       final Address recipient) {
     return new TransactionHelper(testContext)
@@ -115,7 +116,7 @@ public class SecretLockHelper extends BaseHelper<SecretLockHelper> {
       final Account account,
       final Mosaic mosaic,
       final BigInteger duration,
-      final LockHashAlgorithmType hashType,
+      final LockHashAlgorithm hashType,
       final String secret,
       final Address recipient) {
     return new TransactionHelper(testContext)

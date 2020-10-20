@@ -27,16 +27,13 @@ import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.common.DataAcce
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.common.SearchableTransactionCollection;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.common.TransactionCurrentState;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers.EmbeddedTransactionMapper;
-import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers.MapperUtils;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers.TransactionMapper;
-import io.nem.symbol.sdk.model.account.Address;
 import io.nem.symbol.sdk.model.transaction.*;
 import io.reactivex.Observable;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.Binary;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -65,20 +62,27 @@ public abstract class TransactionCollectionBase
     this.context = context;
   }
 
-  private void addInnerTransactions(final Transaction transaction) {
-    if (AGGREGATE_TRANSACTION_TYPES.contains(transaction.getType())) {
-      final AggregateTransaction aggregateTransaction = (AggregateTransaction) transaction;
-      final List<Transaction> innerTransaction =
-          findDependentTransactions(
-              aggregateTransaction.getTransactionInfo().get().getHash().get(),
-              context.getDatabaseTimeoutInSeconds());
-      aggregateTransaction.getInnerTransactions().addAll(innerTransaction);
+  private Transaction addInnerTransactions(final Transaction transaction) {
+    if (!AGGREGATE_TRANSACTION_TYPES.contains(transaction.getType())) {
+      return transaction;
     }
+    final AggregateTransaction aggregateTransaction = (AggregateTransaction) transaction;
+    final List<Transaction> innerTransaction =
+        findDependentTransactions(
+            aggregateTransaction.getTransactionInfo().get().getHash().get(),
+            context.getDatabaseTimeoutInSeconds());
+    final AggregateTransactionFactory factory =
+        AggregateTransactionFactory.create(
+            aggregateTransaction.getType(),
+            aggregateTransaction.getNetworkType(),
+            aggregateTransaction.getDeadline(),
+            innerTransaction,
+            aggregateTransaction.getCosignatures());
+    return factory.build();
   }
 
   private List<Transaction> addInnerTransactions(final List<Transaction> transactions) {
-    transactions.parallelStream().forEach(t -> addInnerTransactions(t));
-    return transactions;
+    return transactions.parallelStream().map(t -> addInnerTransactions(t)).collect(Collectors.toList());
   }
 
   /**
@@ -136,7 +140,7 @@ public abstract class TransactionCollectionBase
     if (!transactionOptional.isPresent()) {
       return transactionOptional;
     }
-    addInnerTransactions(transactionOptional.get());
+    final Transaction updateTransaction = addInnerTransactions(transactionOptional.get());
     return transactionOptional;
   }
 
@@ -185,33 +189,16 @@ public abstract class TransactionCollectionBase
     return addInnerTransactions(catapultCollection.ConvertResult(results));
   }
 
-  private byte[] getAddressBytes(final Address address) {
-    return MapperUtils.fromAddressToByteBuffer(address).array();
-  }
-
   private Bson toSearchCriteria(final TransactionSearchCriteria criteria) {
-    List<Bson> filters = new ArrayList<>();
-
-    if (criteria.getAddress() != null) {
-      final Bson addressFilter =
-          Filters.eq(
-              "meta.addresses", new Binary((byte) 0, getAddressBytes(criteria.getAddress())));
-      filters.add(addressFilter);
-    }
-
-    if (criteria.getSignerPublicKey() != null) {
-      final Bson signerFilter =
-          Filters.eq(
-              "transaction.signerPublicKey",
-              new Binary((byte) 0, criteria.getSignerPublicKey().getBytes()));
-      filters.add(signerFilter);
-    }
+    final MongoDbFilterBuilder builder =
+        new MongoDbFilterBuilder()
+            .withMetaAddress(criteria.getAddress())
+            .withPublicKey("transaction.signerPublicKey", criteria.getSignerPublicKey());
 
     if (criteria.getEmbedded() == null || !criteria.getEmbedded()) {
-      filters.add(Filters.exists("meta.hash"));
+      builder.withNoEmbeddedTransaction();
     }
-
-    return Filters.and(filters);
+    return builder.build();
   }
 
   /**

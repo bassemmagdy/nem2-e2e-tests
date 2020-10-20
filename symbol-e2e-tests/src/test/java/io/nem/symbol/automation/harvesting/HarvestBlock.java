@@ -84,7 +84,7 @@ public class HarvestBlock extends BaseTest {
 
 	@Given("^(\\w+) delegated her account importance to (\\w+)$")
 	public void setupRemoteHarvesting(final String harvester, final String nodeName) {
-		final Account account =
+		final Account harvesterAccount =
 				Account.createFromPrivateKey(
 						getTestContext().getConfigFileReader().getHarvesterPrivateKey(),
 						getTestContext().getNetworkType());
@@ -92,9 +92,9 @@ public class HarvestBlock extends BaseTest {
 				PublicAccount.createFromPublicKey(getTestContext().getConfigFileReader().getNodePublicKey(),
 						getTestContext().getNetworkType());
 		final Account remoteAccount = Account.generateNewAccount(getTestContext().getNetworkType());
-		new AccountKeyLinkHelper(getTestContext()).submitAccountKeyLinkAndWait(account, remoteAccount.getPublicAccount(), LinkAction.LINK);
-		new NodeKeyLinkHelper(getTestContext()).submitNodeKeyLinkTransactionAndWait(account, nodePublicAccount.getPublicKey(), LinkAction.LINK);
-		new TransferHelper(getTestContext()).submitPersistentDelegationRequestAndWait(account, remoteAccount, nodePublicAccount);
-		storeUserInfoInContext(harvester, account.getAddress(), getTestContext());
+		new AccountKeyLinkHelper(getTestContext()).submitAccountKeyLinkAndWait(harvesterAccount, remoteAccount.getPublicAccount(), LinkAction.LINK);
+		new NodeKeyLinkHelper(getTestContext()).submitNodeKeyLinkTransactionAndWait(harvesterAccount, nodePublicAccount.getPublicKey(), LinkAction.LINK);
+		new TransferHelper(getTestContext()).submitPersistentDelegationRequestAndWait(harvesterAccount, harvesterAccount, remoteAccount, nodePublicAccount);
+		storeUserInfoInContext(harvester, harvesterAccount.getAddress(), getTestContext());
 	}
 }

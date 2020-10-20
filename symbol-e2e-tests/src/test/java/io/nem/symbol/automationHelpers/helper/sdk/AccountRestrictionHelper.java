@@ -296,7 +296,11 @@ public class AccountRestrictionHelper extends BaseHelper<AccountRestrictionHelpe
       List<UnresolvedMosaicId> deletions) {
     final AccountMosaicRestrictionTransactionFactory accountMosaicRestrictionTransactionFactory =
         AccountMosaicRestrictionTransactionFactory.create(
-            testContext.getNetworkType(), restrictionType, additions, deletions);
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            restrictionType,
+            additions,
+            deletions);
     return buildTransaction(accountMosaicRestrictionTransactionFactory);
   }
 
@@ -312,7 +316,11 @@ public class AccountRestrictionHelper extends BaseHelper<AccountRestrictionHelpe
       List<UnresolvedAddress> deletions) {
     final AccountAddressRestrictionTransactionFactory accountAddressRestrictionTransactionFactory =
         AccountAddressRestrictionTransactionFactory.create(
-            testContext.getNetworkType(), restrictionType, additions, deletions);
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            restrictionType,
+            additions,
+            deletions);
     return buildTransaction(accountAddressRestrictionTransactionFactory);
   }
 
@@ -329,7 +337,11 @@ public class AccountRestrictionHelper extends BaseHelper<AccountRestrictionHelpe
     final AccountOperationRestrictionTransactionFactory
         accountOperationRestrictionTransactionFactory =
             AccountOperationRestrictionTransactionFactory.create(
-                testContext.getNetworkType(), restrictionType, additions, deletions);
+                testContext.getNetworkType(),
+                transactionHelper.getDefaultDeadline(),
+                restrictionType,
+                additions,
+                deletions);
     return buildTransaction(accountOperationRestrictionTransactionFactory);
   }
 }

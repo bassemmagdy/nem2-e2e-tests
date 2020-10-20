@@ -86,6 +86,7 @@ public class MosaicGlobalRestrictionHelper extends BaseHelper<MosaicGlobalRestri
     final MosaicGlobalRestrictionTransactionFactory mosaicGlobalRestrictionTransactionFactory =
         MosaicGlobalRestrictionTransactionFactory.create(
             testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
             mosaicId,
             restrictionKeyInt,
             restrictionValue,

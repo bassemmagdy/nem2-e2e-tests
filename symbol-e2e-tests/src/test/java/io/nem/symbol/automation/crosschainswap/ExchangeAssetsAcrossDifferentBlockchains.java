@@ -33,7 +33,7 @@ import io.nem.symbol.core.utils.ExceptionUtils;
 import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.mosaic.Mosaic;
 import io.nem.symbol.sdk.model.namespace.NamespaceId;
-import io.nem.symbol.sdk.model.transaction.LockHashAlgorithmType;
+import io.nem.symbol.sdk.model.transaction.LockHashAlgorithm;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -52,7 +52,7 @@ public class ExchangeAssetsAcrossDifferentBlockchains extends BaseTest {
   }
 
   @Given("^(\\w+) derived the secret from the seed using \"(\\w+)\"$")
-  public void createSecretSeed(final String userName, final LockHashAlgorithmType hashType) {
+  public void createSecretSeed(final String userName, final LockHashAlgorithm hashType) {
     final int NO_OF_RANDOM_BYTES =
         getTestContext().getScenarioContext().isContains(SECRET_HASH_LENGTH)
             ? getTestContext().getScenarioContext().getContext(SECRET_HASH_LENGTH)
@@ -81,7 +81,7 @@ public class ExchangeAssetsAcrossDifferentBlockchains extends BaseTest {
     final Mosaic mosaicToLock =
         new MosaicHelper(getTestContext()).getMosaicFromNamespace(namespaceId, amount);
     final String secretHash = getTestContext().getScenarioContext().getContext(SECRET_HASH);
-    final LockHashAlgorithmType hashType =
+    final LockHashAlgorithm hashType =
         getTestContext().getScenarioContext().getContext(SECRET_HASH_TYPE);
     storeUserInfoInContext(userName);
     storeUserInfoInContext(recipientName);
@@ -107,7 +107,7 @@ public class ExchangeAssetsAcrossDifferentBlockchains extends BaseTest {
     final Mosaic mosaicToLock =
         new MosaicHelper(getTestContext()).getMosaicFromNamespace(namespaceId, amount);
     final String secretHash = getTestContext().getScenarioContext().getContext(SECRET_HASH);
-    final LockHashAlgorithmType hashType =
+    final LockHashAlgorithm hashType =
         getTestContext().getScenarioContext().getContext(SECRET_HASH_TYPE);
     new SecretLockHelper(getTestContext())
         .createSecretLockAndAnnounce(
@@ -123,7 +123,7 @@ public class ExchangeAssetsAcrossDifferentBlockchains extends BaseTest {
   public void proveProofOfSecret(final String userName) {
     final Account account = getUser(userName);
     final String secretHash = getTestContext().getScenarioContext().getContext(SECRET_HASH);
-    final LockHashAlgorithmType hashType =
+    final LockHashAlgorithm hashType =
         getTestContext().getScenarioContext().getContext(SECRET_HASH_TYPE);
     final String proof = getTestContext().getScenarioContext().getContext(SECRET_PROOF);
     new SecretProofHelper(getTestContext())
@@ -135,7 +135,7 @@ public class ExchangeAssetsAcrossDifferentBlockchains extends BaseTest {
   public void triesToProveProofOfSecret(final String userName) {
     final Account account = getUser(userName);
     final String secretHash = getTestContext().getScenarioContext().getContext(SECRET_HASH);
-    final LockHashAlgorithmType hashType =
+    final LockHashAlgorithm hashType =
         getTestContext().getScenarioContext().getContext(SECRET_HASH_TYPE);
     final String proof = getTestContext().getScenarioContext().getContext(SECRET_PROOF);
     new SecretProofHelper(getTestContext())
@@ -146,7 +146,7 @@ public class ExchangeAssetsAcrossDifferentBlockchains extends BaseTest {
   public void proveProofOfSecretIncorrectly(final String userName) {
     final Account account = getUser(userName);
     final String secretHash = getTestContext().getScenarioContext().getContext(SECRET_HASH);
-    final LockHashAlgorithmType hashType =
+    final LockHashAlgorithm hashType =
         getTestContext().getScenarioContext().getContext(SECRET_HASH_TYPE);
     final String proof = getTestContext().getScenarioContext().getContext(SECRET_PROOF);
     new SecretProofHelper(getTestContext())
@@ -162,7 +162,7 @@ public class ExchangeAssetsAcrossDifferentBlockchains extends BaseTest {
   @When(
       "^(\\w+) tries to prove knowing the secret's seed using \"(\\w+)\" as the hashing algorithm$")
   public void proveProofOfSecretWithIncorrectHashType(
-      final String userName, final LockHashAlgorithmType hashType) {
+      final String userName, final LockHashAlgorithm hashType) {
     final Account account = getUser(userName);
     final String secretHash = getTestContext().getScenarioContext().getContext(SECRET_HASH);
     final String proof = getTestContext().getScenarioContext().getContext(SECRET_PROOF);

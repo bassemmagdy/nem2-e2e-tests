@@ -20,16 +20,13 @@
 
 package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers;
 
+import io.nem.symbol.sdk.infrastructure.SerializationUtils;
 import io.nem.symbol.sdk.model.account.Address;
 import io.nem.symbol.sdk.model.account.UnresolvedAddress;
 import io.nem.symbol.sdk.model.mosaic.MosaicId;
 import io.nem.symbol.sdk.model.mosaic.UnresolvedMosaicId;
 import io.nem.symbol.sdk.model.namespace.NamespaceId;
-import io.nem.symbol.sdk.model.receipt.AddressResolutionStatement;
-import io.nem.symbol.sdk.model.receipt.MosaicResolutionStatement;
-import io.nem.symbol.sdk.model.receipt.ReceiptSource;
-import io.nem.symbol.sdk.model.receipt.ReceiptType;
-import io.nem.symbol.sdk.model.receipt.ResolutionEntry;
+import io.nem.symbol.sdk.model.receipt.*;
 import io.vertx.core.json.JsonObject;
 import org.apache.commons.codec.binary.Base32;
 
@@ -50,6 +47,10 @@ public final class MapperUtils {
    */
   public static BigInteger toBigInteger(final JsonObject jsonObject, final String name) {
     return BigInteger.valueOf(jsonObject.getLong(name));
+  }
+
+  public static BigInteger toUnsignedBigInteger(final JsonObject jsonObject, final String name) {
+    return SerializationUtils.toUnsignedBigInteger(jsonObject.getLong(name));
   }
 
   public static MosaicId toMosaicId(final JsonObject jsonObject, final String name) {
@@ -124,17 +125,17 @@ public final class MapperUtils {
     return NamespaceId.createFromId(MapperUtils.toBigInteger(jsonObject, name));
   }
 
-    public static String toRecordId(final JsonObject jsonObject) {
-        return jsonObject.getString("_id.$oid");
-    }
+  public static String toRecordId(final JsonObject jsonObject) {
+    return jsonObject.getString("_id.$oid");
+  }
 
-    /**
-     * Converts to an int by an unsigned conversion.
-     *
-     * @param value Signed short.
-     * @return Positive integer.
-     */
-    public static Long toUnsignedLong(final Integer value) {
-        return Integer.toUnsignedLong(value);
-    }
+  /**
+   * Converts to an int by an unsigned conversion.
+   *
+   * @param value Signed short.
+   * @return Positive integer.
+   */
+  public static Long toUnsignedLong(final Integer value) {
+    return Integer.toUnsignedLong(value);
+  }
 }

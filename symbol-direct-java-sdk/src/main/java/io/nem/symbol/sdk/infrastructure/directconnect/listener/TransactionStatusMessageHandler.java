@@ -25,6 +25,7 @@ import io.nem.symbol.catapult.builders.TimestampDto;
 import io.nem.symbol.core.utils.ExceptionUtils;
 import io.nem.symbol.sdk.infrastructure.SerializationUtils;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers.TransactionStatusCode;
+import io.nem.symbol.sdk.model.network.NetworkType;
 import io.nem.symbol.sdk.model.transaction.Deadline;
 import io.nem.symbol.sdk.model.transaction.TransactionStatusError;
 import org.zeromq.ZMQ;
@@ -37,12 +38,14 @@ public class TransactionStatusMessageHandler extends MessageBaseHandler {
    * Handle a message from the broker
    *
    * @param subscriber Subscriber for the message
+   * @param networkType Network type.
    */
   @Override
-  public TransactionStatusError handleMessage(final ZMQ.Socket subscriber) {
+  public TransactionStatusError handleMessage(
+      final ZMQ.Socket subscriber, final NetworkType networkType) {
     final byte[] statusBytes = subscriber.recv();
     final DataInputStream dataInputStream = toInputStream(statusBytes);
-    final int code = ExceptionUtils.propagate(()->dataInputStream.readInt());
+    final int code = ExceptionUtils.propagate(() -> dataInputStream.readInt());
     final TimestampDto deadLine = TimestampDto.loadFromBinary(dataInputStream);
     final Hash256Dto transactionHash = Hash256Dto.loadFromBinary(dataInputStream);
     return new TransactionStatusError(

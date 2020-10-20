@@ -24,6 +24,7 @@ import io.nem.symbol.catapult.builders.Hash256Dto;
 import io.nem.symbol.catapult.builders.HeightDto;
 import io.nem.symbol.sdk.infrastructure.BinarySerializationImpl;
 import io.nem.symbol.sdk.infrastructure.SerializationUtils;
+import io.nem.symbol.sdk.model.network.NetworkType;
 import io.nem.symbol.sdk.model.transaction.Transaction;
 import io.nem.symbol.sdk.model.transaction.TransactionFactory;
 import io.nem.symbol.sdk.model.transaction.TransactionInfo;
@@ -37,9 +38,10 @@ public class TransactionMessageHandler extends MessageBaseHandler {
    * Handle a message from the broker
    *
    * @param subscriber Subscriber for the message
+   * @param networkType Network type.
    */
   @Override
-  public Transaction handleMessage(final ZMQ.Socket subscriber) {
+  public Transaction handleMessage(final ZMQ.Socket subscriber, final NetworkType networkType) {
     final byte[] transactionPayLoad = subscriber.recv();
     final Hash256Dto entityHash = Hash256Dto.loadFromBinary(toInputStream(subscriber.recv()));
     final Hash256Dto merkleComponentHash =
@@ -53,8 +55,7 @@ public class TransactionMessageHandler extends MessageBaseHandler {
             SerializationUtils.toHexString(entityHash),
             SerializationUtils.toHexString(merkleComponentHash));
     final TransactionFactory<?> factory =
-        ((BinarySerializationImpl) BinarySerializationImpl.INSTANCE)
-            .deserializeToFactory(transactionPayLoad);
+        BinarySerializationImpl.INSTANCE.deserializeToFactory(transactionPayLoad);
     return factory.transactionInfo(transactionInfo).build();
   }
 }

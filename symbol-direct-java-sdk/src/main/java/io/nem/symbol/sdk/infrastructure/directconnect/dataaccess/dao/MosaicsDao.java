@@ -80,6 +80,6 @@ public class MosaicsDao implements MosaicRepository {
    */
   @Override
   public Observable<Page<MosaicInfo>> search(MosaicSearchCriteria criteria) {
-    return null;
+    return Observable.fromCallable(() -> new Page<>(new MosaicsCollection(catapultContext.getDataAccessContext()).search(criteria)));
   }
 }

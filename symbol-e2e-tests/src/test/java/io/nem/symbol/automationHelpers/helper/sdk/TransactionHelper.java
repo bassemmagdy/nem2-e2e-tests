@@ -53,8 +53,8 @@ public class TransactionHelper {
    *
    * @return Default deadline.
    */
-  public static Deadline getDefaultDeadline() {
-    return Deadline.create(2, ChronoUnit.HOURS);
+  public Deadline getDefaultDeadline() {
+    return testContext.getDefaultDeadline();
   }
 
   /**

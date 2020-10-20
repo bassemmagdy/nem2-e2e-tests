@@ -43,7 +43,10 @@ public class VrfKeyLinkHelper extends BaseHelper<VrfKeyLinkHelper> {
       final PublicKey linkedPublicKey, final LinkAction linkAction) {
     final VrfKeyLinkTransactionFactory vrfKeyLinkTransactionFactory =
         VrfKeyLinkTransactionFactory.create(
-            testContext.getNetworkType(), linkedPublicKey, linkAction);
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            linkedPublicKey,
+            linkAction);
     return buildTransaction(vrfKeyLinkTransactionFactory);
   }
 

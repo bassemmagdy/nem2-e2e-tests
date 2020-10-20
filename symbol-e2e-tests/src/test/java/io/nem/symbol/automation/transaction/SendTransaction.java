@@ -93,7 +93,11 @@ public class SendTransaction extends BaseTest {
 
   @When("^(\\w+) tries to announces the transaction with a deadline of (-?\\d+) hours?$")
   public void announcesTransactionWithInvalidDeadline(final String userName, final int timeout) {
-    final Deadline deadline = Deadline.create(timeout, ChronoUnit.HOURS);
+    final Deadline deadline =
+        Deadline.create(
+            getTestContext().getRepositoryFactory().getEpochAdjustment().blockingFirst(),
+            timeout,
+            ChronoUnit.HOURS);
     announcesTransferTransaction(
         userName, deadline, TransactionHelper.getDefaultMaxFee(), networkHelper.getNetworkType());
   }
@@ -104,7 +108,7 @@ public class SendTransaction extends BaseTest {
     final Account sender = getUser(userName);
     final TransferTransaction transferTransaction =
         createTransaction(
-            TransactionHelper.getDefaultDeadline(),
+            getTestContext().getDefaultDeadline(),
             TransactionHelper.getDefaultMaxFee(),
             getTestContext().getNetworkType());
     waitForBlockChainHeight(blockHeight.longValue() + 1);
@@ -115,7 +119,11 @@ public class SendTransaction extends BaseTest {
   @When("^(\\w+) creates a valid transaction with deadline in (\\d+) seconds$")
   public void createTransaction(final String userName, final int timeoutInSeconds) {
     final Account sender = getUser(userName);
-    final Deadline deadline = Deadline.create(timeoutInSeconds, ChronoUnit.SECONDS);
+    final Deadline deadline =
+        Deadline.create(
+            getTestContext().getRepositoryFactory().getEpochAdjustment().blockingFirst(),
+            timeoutInSeconds,
+            ChronoUnit.SECONDS);
     final TransferTransaction transferTransaction =
         createTransaction(
             deadline, TransactionHelper.getDefaultMaxFee(), getTestContext().getNetworkType());
@@ -141,7 +149,7 @@ public class SendTransaction extends BaseTest {
     final Account sender = getUser(userName);
     final TransferTransaction transferTransaction =
         createTransaction(
-            TransactionHelper.getDefaultDeadline(),
+            getTestContext().getDefaultDeadline(),
             TransactionHelper.getDefaultMaxFee(),
             networkHelper.getNetworkType());
     final SignedTransaction signedInvalidTransaction =
@@ -164,7 +172,7 @@ public class SendTransaction extends BaseTest {
     final NetworkType networkType = getIncorrectNetworkType();
     announcesTransferTransaction(
         userName,
-        TransactionHelper.getDefaultDeadline(),
+        getTestContext().getDefaultDeadline(),
         TransactionHelper.getDefaultMaxFee(),
         networkType);
   }
@@ -193,7 +201,7 @@ public class SendTransaction extends BaseTest {
                             TransactionState.FAILED,
                             "Unknown state",
                             signedTransaction.getHash(),
-                            Deadline.create(),
+                            getTestContext().getDefaultDeadline(),
                             BigInteger.ZERO);
                   }
                   throw new RuntimeException(
@@ -211,7 +219,7 @@ public class SendTransaction extends BaseTest {
     final Account userAccount = getUser(userName);
     final TransferTransaction transferTransaction =
         createTransaction(
-            TransactionHelper.getDefaultDeadline(),
+            getTestContext().getDefaultDeadline(),
             BigInteger.ZERO,
             getTestContext().getNetworkType());
     new TransactionHelper(getTestContext())

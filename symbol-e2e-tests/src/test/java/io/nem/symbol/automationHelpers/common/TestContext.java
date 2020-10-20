@@ -192,6 +192,14 @@ public class TestContext {
   }
 
   /**
+   * Get the default deadline.
+   * @return Default deadline.
+   */
+  public Deadline getDefaultDeadline() {
+    return Deadline.create(getRepositoryFactory().getEpochAdjustment().blockingFirst());
+  }
+
+  /**
    * Get the network currency.
    *
    * @return Namespace id.

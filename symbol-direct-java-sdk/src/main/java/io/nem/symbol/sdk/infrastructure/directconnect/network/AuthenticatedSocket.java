@@ -40,7 +40,7 @@ public class AuthenticatedSocket {
    */
   private AuthenticatedSocket(final String hostName, final int port, final File clientKey, final File clientCertificate,
                               final File remoteNodeCertificate) {
-    final Socket sslSocket = TlsSocket.creaate(clientKey, clientCertificate, remoteNodeCertificate).createSocket(hostName, port);
+    final Socket sslSocket = TlsSocket.create(clientKey, clientCertificate, remoteNodeCertificate).createSocket(hostName, port);
     socketClient = SocketClient.create(sslSocket);
   }
 

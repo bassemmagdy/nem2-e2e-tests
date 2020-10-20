@@ -66,7 +66,7 @@ public class AliasResolution extends BaseTest {
         Arrays.asList(new Mosaic(resolveNamespaceIdFromName(assetAlias), amount));
     final TransferHelper transferHelper = new TransferHelper(getTestContext());
     transferHelper.submitTransferAndWait(
-        senderAccount, recipientAddress, mosaics, PlainMessage.Empty);
+        senderAccount, recipientAddress, mosaics);
   }
 
   @And("^\"(\\w+)\" wants to get asset identifier for the previous transaction$")

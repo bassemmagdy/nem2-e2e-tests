@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 
 public enum MessageMarker {
   Block_Marker("9FF2D8E480CA6A49", ListenerChannel.BLOCK.toString(), new BlockMessageHandler()),
+  Finalized_Block_Marker("4D4832A031CE7954", ListenerChannel.FINALIZED_BLOCK.toString(), new FinalizedBlockMessageHandler()),
   Transaction_Marker(
       "61", ListenerChannel.CONFIRMED_ADDED.toString(), new TransactionMessageHandler()),
   Unconfirmed_Transaction_Add_Marker(

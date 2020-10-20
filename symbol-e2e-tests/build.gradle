@@ -28,8 +28,7 @@ repositories {
 
 dependencies {
     compile project(':symbol-direct-java-sdk')
-    compile group: 'io.nem', name: 'symbol-sdk-core', version: '0.20.3-SNAPSHOT'
-    implementation 'io.nem:symbol-sdk-vertx-client:0.20.3-SNAPSHOT'
+    implementation 'io.nem:symbol-sdk-vertx-client:0.21.1-SNAPSHOT'
     implementation 'org.rocksdb:rocksdbjni:6.5.3'
     implementation 'org.apache.logging.log4j:log4j-api:2.13.0'
     implementation 'org.apache.logging.log4j:log4j-core:2.13.0'
@@ -37,7 +36,7 @@ dependencies {
     testImplementation 'io.cucumber:cucumber-java:2.3.1'
     testImplementation 'io.cucumber:cucumber-junit:2.3.1'
     testImplementation 'io.cucumber:cucumber-picocontainer:2.3.1'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     testImplementation 'org.hamcrest:hamcrest:2.2'
     compileOnly 'info.cukes:gherkin:2.12.2'
 }

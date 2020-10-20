@@ -83,7 +83,7 @@ public class ExtendNamespaceRegistration extends BaseTest {
         userName,
         AUTOMATION_USER_ALICE,
         Collections.singletonList(new Mosaic(mosaicId, returnedValue)),
-        PlainMessage.Empty);
+        null);
   }
 
   @And("^the namespace is now under grace period$")

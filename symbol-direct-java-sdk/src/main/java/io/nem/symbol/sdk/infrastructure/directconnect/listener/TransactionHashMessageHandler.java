@@ -22,21 +22,22 @@ package io.nem.symbol.sdk.infrastructure.directconnect.listener;
 
 import io.nem.symbol.catapult.builders.Hash256Dto;
 import io.nem.symbol.core.utils.ConvertUtils;
+import io.nem.symbol.sdk.model.network.NetworkType;
 import org.zeromq.ZMQ;
-
 
 /** Handle the transaction hash message from the server. */
 public class TransactionHashMessageHandler extends MessageBaseHandler {
-	/**
-	 * Handle a message from the broker
-	 *
-	 * @param subscriber Subscriber for the message
-	 */
-	@Override
-	public String handleMessage(final ZMQ.Socket subscriber) {
-		final Hash256Dto transactionHash = Hash256Dto.loadFromBinary(toInputStream(subscriber.recv()));
-		failIfMoreMessageAvailable(subscriber, "Block message is not correct.");
+  /**
+   * Handle a message from the broker
+   *
+   * @param subscriber Subscriber for the message
+   * @param networkType Network type.
+   */
+  @Override
+  public String handleMessage(final ZMQ.Socket subscriber, final NetworkType networkType) {
+    final Hash256Dto transactionHash = Hash256Dto.loadFromBinary(toInputStream(subscriber.recv()));
+    failIfMoreMessageAvailable(subscriber, "Block message is not correct.");
 
-		return ConvertUtils.toHex(transactionHash.getHash256().array());
-	}
+    return ConvertUtils.toHex(transactionHash.getHash256().array());
+  }
 }

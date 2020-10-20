@@ -31,86 +31,91 @@ import io.nem.symbol.sdk.model.transaction.SignedTransaction;
 import java.math.BigInteger;
 
 public class MosaicMetadataHelper extends BaseHelper<MosaicMetadataHelper> {
-    /**
-     * Constructor.
-     *
-     * @param testContext Test context.
-     */
-    public MosaicMetadataHelper(final TestContext testContext) {
-        super(testContext);
-    }
+  /**
+   * Constructor.
+   *
+   * @param testContext Test context.
+   */
+  public MosaicMetadataHelper(final TestContext testContext) {
+    super(testContext);
+  }
 
-    /**
-     * Create a mosaic metadata transaction.
-     *
-     * @param targetAddress Target address.
-     * @param scopedMetadataKey Document key
-     * @param mosaicId Mosaic id.
-     * @param valueSizeDelta Delta size.
-     * @param value Document value.
-     * @return
-     */
-    public MosaicMetadataTransaction createMosaicMetadataTransaction(
-            final UnresolvedAddress targetAddress,
-            final BigInteger scopedMetadataKey,
-            final UnresolvedMosaicId mosaicId,
-            final short valueSizeDelta,
-            final String value) {
-        final MosaicMetadataTransactionFactory mosaicMetadataTransactionFactory =
-                MosaicMetadataTransactionFactory.create(
-                        testContext.getNetworkType(), targetAddress, mosaicId, scopedMetadataKey, value);
-        mosaicMetadataTransactionFactory.valueSizeDelta(valueSizeDelta);
-        return buildTransaction(mosaicMetadataTransactionFactory);
-    }
+  /**
+   * Create a mosaic metadata transaction.
+   *
+   * @param targetAddress Target address.
+   * @param scopedMetadataKey Document key
+   * @param mosaicId Mosaic id.
+   * @param valueSizeDelta Delta size.
+   * @param value Document value.
+   * @return
+   */
+  public MosaicMetadataTransaction createMosaicMetadataTransaction(
+      final UnresolvedAddress targetAddress,
+      final BigInteger scopedMetadataKey,
+      final UnresolvedMosaicId mosaicId,
+      final short valueSizeDelta,
+      final String value) {
+    final MosaicMetadataTransactionFactory mosaicMetadataTransactionFactory =
+        MosaicMetadataTransactionFactory.create(
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            targetAddress,
+            mosaicId,
+            scopedMetadataKey,
+            value);
+    mosaicMetadataTransactionFactory.valueSizeDelta(valueSizeDelta);
+    return buildTransaction(mosaicMetadataTransactionFactory);
+  }
 
-    /**
-     * Creates an mosaic metadata transaction and announce it to the network.
-     *
-     * @param account           User account.
-     * @param targetAddress     Target public account.
-     * @param scopedMetadataKey Scoped meta data Key.
-     * @param valueSizeDelta    Value size delta.
-     * @param value             Metadata value.
-     * @return Signed transaction.
-     */
-    public SignedTransaction createAccountMetadataAndAnnounce(
-            final Account account,
-            final UnresolvedAddress targetAddress,
-            final BigInteger scopedMetadataKey,
-            final UnresolvedMosaicId mosaicId,
-            final short valueSizeDelta,
-            final String value) {
-        final TransactionHelper transactionHelper = new TransactionHelper(testContext);
-        return transactionHelper.signAndAnnounceTransaction(
-                account,
-                () ->
-                        createMosaicMetadataTransaction(
-                                targetAddress, scopedMetadataKey, mosaicId, valueSizeDelta, value));
-    }
+  /**
+   * Creates an mosaic metadata transaction and announce it to the network.
+   *
+   * @param account User account.
+   * @param targetAddress Target public account.
+   * @param scopedMetadataKey Scoped meta data Key.
+   * @param valueSizeDelta Value size delta.
+   * @param value Metadata value.
+   * @return Signed transaction.
+   */
+  public SignedTransaction createAccountMetadataAndAnnounce(
+      final Account account,
+      final UnresolvedAddress targetAddress,
+      final BigInteger scopedMetadataKey,
+      final UnresolvedMosaicId mosaicId,
+      final short valueSizeDelta,
+      final String value) {
+    final TransactionHelper transactionHelper = new TransactionHelper(testContext);
+    return transactionHelper.signAndAnnounceTransaction(
+        account,
+        () ->
+            createMosaicMetadataTransaction(
+                targetAddress, scopedMetadataKey, mosaicId, valueSizeDelta, value));
+  }
 
-    /**
-     * Creates an mosaic metadata transaction and announce it to the network and wait for confirmed
-     * status.
-     *
-     * @param account           User account.
-     * @param targetAddress     Target account address.
-     * @param scopedMetadataKey Scoped meta data Key.
-     * @param valueSizeDelta    Value size delta.
-     * @param value             Metadata value.
-     * @return Mosaic supply change transaction.
-     */
-    public MosaicMetadataTransaction submitMosaicSupplyChangeAndWait(
-            final Account account,
-            final UnresolvedAddress targetAddress,
-            final BigInteger scopedMetadataKey,
-            final UnresolvedMosaicId mosaicId,
-            final short valueSizeDelta,
-            final String value) {
-        final TransactionHelper transactionHelper = new TransactionHelper(testContext);
-        return transactionHelper.signAndAnnounceTransactionAndWait(
-                account,
-                () ->
-                        createMosaicMetadataTransaction(
-                                targetAddress, scopedMetadataKey, mosaicId, valueSizeDelta, value));
-    }
+  /**
+   * Creates an mosaic metadata transaction and announce it to the network and wait for confirmed
+   * status.
+   *
+   * @param account User account.
+   * @param targetAddress Target account address.
+   * @param scopedMetadataKey Scoped meta data Key.
+   * @param valueSizeDelta Value size delta.
+   * @param value Metadata value.
+   * @return Mosaic supply change transaction.
+   */
+  public MosaicMetadataTransaction submitMosaicSupplyChangeAndWait(
+      final Account account,
+      final UnresolvedAddress targetAddress,
+      final BigInteger scopedMetadataKey,
+      final UnresolvedMosaicId mosaicId,
+      final short valueSizeDelta,
+      final String value) {
+    final TransactionHelper transactionHelper = new TransactionHelper(testContext);
+    return transactionHelper.signAndAnnounceTransactionAndWait(
+        account,
+        () ->
+            createMosaicMetadataTransaction(
+                targetAddress, scopedMetadataKey, mosaicId, valueSizeDelta, value));
+  }
 }

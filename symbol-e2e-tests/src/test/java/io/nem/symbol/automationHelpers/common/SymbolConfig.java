@@ -20,6 +20,7 @@
 
 package io.nem.symbol.automationHelpers.common;
 
+import io.nem.symbol.sdk.infrastructure.common.ConfigurationHelper;
 import io.nem.symbol.sdk.model.mosaic.MosaicId;
 import io.nem.symbol.sdk.model.network.NetworkConfiguration;
 import org.apache.commons.lang3.tuple.Pair;
@@ -60,68 +61,30 @@ public class SymbolConfig {
     maxCosignatoriesPerAccount = toInteger(networkConfiguration.getPlugins().getMultisig().getMaxCosignatoriesPerAccount());
     maxCosignedAccountsPerAccount = toInteger(networkConfiguration.getPlugins().getMultisig().getMaxCosignedAccountsPerAccount());
     transferMaxMessageSize = toInteger(networkConfiguration.getPlugins().getTransfer().getMaxMessageSize());
-    harvestNetworkPercentage = toInteger(networkConfiguration.getChain().getHarvestNetworkPercentage());
+    harvestNetworkPercentage = ConfigurationHelper.toInteger(networkConfiguration.getChain().getHarvestNetworkPercentage());
     minNamespaceDuration = toBlocks(networkConfiguration.getPlugins().getNamespace().getMinNamespaceDuration()).intValue();
     maxNamespaceDuration = toBlocks(networkConfiguration.getPlugins().getNamespace().getMaxNamespaceDuration()).intValue();
   }
 
-  private String removeSingleQuotation(final String value) {
-    final String newValue = value.trim().replaceAll("'", "");
-    if (newValue.isEmpty()) {
-      throw new IllegalArgumentException("Property value cannot be empty :" + value);
-    }
-    return newValue;
-  }
-
-  private BigInteger toBigInteger(final String value) {
-    return new BigInteger(removeSingleQuotation(value));
-  }
-
-  private Long toLong(final String value) {
-    return Long.parseLong(removeSingleQuotation(value));
+  private Integer toBlocks(final String duration) {
+    return ConfigurationHelper.toBlocks(duration,
+            networkConfiguration.getChain().getBlockGenerationTargetTime()).intValue();
   }
 
   private Integer toInteger(final String value) {
-    return Integer.parseInt(removeSingleQuotation(value));
+    return ConfigurationHelper.toInteger(value);
   }
 
-  private Pair<Long, Character> getTimeValueAndUnit(final String value) {
-    if (value.length() < 2) {
-      throw new IllegalArgumentException(value + " does not have value or unit.");
-    }
-    final char unit = value.charAt(value.length() - 1);
-    final long val = toLong(value.substring(0, value.length() - 1));
-    return Pair.of(val, unit);
+  private String toHex(final String value) {
+    return ConfigurationHelper.toHex(value);
+  }
+
+  private BigInteger toBigInteger(final String value) {
+    return ConfigurationHelper.toBigInteger(value);
   }
 
   private Long toSeconds(final String value) {
-    Pair<Long, Character> valueUnit = getTimeValueAndUnit(value);
-    return toDuration(valueUnit.getKey(), valueUnit.getValue()).getSeconds();
-  }
-
-  private Duration toDuration(final long value, final char unit) {
-    switch (unit) {
-      case 's':
-        return Duration.ofSeconds(value);
-      case 'm':
-        return Duration.ofMinutes(value);
-      case 'h':
-        return Duration.ofHours(value);
-      case 'd':
-        return Duration.ofDays(value);
-      default:
-        throw new IllegalArgumentException("Unit is not found:" + unit);
-    }
-  }
-
-  private Long toBlocks(final String value) {
-    Pair<Long, Character> valueUnit = getTimeValueAndUnit(value);
-    return toDuration(valueUnit.getKey(), valueUnit.getValue()).getSeconds()
-        / getBlockGenerationTargetTime();
-  }
-
-  String toHex(final String value) {
-    return removeSingleQuotation(value).replaceAll("0x", "");
+    return ConfigurationHelper.toSeconds(value);
   }
 
   /**
@@ -157,7 +120,6 @@ public class SymbolConfig {
    * @return Generation hash seed.
    */
   public String getGenerationHashSeed() {
-    //return "5DCE6A399E7F3EFEE0A8E817DA3AFD52B7BC1B5834DAD0223A685AAFF9E1AA0A";
     return networkConfiguration.getNetwork().getGenerationHashSeed();
   }
 

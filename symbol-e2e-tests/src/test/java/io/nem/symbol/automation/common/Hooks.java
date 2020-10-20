@@ -77,7 +77,7 @@ public class Hooks {
       ScenarioImpl impl = (ScenarioImpl) scenario;
       logger.LogException(impl.getError());
     }
-    Listener listener = testContext.getScenarioContext().getContext("listener");
+    final Listener listener = testContext.getScenarioContext().getContext("listener");
     if (listener != null) {
       listener.close();
     }

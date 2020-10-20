@@ -251,6 +251,7 @@ public class AssetRegistration extends BaseTest {
     final MosaicDefinitionTransaction mosaicDefinitionTransactionUpdated =
         MosaicDefinitionTransactionFactory.create(
                 getTestContext().getNetworkType(),
+                getTestContext().getDefaultDeadline(),
                 getMosaicNonce(),
                 getMosaicId(),
                 updatedMosaicFlags,

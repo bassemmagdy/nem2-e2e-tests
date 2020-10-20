@@ -25,6 +25,7 @@ import io.nem.symbol.sdk.api.AccountSearchCriteria;
 import io.nem.symbol.sdk.api.Page;
 import io.nem.symbol.sdk.infrastructure.common.CatapultContext;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoDb.AccountsCollection;
+import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoDb.NamespacesCollection;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers.MapperUtils;
 import io.nem.symbol.sdk.model.account.AccountInfo;
 import io.nem.symbol.sdk.model.account.Address;
@@ -80,6 +81,6 @@ public class AccountsDao implements AccountRepository {
    */
   @Override
   public Observable<Page<AccountInfo>> search(AccountSearchCriteria criteria) {
-    return null;
+    return Observable.fromCallable(() -> new Page<>(new AccountsCollection(catapultContext.getDataAccessContext()).search(criteria)));
   }
 }

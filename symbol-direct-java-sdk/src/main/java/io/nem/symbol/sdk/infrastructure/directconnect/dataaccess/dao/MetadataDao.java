@@ -36,11 +36,6 @@ public class MetadataDao implements MetadataRepository {
     return optionalMetadata.orElseThrow(() -> new IllegalArgumentException(error));
   }
 
-  private byte[] getAddressBytes(final Address address) {
-    return MapperUtils.fromAddressToByteBuffer(address).array();
-  }
-
-
   /**
    *
    * @param criteria
@@ -48,6 +43,6 @@ public class MetadataDao implements MetadataRepository {
    */
   @Override
   public Observable<Page<Metadata>> search(MetadataSearchCriteria criteria) {
-    return null;
+    return Observable.fromCallable(() -> new Page<>(metadataCollection.search(criteria)));
   }
 }

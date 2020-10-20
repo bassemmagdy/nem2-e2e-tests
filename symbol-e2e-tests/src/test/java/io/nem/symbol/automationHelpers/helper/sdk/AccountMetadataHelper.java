@@ -57,7 +57,11 @@ public class AccountMetadataHelper extends BaseHelper<AccountMetadataHelper> {
       final String value) {
     final AccountMetadataTransactionFactory accountMetadataTransactionFactory =
         AccountMetadataTransactionFactory.create(
-            testContext.getNetworkType(), targetAddress, scopedMetadataKey, value);
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            targetAddress,
+            scopedMetadataKey,
+            value);
     accountMetadataTransactionFactory.valueSizeDelta(valueSizeDelta);
     return buildTransaction(accountMetadataTransactionFactory);
   }

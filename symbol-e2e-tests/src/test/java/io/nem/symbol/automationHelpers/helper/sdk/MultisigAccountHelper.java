@@ -55,13 +55,14 @@ public class MultisigAccountHelper extends BaseHelper<MultisigAccountHelper> {
       final List<UnresolvedAddress> accountsAdditions,
       final List<UnresolvedAddress> accountsDeletions) {
     final MultisigAccountModificationTransactionFactory
-            multisigAccountModificationTransactionFactory =
+        multisigAccountModificationTransactionFactory =
             MultisigAccountModificationTransactionFactory.create(
-                    testContext.getNetworkType(),
-                    minApprovalDelta,
-                    minRemovalDelta,
-                    accountsAdditions,
-                    accountsDeletions);
+                testContext.getNetworkType(),
+                transactionHelper.getDefaultDeadline(),
+                minApprovalDelta,
+                minRemovalDelta,
+                accountsAdditions,
+                accountsDeletions);
     return buildTransaction(multisigAccountModificationTransactionFactory);
   }
 

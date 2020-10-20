@@ -25,7 +25,6 @@ import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.core.utils.ExceptionUtils;
 import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.account.AccountInfo;
-import io.nem.symbol.sdk.model.mosaic.Mosaic;
 import io.nem.symbol.sdk.model.mosaic.MosaicId;
 import io.nem.symbol.sdk.model.mosaic.ResolvedMosaic;
 import io.nem.symbol.sdk.model.network.NetworkType;
@@ -230,7 +229,7 @@ public class CommonHelper {
    * @param timeoutInSeconds Timeout in seconds.
    */
   public static void executeInParallel(
-          final List<Runnable> runnables, final long timeoutInSeconds) {
+      final List<Runnable> runnables, final long timeoutInSeconds) {
     ExecutorService es = Executors.newCachedThreadPool();
     for (final Runnable runnable : runnables) {
       es.execute(runnable);
@@ -286,7 +285,9 @@ public class CommonHelper {
         + " Status: "
         + transactionStatus.getCode()
         + " Deadline: "
-        + transactionStatus.getDeadline().getInstant()
+        + transactionStatus
+            .getDeadline()
+            .getInstant(testContext.getRepositoryFactory().getEpochAdjustment().blockingFirst())
         + " group: "
         + transactionStatus.getGroup().toString()
         + " height: "
@@ -320,7 +321,7 @@ public class CommonHelper {
     return "Parent hash: "
         + signedTransaction.getParentHash()
         + " signer: "
-        + signedTransaction.getSignerPublicKey()
+        + signedTransaction.getSigner().getPublicKey().toHex()
         + " signature : "
         + signedTransaction.getSignature();
   }

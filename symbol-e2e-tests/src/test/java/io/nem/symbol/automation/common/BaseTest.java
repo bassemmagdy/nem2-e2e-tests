@@ -127,7 +127,7 @@ public abstract class BaseTest {
                     aliceAccount,
                     accountBob.getAddress(),
                     Arrays.asList(new Mosaic(newMosaicId, BigInteger.valueOf(20))),
-                    PlainMessage.Empty);
+                    null);
             testContext.clearTransaction();
             initialized = true;
         }

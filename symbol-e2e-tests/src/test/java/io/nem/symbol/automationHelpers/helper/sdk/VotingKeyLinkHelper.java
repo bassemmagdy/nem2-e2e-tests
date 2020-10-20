@@ -28,8 +28,6 @@ import io.nem.symbol.sdk.model.transaction.SignedTransaction;
 import io.nem.symbol.sdk.model.transaction.VotingKeyLinkTransaction;
 import io.nem.symbol.sdk.model.transaction.VotingKeyLinkTransactionFactory;
 
-import java.math.BigInteger;
-
 public class VotingKeyLinkHelper extends BaseHelper<VotingKeyLinkHelper> {
 
   /**
@@ -43,12 +41,17 @@ public class VotingKeyLinkHelper extends BaseHelper<VotingKeyLinkHelper> {
 
   private VotingKeyLinkTransaction createVotingKeyLinkTransaction(
       final VotingKey linkedPublicKey,
-      final BigInteger startPoint,
-      final BigInteger endPoint,
+      final long startEpoch,
+      final long endEpoch,
       final LinkAction linkAction) {
     final VotingKeyLinkTransactionFactory votingKeyLinkTransactionFactory =
         VotingKeyLinkTransactionFactory.create(
-            testContext.getNetworkType(), linkedPublicKey, startPoint, endPoint, linkAction);
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            linkedPublicKey,
+            startEpoch,
+            endEpoch,
+            linkAction);
     return buildTransaction(votingKeyLinkTransactionFactory);
   }
 
@@ -57,21 +60,21 @@ public class VotingKeyLinkHelper extends BaseHelper<VotingKeyLinkHelper> {
    *
    * @param account User account.
    * @param linkedPublicKey Linked public key.
-   * @param startPoint Start point.
-   * @param endPoint End point.
+   * @param startEpoch Start point.
+   * @param endEpoch End point.
    * @param linkAction Link action.
    * @return Signed transaction.
    */
   public SignedTransaction createVotingKeyLinkTransactionAndAnnounce(
       final Account account,
       final VotingKey linkedPublicKey,
-      final BigInteger startPoint,
-      final BigInteger endPoint,
+      final long startEpoch,
+      final long endEpoch,
       final LinkAction linkAction) {
     final TransactionHelper transactionHelper = new TransactionHelper(testContext);
     return transactionHelper.signAndAnnounceTransaction(
         account,
-        () -> createVotingKeyLinkTransaction(linkedPublicKey, startPoint, endPoint, linkAction));
+        () -> createVotingKeyLinkTransaction(linkedPublicKey, startEpoch, endEpoch, linkAction));
   }
 
   /**
@@ -80,20 +83,20 @@ public class VotingKeyLinkHelper extends BaseHelper<VotingKeyLinkHelper> {
    *
    * @param account User account.
    * @param linkedPublicKey Linked public key.
-   * @param startPoint Start point.
-   * @param endPoint End point.
+   * @param startEpoch Start point.
+   * @param endEpoch End point.
    * @param linkAction Link action.
    * @return Mosaic supply change transaction.
    */
   public VotingKeyLinkTransaction submitVotingKeyLinkTransactionAndWait(
       final Account account,
       final VotingKey linkedPublicKey,
-      final BigInteger startPoint,
-      final BigInteger endPoint,
+      final long startEpoch,
+      final long endEpoch,
       final LinkAction linkAction) {
     final TransactionHelper transactionHelper = new TransactionHelper(testContext);
     return transactionHelper.signAndAnnounceTransactionAndWait(
         account,
-        () -> createVotingKeyLinkTransaction(linkedPublicKey, startPoint, endPoint, linkAction));
+        () -> createVotingKeyLinkTransaction(linkedPublicKey, startEpoch, endEpoch, linkAction));
   }
 }

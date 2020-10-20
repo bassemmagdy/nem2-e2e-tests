@@ -59,7 +59,7 @@ public class TlsSocket {
      * @param remoteCertificateFile
      * @return
      */
-  public static TlsSocket creaate(final File clientKeyFile,
+  public static TlsSocket create(final File clientKeyFile,
                            final File clientCertificateFile,
                            final File remoteCertificateFile) {
       return new TlsSocket(clientKeyFile, clientCertificateFile, remoteCertificateFile);

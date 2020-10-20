@@ -57,7 +57,7 @@ public class AccountRestrictionAddress extends BaseTest {
   public void theFollowingAccountsExists(final List<String> usernames) {
     usernames.parallelStream().forEach(username -> getUserWithCurrency(username, 10000));
     //    usernames.parallelStream().forEach(username -> transferAssets(username, username, new
-    // ArrayList<>(), PlainMessage.Empty));
+    // ArrayList<>(), null));
     // usernames.forEach(username ->
     // getTestContext().getLogger().LogInfo(getAccountInfoFromContext(username).toString()));
   }

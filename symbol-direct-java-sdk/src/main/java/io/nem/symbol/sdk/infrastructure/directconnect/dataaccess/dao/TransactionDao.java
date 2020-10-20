@@ -232,8 +232,9 @@ public class TransactionDao implements TransactionRepository, TransactionStatusR
    */
   @Override
   public Observable<Page<Transaction>> search(TransactionSearchCriteria criteria) {
-      final SearchableTransactionCollection transactionCollection = getCollection(criteria.getGroup());
-      //TODO: paging logic
-      return Observable.fromCallable(() -> new Page<>(transactionCollection.search(criteria), 1, 1, 1, 1));
+    final SearchableTransactionCollection transactionCollection =
+        getCollection(criteria.getGroup());
+    // TODO: paging logic
+    return Observable.fromCallable(() -> new Page<>(transactionCollection.search(criteria)));
   }
 }

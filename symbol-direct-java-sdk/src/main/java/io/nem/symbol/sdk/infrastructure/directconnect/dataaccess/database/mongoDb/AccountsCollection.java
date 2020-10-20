@@ -20,10 +20,13 @@
 
 package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoDb;
 
+import io.nem.symbol.sdk.api.AccountSearchCriteria;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.common.DataAccessContext;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers.AccountInfoMapper;
 import io.nem.symbol.sdk.model.account.AccountInfo;
+import org.bson.conversions.Bson;
 
+import java.util.List;
 import java.util.Optional;
 
 /** Accounts collection */
@@ -65,5 +68,17 @@ public class AccountsCollection {
   public Optional<AccountInfo> findByAddress(final byte[] address, final int timeoutInSeconds) {
     final String keyName = "account.address";
     return accountCollection.findOne(keyName, address, timeoutInSeconds);
+  }
+
+  private Bson toSearchCriteria(final AccountSearchCriteria criteria) {
+    final MongoDbFilterBuilder builder =
+            new MongoDbFilterBuilder().withNumericValue("account.mosaics.id", criteria.getMosaicId().getIdAsLong());
+    return builder.build();
+  }
+
+  public List<AccountInfo> search(AccountSearchCriteria criteria) {
+    final Bson filters = toSearchCriteria(criteria);
+
+    return accountCollection.findR(filters, context.getDatabaseTimeoutInSeconds());
   }
 }

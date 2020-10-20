@@ -20,6 +20,7 @@
 
 package io.nem.symbol.sdk.infrastructure.directconnect.listener;
 
+import io.nem.symbol.sdk.model.network.NetworkType;
 import org.zeromq.ZMQ.Socket;
 
 /** Handle messages from the symbol broker. */
@@ -28,5 +29,5 @@ public interface MessageHandler<T> {
 	 * Handle a message from the broker
 	 * @param subscriber Subscriber for the message
 	 */
-	T handleMessage(final Socket subscriber);
+	T handleMessage(final Socket subscriber, final NetworkType networkType);
 }

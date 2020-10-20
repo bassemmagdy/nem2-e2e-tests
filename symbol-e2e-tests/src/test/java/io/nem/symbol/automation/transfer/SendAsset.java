@@ -69,7 +69,7 @@ public class SendAsset extends BaseTest {
     final BigInteger actualAmount =
         getActualMosaicQuantity(getNamespaceIdFromName(assetName), amount);
     transferAssets(
-        sender, recipient, Arrays.asList(new Mosaic(mosaicId, actualAmount)), PlainMessage.Empty);
+        sender, recipient, Arrays.asList(new Mosaic(mosaicId, actualAmount)), null);
   }
 
   @When(
@@ -88,7 +88,7 @@ public class SendAsset extends BaseTest {
         recipient,
         Arrays.asList(
             new Mosaic(firstMosaicId, firstAmount), new Mosaic(secondMosaicId, secondAmount)),
-        PlainMessage.Empty);
+        null);
   }
 
   @And("^(\\w+) should receive (\\d+) of asset \"(.*)\"$")
@@ -191,7 +191,7 @@ public class SendAsset extends BaseTest {
       final String recipient) {
     final MosaicId mosaicId = resolveMosaicId(assetName);
     triesToTransferAssets(
-        sender, recipient, Arrays.asList(new Mosaic(mosaicId, amount)), PlainMessage.Empty);
+        sender, recipient, Arrays.asList(new Mosaic(mosaicId, amount)), null);
   }
 
   @When(
@@ -210,7 +210,7 @@ public class SendAsset extends BaseTest {
         recipient,
         Arrays.asList(
             new Mosaic(firstMosaicId, firstAmount), new Mosaic(secondMosaicId, secondAmount)),
-        PlainMessage.Empty);
+        null);
   }
 
   @Given("^(\\w+) registers a non transferable asset which she transfer (\\d+) asset to (\\w+)$")
@@ -232,7 +232,7 @@ public class SendAsset extends BaseTest {
         senderAccount,
         recipientAccount.getAddress(),
         Arrays.asList(new Mosaic(mosaicInfo.getMosaicId(), transferAmount)),
-        PlainMessage.Empty);
+        null);
     storeMosaicInfo(MOSAIC_INFO_KEY, mosaicInfo);
   }
 
@@ -246,8 +246,7 @@ public class SendAsset extends BaseTest {
             .createTransferAndAnnounce(
                 senderAccount,
                 recipientAccount.getAddress(),
-                Arrays.asList(new Mosaic(mosaicInfo.getMosaicId(), BigInteger.valueOf(amount))),
-                PlainMessage.Empty);
+                Arrays.asList(new Mosaic(mosaicInfo.getMosaicId(), BigInteger.valueOf(amount))));
     getTestContext().setSignedTransaction(signedTransaction);
   }
 
@@ -273,7 +272,7 @@ public class SendAsset extends BaseTest {
         senderAccount,
         recipientAccount.getAddress(),
         Arrays.asList(new Mosaic(mosaicInfo.getMosaicId(), transferAmount)),
-        PlainMessage.Empty);
+        null);
     storeMosaicInfo(MOSAIC_INFO_KEY, mosaicInfo);
   }
 

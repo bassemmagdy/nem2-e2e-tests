@@ -156,8 +156,7 @@ public class MosaicGlobalRestrictions extends BaseTest {
     final int divisibility = CommonHelper.getRandomDivisibility();
     final boolean isTransferable = true;
 
-    assetData
-        .parallelStream()
+    assetData.parallelStream()
         .forEach(
             asset -> {
               final String assetName = asset.get(0).toString();
@@ -189,6 +188,7 @@ public class MosaicGlobalRestrictions extends BaseTest {
       MosaicGlobalRestrictionTransactionFactory mgrtFactory =
           MosaicGlobalRestrictionTransactionFactory.create(
               this.getTestContext().getNetworkType(),
+              getTestContext().getDefaultDeadline(),
               mosaicId,
               restrictionKeyInt,
               restrictionValue,
@@ -298,6 +298,7 @@ public class MosaicGlobalRestrictions extends BaseTest {
     MosaicGlobalRestrictionTransactionFactory mgrtFactory =
         MosaicGlobalRestrictionTransactionFactory.create(
             this.getTestContext().getNetworkType(),
+            getTestContext().getDefaultDeadline(),
             mosaicId,
             restrictionKeyInt,
             restrictionValue,

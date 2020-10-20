@@ -28,9 +28,11 @@ import io.nem.symbol.automation.common.BaseTest;
 import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.automationHelpers.helper.sdk.AggregateHelper;
 import io.nem.symbol.automationHelpers.helper.sdk.BlockChainHelper;
+import io.nem.symbol.catapult.builders.FinalizedBlockHeaderBuilder;
 import io.nem.symbol.sdk.api.Listener;
 import io.nem.symbol.sdk.model.account.*;
 import io.nem.symbol.sdk.model.blockchain.BlockInfo;
+import io.nem.symbol.sdk.model.blockchain.FinalizedBlock;
 import io.nem.symbol.sdk.model.namespace.NamespaceId;
 import io.nem.symbol.sdk.model.transaction.CosignatureSignedTransaction;
 import io.nem.symbol.sdk.model.transaction.SignedTransaction;
@@ -114,9 +116,17 @@ public class ReceiveNotification extends BaseTest {
 
   @When("^(\\w+) waits for a next block$")
   public void waitForNextBlock(final String username) {
-    Listener listener = getListener();
+    final Listener listener = getListener();
     final BlockInfo blockInfo = getObservableValueWithQueryTimeout(listener.newBlock().take(1));
     getTestContext().getScenarioContext().setContext(BLOCK_INFO_NAME, blockInfo);
+  }
+
+  @When("^(\\w+) waits for a next finalized block$")
+  public void waitForNextFinalizedBlock(final String username) {
+    final Listener listener = getListener();
+    final int timeout = 25 * 60;
+    final FinalizedBlock finalizedBlock = getObservableValueWithTimeout(listener.finalizedBlock().take(1), timeout);
+    getTestContext().getScenarioContext().setContext(BLOCK_INFO_NAME, finalizedBlock);
   }
 
   @And("^(\\w+) waits for (\\d+) blocks?$")
@@ -150,6 +160,14 @@ public class ReceiveNotification extends BaseTest {
         "Block state hash didn't match", blockInfo.getStateHash(), blockInfoDb.getStateHash());
     assertEquals(
         "Block signature didn't match", blockInfo.getSignature(), blockInfoDb.getSignature());
+  }
+
+  @Then("^(\\w+) should receive a finalized block notification$")
+  public void verifyFinalizedBlock(final String username) {
+    final FinalizedBlock blockInfo = getTestContext().getScenarioContext().getContext(BLOCK_INFO_NAME);
+
+//    assertEquals(
+//            "Block signature didn't match", blockInfo.getSignature(), blockInfoDb.getSignature());
   }
 
   @Given("^(\\w+) register to receive unconfirmed transaction notification$")
@@ -236,7 +254,7 @@ public class ReceiveNotification extends BaseTest {
         cosignatureSignedTransaction != null);
     assertEquals(
         "Signer does not match",
-        cosignatureSignedTransaction.getSignerPublicKey().toUpperCase(),
+        cosignatureSignedTransaction.getSigner().getPublicKey().toHex().toUpperCase(),
         getUser(cosigner).getPublicKey().toUpperCase());
   }
 

@@ -20,10 +20,13 @@
 
 package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoDb;
 
+import io.nem.symbol.sdk.api.MosaicSearchCriteria;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.common.DataAccessContext;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers.MosaicInfoMapper;
 import io.nem.symbol.sdk.model.mosaic.MosaicInfo;
+import org.bson.conversions.Bson;
 
+import java.util.List;
 import java.util.Optional;
 
 /** Mosaics collection */
@@ -57,5 +60,16 @@ public class MosaicsCollection {
   public Optional<MosaicInfo> find(final long mosaicId) {
     final String keyName = "mosaic.id";
     return catapultCollection.findOne(keyName, mosaicId, context.getDatabaseTimeoutInSeconds());
+  }
+
+  private Bson toSearchCriteria(final MosaicSearchCriteria criteria) {
+    final MongoDbFilterBuilder builder =
+            new MongoDbFilterBuilder()
+                    .withAddress("mosaic.ownerAddress", criteria.getOwnerAddress());
+    return builder.build();
+  }
+
+  public List<MosaicInfo> search(final MosaicSearchCriteria criteria) {
+    return catapultCollection.findR(toSearchCriteria(criteria), context.getDatabaseTimeoutInSeconds());
   }
 }

@@ -29,6 +29,7 @@ public class MosaicAddressRestrictionHelper extends BaseHelper<MosaicAddressRest
     final MosaicAddressRestrictionTransactionFactory mosaicAddressRestrictionTransactionFactory =
         MosaicAddressRestrictionTransactionFactory.create(
             testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
             mosaicId,
             restrictionKey,
             unresolvedAddress,

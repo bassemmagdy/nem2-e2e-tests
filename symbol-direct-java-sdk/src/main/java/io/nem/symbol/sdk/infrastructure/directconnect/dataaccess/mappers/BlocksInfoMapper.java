@@ -42,8 +42,9 @@ public class BlocksInfoMapper implements Function<JsonObject, FullBlockInfo> {
     final String hash = metaJsonObject.getString("hash");
     final String generationHash = metaJsonObject.getString("generationHash");
     final BigInteger totalFee = MapperUtils.toBigInteger(metaJsonObject, "totalFee");
-    final int numTransactions = metaJsonObject.getInteger("numTransactions");
-    final int numStatements = metaJsonObject.getInteger("numStatements");
+    final int transactionsCount = metaJsonObject.getInteger("transactionsCount");
+    final int totalTransactionsCount = metaJsonObject.getInteger("totalTransactionsCount");
+    final int numStatements = metaJsonObject.getInteger("statementsCount");
     final List<String> stateHashSubCacheMerkleRoots =
         metaJsonObject.getJsonArray("stateHashSubCacheMerkleRoots").getList();
     final List<String> transactionMerkleTree =
@@ -75,7 +76,8 @@ public class BlocksInfoMapper implements Function<JsonObject, FullBlockInfo> {
         hash,
         generationHash,
         totalFee,
-        numTransactions,
+        transactionsCount,
+        totalTransactionsCount,
         numStatements,
         stateHashSubCacheMerkleRoots,
         statementMerkleTree,

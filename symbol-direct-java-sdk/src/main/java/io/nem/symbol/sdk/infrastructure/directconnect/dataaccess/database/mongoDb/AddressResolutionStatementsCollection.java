@@ -20,9 +20,11 @@
 
 package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoDb;
 
+import io.nem.symbol.sdk.api.ResolutionStatementSearchCriteria;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.common.DataAccessContext;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers.AddressResolutionStatementsMapper;
 import io.nem.symbol.sdk.model.receipt.AddressResolutionStatement;
+import org.bson.conversions.Bson;
 
 import java.util.List;
 
@@ -47,15 +49,22 @@ public class AddressResolutionStatementsCollection {
             AddressResolutionStatementsMapper::new);
   }
 
+  private Bson toSearchCriteria(final ResolutionStatementSearchCriteria criteria) {
+    final MongoDbFilterBuilder builder =
+            new MongoDbFilterBuilder()
+                    .withNumericValue("statement.height", criteria.getHeight().longValue());
+    return builder.build();
+  }
+
   /**
-   * Gets resolution statement for an unresolved address.
+   * It searches entities of a type based on a criteria.
    *
-   * @param height Block height.
-   * @return Resolution statement.
+   * @param criteria the criteria
+   * @return a page of entities.
    */
-  public List<AddressResolutionStatement> findByHeight(final long height) {
-    final String keyName = "statement.height";
-    final int timeoutInSeconds = 0;
-    return catapultCollection.find(keyName, height, timeoutInSeconds);
+  public List<AddressResolutionStatement> search(final ResolutionStatementSearchCriteria criteria) {
+    final Bson filters = toSearchCriteria(criteria);
+
+    return catapultCollection.findR(filters, context.getDatabaseTimeoutInSeconds());
   }
 }

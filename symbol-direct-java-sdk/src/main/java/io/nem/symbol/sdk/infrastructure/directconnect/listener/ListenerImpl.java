@@ -21,7 +21,6 @@
 package io.nem.symbol.sdk.infrastructure.directconnect.listener;
 
 import io.nem.symbol.core.utils.Base32Encoder;
-import io.nem.symbol.core.utils.ByteUtils;
 import io.nem.symbol.core.utils.ConvertUtils;
 import io.nem.symbol.core.utils.ExceptionUtils;
 import io.nem.symbol.sdk.infrastructure.ListenerBase;
@@ -30,6 +29,8 @@ import io.nem.symbol.sdk.infrastructure.ListenerMessage;
 import io.nem.symbol.sdk.infrastructure.directconnect.network.BrokerNodeContext;
 import io.nem.symbol.sdk.infrastructure.vertx.JsonHelperJackson2;
 import io.nem.symbol.sdk.model.blockchain.BlockInfo;
+import io.nem.symbol.sdk.model.blockchain.FinalizedBlock;
+import io.nem.symbol.sdk.model.network.NetworkType;
 import io.nem.symbol.sdk.model.transaction.CosignatureSignedTransaction;
 import io.nem.symbol.sdk.model.transaction.Transaction;
 import io.nem.symbol.sdk.model.transaction.TransactionGroup;
@@ -58,15 +59,17 @@ public class ListenerImpl extends ListenerBase {
   private final Logger logger;
   private ZContext context;
   private ZMQ.Socket subscriber;
+  private final NetworkType networkType;
 
-  public ListenerImpl(final BrokerNodeContext context) {
-    super(new JsonHelperJackson2(JsonHelperJackson2.configureMapper(Json.mapper)), null);
+  public ListenerImpl(final BrokerNodeContext context, final NetworkType networkType) {
+    super(new JsonHelperJackson2(JsonHelperJackson2.configureMapper(Json.mapper)), null, null);
 
     this.hostName = context.getHostName();
     this.port = context.getServerPort();
     listenerRunning = new AtomicBoolean(false);
     es = Executors.newCachedThreadPool();
     logger = LogManager.getLogger("listener");
+    this.networkType = networkType;
   }
 
   /**
@@ -76,7 +79,7 @@ public class ListenerImpl extends ListenerBase {
    * @param messageObject the message object.
    */
   private void onNext(ListenerChannel channel, Object messageObject) {
-    this.getMessageSubject().onNext(new ListenerMessage(channel, messageObject));
+    this.getMessageSubject().onNext(new ListenerMessage(channel,"", messageObject));
   }
 
   @Override
@@ -90,11 +93,11 @@ public class ListenerImpl extends ListenerBase {
               + messageBytes.length);
       final String hex =
           messageBytes.length == 8 // block notification.
-              ? ConvertUtils.toHex(ByteUtils.reverseCopy(messageBytes))
+              ? ConvertUtils.toHex(reverseCopy(messageBytes))
               : ConvertUtils.toHex(messageBytes);
       logger.error("Actual message: " + hex);
       final MessageMarker messageMarker = MessageMarker.rawValueOf(hex);
-      final Object objectMessage = messageMarker.getMessageHandler().handleMessage(subscriber);
+      final Object objectMessage = messageMarker.getMessageHandler().handleMessage(subscriber, networkType);
       logger.error(
           "Channel: "
               + messageMarker.getChannelName()
@@ -104,6 +107,17 @@ public class ListenerImpl extends ListenerBase {
     } catch (final Exception ex) {
       logger.error(ex.getMessage());
     }
+  }
+
+  /**
+   * Subclasses are in charge of creating the finalized blocked model object
+   *
+   * @param message the payload
+   * @return the finalized object
+   */
+  @Override
+  protected FinalizedBlock toFinalizedBlock(Object message) {
+    return null;
   }
 
   /**
@@ -136,10 +150,11 @@ public class ListenerImpl extends ListenerBase {
    * using the generated DTOs of the implementation.
    *
    * @param cosignature the generic json
+   * @param networkType networkType
    * @return the model {@link CosignatureSignedTransaction}
    */
   @Override
-  protected CosignatureSignedTransaction toCosignatureSignedTransaction(Object cosignature) {
+  protected CosignatureSignedTransaction toCosignatureSignedTransaction(Object cosignature, NetworkType networkType) {
     throw new UnsupportedOperationException("Method not implemented");
   }
 
@@ -182,6 +197,7 @@ public class ListenerImpl extends ListenerBase {
   @Override
   public void close() {
     if (context != null) {
+      logger.error("Shutdown listener");
       try {
         es.shutdownNow();
         ExceptionUtils.propagate(() -> es.awaitTermination(5000, TimeUnit.SECONDS));
@@ -205,5 +221,21 @@ public class ListenerImpl extends ListenerBase {
         handle(message, null);
       }
     }
+  }
+
+
+  /**
+   * Reverse and copy to a new array.
+   *
+   * @param array Array to copy.
+   * @return Reverse array.
+   */
+  public static byte[] reverseCopy(final byte[] array) {
+    final byte[] reverseArray = new byte[array.length];
+
+    for (int i = 0, j = array.length - 1; i < array.length; i++, j--) {
+      reverseArray[j] = array[i];
+    }
+    return reverseArray;
   }
 }

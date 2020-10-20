@@ -53,6 +53,7 @@ public class NamespaceHelper extends BaseHelper<NamespaceHelper> {
     final NamespaceRegistrationTransactionFactory namespaceRegistrationTransactionFactory =
         NamespaceRegistrationTransactionFactory.createSubNamespace(
             testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
             namespaceName,
             getNamespaceIdFromName(parentNamespaceName));
     return buildTransaction(namespaceRegistrationTransactionFactory);
@@ -62,7 +63,11 @@ public class NamespaceHelper extends BaseHelper<NamespaceHelper> {
       final AliasAction aliasAction, final NamespaceId namespaceId, final Address address) {
     final AddressAliasTransactionFactory addressAliasTransactionFactory =
         AddressAliasTransactionFactory.create(
-            testContext.getNetworkType(), aliasAction, namespaceId, address);
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            aliasAction,
+            namespaceId,
+            address);
     return buildTransaction(addressAliasTransactionFactory);
   }
 
@@ -70,7 +75,11 @@ public class NamespaceHelper extends BaseHelper<NamespaceHelper> {
       final AliasAction aliasAction, final NamespaceId namespaceId, final MosaicId mosaicId) {
     final MosaicAliasTransactionFactory mosaicAliasTransactionFactory =
         MosaicAliasTransactionFactory.create(
-            testContext.getNetworkType(), aliasAction, namespaceId, mosaicId);
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            aliasAction,
+            namespaceId,
+            mosaicId);
     return buildTransaction(mosaicAliasTransactionFactory);
   }
 
@@ -85,7 +94,10 @@ public class NamespaceHelper extends BaseHelper<NamespaceHelper> {
       final String namespaceName, final BigInteger duration) {
     final NamespaceRegistrationTransactionFactory namespaceRegistrationTransactionFactory =
         NamespaceRegistrationTransactionFactory.createRootNamespace(
-            testContext.getNetworkType(), namespaceName, duration);
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            namespaceName,
+            duration);
     return buildTransaction(namespaceRegistrationTransactionFactory);
   }
 
@@ -347,11 +359,12 @@ public class NamespaceHelper extends BaseHelper<NamespaceHelper> {
     final BigInteger blockchainHeight = new BlockChainHelper(testContext).getBlockchainHeight();
     final Integer namespaceGracePeriodInBlocks =
         testContext.getSymbolConfig().getNamespaceGracePeriodInBlocks();
-    boolean result = namespaceInfo
-            .getEndHeight()
-            .subtract(BigInteger.valueOf(namespaceGracePeriodInBlocks))
-            .longValue()
-        <= blockchainHeight.longValue();
+    boolean result =
+        namespaceInfo
+                .getEndHeight()
+                .subtract(BigInteger.valueOf(namespaceGracePeriodInBlocks))
+                .longValue()
+            <= blockchainHeight.longValue();
     return result;
   }
 }

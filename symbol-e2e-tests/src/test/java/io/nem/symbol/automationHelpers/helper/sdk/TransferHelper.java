@@ -27,7 +27,6 @@ import io.nem.symbol.sdk.model.account.PublicAccount;
 import io.nem.symbol.sdk.model.account.UnresolvedAddress;
 import io.nem.symbol.sdk.model.message.Message;
 import io.nem.symbol.sdk.model.mosaic.Mosaic;
-import io.nem.symbol.sdk.model.namespace.NamespaceId;
 import io.nem.symbol.sdk.model.network.NetworkType;
 import io.nem.symbol.sdk.model.transaction.SignedTransaction;
 import io.nem.symbol.sdk.model.transaction.TransferTransaction;
@@ -49,33 +48,41 @@ public class TransferHelper extends BaseHelper<TransferHelper> {
     this.transactionHelper = new TransactionHelper(testContext);
   }
 
-  private TransferTransaction createPersistentDelegationRequestTransaction(final Account remoteAccount, final PublicAccount nodePublicAccount) {
+  private TransferTransaction createPersistentDelegationRequestTransaction(
+      final Account remoteAccount, final Account harvester, final PublicAccount nodePublicAccount) {
     final TransferTransactionFactory transferTransactionFactory =
-            TransferTransactionFactory.createPersistentDelegationRequestTransaction(testContext.getNetworkType(),
-                    remoteAccount.getKeyPair().getPrivateKey(), nodePublicAccount.getPublicKey());
+        TransferTransactionFactory.createPersistentDelegationRequestTransaction(
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            harvester.getKeyPair().getPrivateKey(),
+            remoteAccount.getKeyPair().getPrivateKey(),
+            nodePublicAccount.getPublicKey());
     return buildTransaction(transferTransactionFactory);
   }
 
   /**
    * Gets transfer transaction.
    *
-   * @param networkType  Network type.
+   * @param networkType Network type.
    * @param unresolvedRecipientAddress Recipient address.
    * @param mosaics Mosaics to send.
    * @param message Message to send.
    * @return Transfer transaction.
    */
   public TransferTransaction createTransferTransaction(
-          final NetworkType networkType,
-          final UnresolvedAddress unresolvedRecipientAddress,
-          final List<Mosaic> mosaics,
-          final Message message) {
+      final NetworkType networkType,
+      final UnresolvedAddress unresolvedRecipientAddress,
+      final List<Mosaic> mosaics,
+      final Message message) {
     final TransferTransactionFactory transferTransactionFactory =
-            TransferTransactionFactory.create(
-                    networkType, unresolvedRecipientAddress, mosaics, message);
+        TransferTransactionFactory.create(
+            networkType,
+            transactionHelper.getDefaultDeadline(),
+            unresolvedRecipientAddress,
+            mosaics);
+    transferTransactionFactory.message(message);
     return buildTransaction(transferTransactionFactory);
   }
-
 
   /**
    * Gets transfer transaction.
@@ -89,7 +96,21 @@ public class TransferHelper extends BaseHelper<TransferHelper> {
       final UnresolvedAddress unresolvedRecipientAddress,
       final List<Mosaic> mosaics,
       final Message message) {
-    return createTransferTransaction(testContext.getNetworkType(), unresolvedRecipientAddress, mosaics, message);
+    return createTransferTransaction(
+        testContext.getNetworkType(), unresolvedRecipientAddress, mosaics, message);
+  }
+
+  /**
+   * Creates a transfer transaction and announce.
+   *
+   * @param sender Sender account.
+   * @param recipient Recipient unresolved address.
+   * @param mosaics Mosaics to send.
+   * @return Signed transaction.
+   */
+  public SignedTransaction createTransferAndAnnounce(
+      final Account sender, final UnresolvedAddress recipient, final List<Mosaic> mosaics) {
+    return createTransferAndAnnounce(sender, recipient, mosaics, null);
   }
 
   /**
@@ -139,11 +160,24 @@ public class TransferHelper extends BaseHelper<TransferHelper> {
    */
   public TransferTransaction submitTransferAndWait(
       final Account sender,
-      final NamespaceId recipient,
+      final UnresolvedAddress recipient,
       final List<Mosaic> mosaics,
       final Message message) {
     return transactionHelper.signAndAnnounceTransactionAndWait(
         sender, () -> createTransferTransaction(recipient, mosaics, message));
+  }
+
+  /**
+   * Creates a transfer transaction and announce.
+   *
+   * @param sender Sender account.
+   * @param recipient Recipient alias.
+   * @param mosaics Mosaics to send.
+   * @return Transfer transaction.
+   */
+  public TransferTransaction submitTransferAndWait(
+      final Account sender, final UnresolvedAddress recipient, final List<Mosaic> mosaics) {
+    return submitTransferAndWait(sender, recipient, mosaics, null);
   }
 
   /**
@@ -155,10 +189,14 @@ public class TransferHelper extends BaseHelper<TransferHelper> {
    * @return Transfer transaction.
    */
   public TransferTransaction submitPersistentDelegationRequestAndWait(
-          final Account sender,
-          final Account remoteAccount,
-          final PublicAccount nodePublicAccount) {
+      final Account sender,
+      final Account harvester,
+      final Account remoteAccount,
+      final PublicAccount nodePublicAccount) {
     return transactionHelper.signAndAnnounceTransactionAndWait(
-            sender, () -> createPersistentDelegationRequestTransaction(remoteAccount, nodePublicAccount));
+        sender,
+        () ->
+            createPersistentDelegationRequestTransaction(
+                remoteAccount, harvester, nodePublicAccount));
   }
 }

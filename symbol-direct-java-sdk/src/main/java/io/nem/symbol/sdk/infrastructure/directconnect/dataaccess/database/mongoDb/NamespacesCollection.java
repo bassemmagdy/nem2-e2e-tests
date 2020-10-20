@@ -21,6 +21,7 @@
 package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoDb;
 
 import com.mongodb.client.model.Filters;
+import io.nem.symbol.sdk.api.NamespaceSearchCriteria;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.common.DataAccessContext;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers.NamespacesMapper;
 import io.nem.symbol.sdk.model.namespace.NamespaceInfo;
@@ -84,21 +85,6 @@ public class NamespacesCollection {
   }
 
   /**
-   * Gets namespace info.
-   *
-   * @param address User address.
-   * @return List of Namespace info.
-   */
-  public List<NamespaceInfo> findByAddress(final byte[] address) {
-    final String keyName = "namespace.ownerAddress";
-    final List<Document> results =
-        catapultCollection.find(
-            addFilterActiveTrueCondition(Filters.eq(keyName, address)),
-            context.getDatabaseTimeoutInSeconds());
-    return catapultCollection.ConvertResult(results);
-  }
-
-  /**
    * Add active true condition to the current filter.
    *
    * @param filter Current filter.
@@ -107,5 +93,21 @@ public class NamespacesCollection {
   private Bson addFilterActiveTrueCondition(final Bson filter) {
     final String keyActiveName = "meta.active";
     return Filters.and(Filters.eq(keyActiveName, true), filter);
+  }
+
+  private Bson toSearchCriteria(final NamespaceSearchCriteria criteria) {
+    final MongoDbFilterBuilder builder =
+        new MongoDbFilterBuilder().withIsActive()
+            .withAddress("namespace.ownerAddress", criteria.getOwnerAddress())
+            .withNumericHexValue("namespace.level0", criteria.getLevel0())
+            .withNumericValue(
+                "namespace.registrationType", criteria.getRegistrationType().getValue())
+            .withNumericValue("namespace.alias.type", criteria.getAliasType().getValue());
+    return builder.build();
+  }
+
+  public List<NamespaceInfo> search(final NamespaceSearchCriteria criteria) {
+    return catapultCollection.findR(
+        toSearchCriteria(criteria), context.getDatabaseTimeoutInSeconds());
   }
 }

@@ -47,41 +47,56 @@ public class MosaicHelper extends BaseHelper<MosaicHelper> {
   }
 
   private MosaicDefinitionTransaction createMosaicDefinitionTransaction(
-          final MosaicNonce mosaicNonce, final MosaicId mosaicId, final MosaicFlags mosaicFlags, final int divisibility, final BigInteger duration) {
+      final MosaicNonce mosaicNonce,
+      final MosaicId mosaicId,
+      final MosaicFlags mosaicFlags,
+      final int divisibility,
+      final BigInteger duration) {
     final MosaicDefinitionTransactionFactory mosaicDefinitionTransactionFactory =
-            MosaicDefinitionTransactionFactory.create(
-                    testContext.getNetworkType(),
-                    mosaicNonce,
-                    mosaicId,
-                    mosaicFlags,
-                    divisibility,
-                    new BlockDuration(duration));
+        MosaicDefinitionTransactionFactory.create(
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            mosaicNonce,
+            mosaicId,
+            mosaicFlags,
+            divisibility,
+            new BlockDuration(duration));
     return buildTransaction(mosaicDefinitionTransactionFactory);
   }
 
   private MosaicDefinitionTransaction createMosaicDefinitionTransaction(
-      final Account account, final MosaicFlags mosaicFlags, final int divisibility, final BigInteger duration) {
+      final Account account,
+      final MosaicFlags mosaicFlags,
+      final int divisibility,
+      final BigInteger duration) {
     final MosaicNonce mosaicNonce = MosaicNonce.createRandom();
     final MosaicId mosaicId = MosaicId.createFromNonce(mosaicNonce, account.getPublicAccount());
-    return createMosaicDefinitionTransaction(mosaicNonce, mosaicId, mosaicFlags, divisibility, duration);
+    return createMosaicDefinitionTransaction(
+        mosaicNonce, mosaicId, mosaicFlags, divisibility, duration);
   }
 
   private MosaicDefinitionTransaction createNonExpiringMosaicDefinitionTransaction(
-          final Account account, final MosaicFlags mosaicFlags, final int divisibility) {
+      final Account account, final MosaicFlags mosaicFlags, final int divisibility) {
     return createMosaicDefinitionTransaction(account, mosaicFlags, divisibility, BigInteger.ZERO);
   }
+
   private MosaicSupplyChangeTransaction createMosaicSupplyChangeTransaction(
       final MosaicId mosaicId,
       final MosaicSupplyChangeActionType mosaicSupplyChangeActionType,
       final BigInteger delta) {
     final MosaicSupplyChangeTransactionFactory mosaicSupplyChangeTransactionFactory =
         MosaicSupplyChangeTransactionFactory.create(
-            testContext.getNetworkType(), mosaicId, mosaicSupplyChangeActionType, delta);
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            mosaicId,
+            mosaicSupplyChangeActionType,
+            delta);
     return buildTransaction(mosaicSupplyChangeTransactionFactory);
   }
 
   /**
    * Create an expiring mosaic definition transaction.
+   *
    * @param account Account.
    * @param mosaicFlags Mosaic flags.
    * @param divisibility Divisibility.
@@ -89,10 +104,10 @@ public class MosaicHelper extends BaseHelper<MosaicHelper> {
    * @return Mosaic definition transaction
    */
   public MosaicDefinitionTransaction createExpiringMosaicDefinitionTransaction(
-          final Account account,
-          final MosaicFlags mosaicFlags,
-          final int divisibility,
-          final BigInteger duration) {
+      final Account account,
+      final MosaicFlags mosaicFlags,
+      final int divisibility,
+      final BigInteger duration) {
     return createMosaicDefinitionTransaction(account, mosaicFlags, divisibility, duration);
   }
 
@@ -120,7 +135,8 @@ public class MosaicHelper extends BaseHelper<MosaicHelper> {
       final Account account, final MosaicFlags mosaicFlags, final int divisibility) {
     final TransactionHelper transactionHelper = new TransactionHelper(testContext);
     return transactionHelper.signAndAnnounceTransaction(
-        account, () -> createNonExpiringMosaicDefinitionTransaction(account, mosaicFlags, divisibility));
+        account,
+        () -> createNonExpiringMosaicDefinitionTransaction(account, mosaicFlags, divisibility));
   }
 
   /**
@@ -135,7 +151,8 @@ public class MosaicHelper extends BaseHelper<MosaicHelper> {
       final Account account, final MosaicFlags mosaicFlags, final int divisibility) {
     final TransactionHelper transactionHelper = new TransactionHelper(testContext);
     return transactionHelper.signAndAnnounceTransactionAndWait(
-        account, () -> createNonExpiringMosaicDefinitionTransaction(account, mosaicFlags, divisibility));
+        account,
+        () -> createNonExpiringMosaicDefinitionTransaction(account, mosaicFlags, divisibility));
   }
 
   /**
@@ -203,14 +220,14 @@ public class MosaicHelper extends BaseHelper<MosaicHelper> {
       final BigInteger duration) {
     final TransactionHelper transactionHelper = new TransactionHelper(testContext);
     return transactionHelper.signAndAnnounceTransaction(
-            account,
-            () ->
-                    createMosaicDefinitionTransaction(
-                            mosaicNonce, mosaicId, mosaicFlags, divisibility, duration));
+        account,
+        () ->
+            createMosaicDefinitionTransaction(
+                mosaicNonce, mosaicId, mosaicFlags, divisibility, duration));
   }
 
   /**
-   * Creates or modify a mosaic id.  Announce transaction to the network and wait for confirmed
+   * Creates or modify a mosaic id. Announce transaction to the network and wait for confirmed
    * status.
    *
    * @param account User account.
@@ -222,18 +239,18 @@ public class MosaicHelper extends BaseHelper<MosaicHelper> {
    * @return Mosaic definition transaction.
    */
   public MosaicDefinitionTransaction submitCreateModifyMosaicDefinitionAndWait(
-          final Account account,
-          final MosaicNonce mosaicNonce,
-          final MosaicId mosaicId,
-          final MosaicFlags mosaicFlags,
-          final int divisibility,
-          final BigInteger duration) {
+      final Account account,
+      final MosaicNonce mosaicNonce,
+      final MosaicId mosaicId,
+      final MosaicFlags mosaicFlags,
+      final int divisibility,
+      final BigInteger duration) {
     final TransactionHelper transactionHelper = new TransactionHelper(testContext);
     return transactionHelper.signAndAnnounceTransactionAndWait(
-            account,
-            () ->
-                    createMosaicDefinitionTransaction(
-                            mosaicNonce, mosaicId, mosaicFlags, divisibility, duration));
+        account,
+        () ->
+            createMosaicDefinitionTransaction(
+                mosaicNonce, mosaicId, mosaicFlags, divisibility, duration));
   }
 
   /**
@@ -302,7 +319,8 @@ public class MosaicHelper extends BaseHelper<MosaicHelper> {
                 .createAggregateCompleteTransaction(
                     Arrays.asList(
                         mosaicDefinitionTransaction.toAggregate(account.getPublicAccount()),
-                        mosaicSupplyChangeTransaction.toAggregate(account.getPublicAccount())), 1);
+                        mosaicSupplyChangeTransaction.toAggregate(account.getPublicAccount())),
+                    1);
     final TransactionHelper transactionHelper = new TransactionHelper(testContext);
     transactionHelper.signAndAnnounceTransactionAndWait(account, aggregateTransactionSupplier);
     return getMosaicWithRetry(mosaicDefinitionTransaction.getMosaicId());
