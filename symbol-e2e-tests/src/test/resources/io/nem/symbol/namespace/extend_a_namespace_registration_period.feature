@@ -65,7 +65,7 @@
       And Alice registered the asset "X"
       And Alice links the namespace "alice.token" to the asset "X"
       And Alice can send "alice.token" instead of asset "X" to Bob
-      When Alice extends the registration of the namespace named "alice" for 6 blocks
+      When Alice extends the registration of the namespace named "alice" for 10 blocks
       Then Alice can send "alice.token" instead of asset "X" to Bob
 
   Scenario: An account tries to extend a namespace registration period, this is under grace but the account didn't created it

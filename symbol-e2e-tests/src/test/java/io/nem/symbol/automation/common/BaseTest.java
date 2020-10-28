@@ -21,6 +21,9 @@
 package io.nem.symbol.automation.common;
 
 import io.nem.symbol.automationHelpers.common.TestContext;
+import io.nem.symbol.automationHelpers.helper.catbuffer.AddressNoCheck;
+import io.nem.symbol.automationHelpers.helper.catbuffer.MosaicNoCheck;
+import io.nem.symbol.automationHelpers.helper.catbuffer.TransferCatbufferHelper;
 import io.nem.symbol.automationHelpers.helper.sdk.*;
 import io.nem.symbol.core.utils.ExceptionUtils;
 import io.nem.symbol.sdk.api.Listener;
@@ -40,6 +43,7 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Base for all the test suit.
@@ -126,8 +130,7 @@ public abstract class BaseTest {
             transferHelper.submitTransferAndWait(
                     aliceAccount,
                     accountBob.getAddress(),
-                    Arrays.asList(new Mosaic(newMosaicId, BigInteger.valueOf(20))),
-                    null);
+                    Arrays.asList(new Mosaic(newMosaicId, BigInteger.valueOf(20))));
             testContext.clearTransaction();
             initialized = true;
         }
@@ -395,6 +398,10 @@ public abstract class BaseTest {
                 : getUser(username).getAddress();
     }
 
+    protected boolean isRawAddress(final String username) {
+        return username.contains("-");
+    }
+
     /**
      * Tries to announce a transfer transaction.
      *
@@ -403,11 +410,44 @@ public abstract class BaseTest {
      * @param mosaics   List of mosaics to send.
      * @param message   Message to send.
      */
+    protected void triesToTransferAssetsNoCheck(
+            final String sender,
+            final String recipient,
+            final List<MosaicNoCheck> mosaics,
+            final Message message) {
+        final Account senderAccount = getUser(sender);
+        storeUserInfoInContext(sender);
+        final AddressNoCheck recipientAddress = AddressNoCheck.createFromRawAddress(recipient);
+        final TransferCatbufferHelper transferHelper = new TransferCatbufferHelper(getTestContext());
+        transferHelper.createTransferAndAnnounce(senderAccount, recipientAddress, mosaics, message);
+    }
+
+    List<Mosaic> getValidMosaics(final List<MosaicNoCheck> mosaicNoChecks) {
+        try {
+            return mosaicNoChecks.stream().map(m -> new Mosaic(m.getId(), m.getAmount())).collect(Collectors.toList());
+        } catch (final Exception ex) {
+        }
+        return null;
+    }
+
+    /**
+     * Tries to announce a transfer transaction.
+     *
+     * @param sender         Sender name.
+     * @param recipient      Recipient name.
+     * @param mosaicNoChecks List of mosaics to send.
+     * @param message        Message to send.
+     */
     protected void triesToTransferAssets(
             final String sender,
             final String recipient,
-            final List<Mosaic> mosaics,
+            final List<MosaicNoCheck> mosaicNoChecks,
             final Message message) {
+        final List<Mosaic> mosaics = getValidMosaics(mosaicNoChecks);
+        if (isRawAddress(recipient) || mosaics == null) {
+            triesToTransferAssetsNoCheck(sender, recipient, mosaicNoChecks, message);
+            return;
+        }
         final Account senderAccount = getUser(sender);
         final Address recipientAddress = resolveRecipientAddress(recipient);
         storeUserInfoInContext(sender);
@@ -441,6 +481,20 @@ public abstract class BaseTest {
         final TransferHelper transferHelper = new TransferHelper(getTestContext());
         TransferTransaction transfer =
                 transferHelper.submitTransferAndWait(senderAccount, recipientAddress, mosaics, message);
+    }
+
+    /**
+     * Sends a transfer transaction.
+     *
+     * @param sender    Sender name.
+     * @param recipient Recipient name.
+     * @param mosaics   List of mosaics to send.
+     */
+    protected void transferAssets(
+            final String sender,
+            final String recipient,
+            final List<Mosaic> mosaics) {
+        transferAssets(sender, recipient, mosaics, null);
     }
 
     /**

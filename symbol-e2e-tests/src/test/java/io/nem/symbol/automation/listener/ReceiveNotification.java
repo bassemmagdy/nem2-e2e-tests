@@ -166,8 +166,8 @@ public class ReceiveNotification extends BaseTest {
   public void verifyFinalizedBlock(final String username) {
     final FinalizedBlock blockInfo = getTestContext().getScenarioContext().getContext(BLOCK_INFO_NAME);
 
-//    assertEquals(
-//            "Block signature didn't match", blockInfo.getSignature(), blockInfoDb.getSignature());
+    assertEquals(
+            "Block signature didn't match", blockInfo.getSignature(), blockInfoDb.getSignature());
   }
 
   @Given("^(\\w+) register to receive unconfirmed transaction notification$")

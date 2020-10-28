@@ -26,6 +26,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.nem.symbol.automation.common.BaseTest;
 import io.nem.symbol.automationHelpers.common.TestContext;
+import io.nem.symbol.automationHelpers.helper.catbuffer.MosaicNoCheck;
 import io.nem.symbol.automationHelpers.helper.sdk.*;
 import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.account.AccountInfo;
@@ -69,7 +70,7 @@ public class SendAsset extends BaseTest {
     final BigInteger actualAmount =
         getActualMosaicQuantity(getNamespaceIdFromName(assetName), amount);
     transferAssets(
-        sender, recipient, Arrays.asList(new Mosaic(mosaicId, actualAmount)), null);
+        sender, recipient, Arrays.asList(new Mosaic(mosaicId, actualAmount)));
   }
 
   @When(
@@ -87,8 +88,7 @@ public class SendAsset extends BaseTest {
         sender,
         recipient,
         Arrays.asList(
-            new Mosaic(firstMosaicId, firstAmount), new Mosaic(secondMosaicId, secondAmount)),
-        null);
+            new Mosaic(firstMosaicId, firstAmount), new Mosaic(secondMosaicId, secondAmount)));
   }
 
   @And("^(\\w+) should receive (\\d+) of asset \"(.*)\"$")
@@ -191,7 +191,7 @@ public class SendAsset extends BaseTest {
       final String recipient) {
     final MosaicId mosaicId = resolveMosaicId(assetName);
     triesToTransferAssets(
-        sender, recipient, Arrays.asList(new Mosaic(mosaicId, amount)), null);
+        sender, recipient, Arrays.asList(new MosaicNoCheck(mosaicId, amount)), null);
   }
 
   @When(
@@ -209,7 +209,7 @@ public class SendAsset extends BaseTest {
         sender,
         recipient,
         Arrays.asList(
-            new Mosaic(firstMosaicId, firstAmount), new Mosaic(secondMosaicId, secondAmount)),
+            new MosaicNoCheck(firstMosaicId, firstAmount), new MosaicNoCheck(secondMosaicId, secondAmount)),
         null);
   }
 

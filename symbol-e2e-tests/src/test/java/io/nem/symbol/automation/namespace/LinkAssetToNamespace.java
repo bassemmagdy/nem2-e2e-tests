@@ -119,8 +119,7 @@ public class LinkAssetToNamespace extends BaseTest {
     transferHelper.submitTransferAndWait(
         senderAccount,
         recipientAccount.getAddress(),
-        Arrays.asList(new Mosaic(namespaceId, BigInteger.valueOf(amount))),
-        null);
+        Arrays.asList(new Mosaic(namespaceId, BigInteger.valueOf(amount))));
     CommonHelper.verifyAccountBalance(
         getTestContext(), senderInfo, mosaicInfo.getMosaicId(), -amount);
     CommonHelper.verifyAccountBalance(

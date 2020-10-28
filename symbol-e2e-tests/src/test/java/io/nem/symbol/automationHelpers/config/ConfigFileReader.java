@@ -21,7 +21,6 @@
 package io.nem.symbol.automationHelpers.config;
 
 import io.nem.symbol.automationHelpers.common.RepositoryFactoryType;
-import io.nem.symbol.sdk.model.network.NetworkType;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -145,15 +144,6 @@ public class ConfigFileReader {
    */
   public int getMongodbPort() {
     return Integer.parseInt(getPropertyValue("mongodbPort"));
-  }
-
-  /**
-   * Gets network type.
-   *
-   * @return Network Type.
-   */
-  public NetworkType getNetworkType() {
-    return NetworkType.valueOf(getPropertyValue("networkType"));
   }
 
   /**

@@ -25,6 +25,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
 import io.nem.symbol.automation.common.BaseTest;
 import io.nem.symbol.automationHelpers.common.TestContext;
+import io.nem.symbol.automationHelpers.helper.catbuffer.NamespaceCatbufferHelper;
 import io.nem.symbol.automationHelpers.helper.sdk.NamespaceHelper;
 import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.account.AccountInfo;
@@ -64,7 +65,8 @@ public class RegisterSubNamespace extends BaseTest {
       final String userName, final String name, final String parentName) {
     storeUserInfoInContext(userName);
     final Account account = getUser(userName);
-    namespaceHelper.createSubNamespaceAndAnnonce(account, name, parentName);
+    new NamespaceCatbufferHelper(getTestContext()).createSubNamespaceAndAnnounce(account, name, parentName);
+    //namespaceHelper.createSubNamespaceAndAnnonce(account, name, parentName);
   }
 
   private void registerSubNamespaceForUserAndWait(

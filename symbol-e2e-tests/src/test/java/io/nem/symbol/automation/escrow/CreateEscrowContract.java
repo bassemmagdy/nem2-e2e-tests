@@ -75,7 +75,7 @@ public class CreateEscrowContract extends BaseTest {
             .getScenarioContext()
             .setContext(recipientAccount.getAddress().plain(), recipientName);
         return transferHelper.createTransferTransaction(
-            recipientAccount.getAddress(), mosaics, null);
+            recipientAccount.getAddress(), mosaics);
       };
   final Function<Map<String, String>, Transaction> registerNamespace =
       (final Map<String, String> dataMap) -> {
