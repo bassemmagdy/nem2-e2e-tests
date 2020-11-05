@@ -2,6 +2,10 @@ pipeline {
   agent {
     label 'cat-server'
   }
+  triggers { cron('* H(0-2) * * *') }
+  parameters { 
+    choice(name: 'ENVIRONMENT', choices: ['testnet', 'bootstrap'], description: 'Test environment') 
+  }
   stages {
     stage ('Setup gradle env') {
       steps {
