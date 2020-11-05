@@ -28,12 +28,12 @@ pipeline {
         script {
           if (isUnix()) {
             sh '''
-              ./gradlew --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
+              ./gradlew --debug --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
             '''
           }
           else {
             bat '''
-              gradlew.bat --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
+              gradlew.bat --debug --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
             '''
           }
         }
