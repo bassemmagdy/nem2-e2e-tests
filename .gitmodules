@@ -1,8 +1,8 @@
 [submodule "catapult-service-bootstrap"]
 	path = catapult-service-bootstrap
-	url = https://github.com/tech-bureau/catapult-service-bootstrap.git
-	branch = feature/chaos-tests
+	url = https://github.com/nemtech/catapult-service-bootstrap.git
+	branch = master
 [submodule "catapult-spammer"]
 	path = catapult-spammer
-	url = https://github.com/rich-dtk/debug-symbol-bootstrap.git
+	url = https://github.com/nemgrouplimited/debug-symbol-bootstrap.git
 	branch = feature/chaos-spammer
