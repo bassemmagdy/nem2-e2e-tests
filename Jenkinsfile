@@ -40,4 +40,21 @@ pipeline {
       }
     }
   }
+  stage ('Execute e2e tests') {
+      steps{
+        script {
+          if (isUnix()) {
+            sh '''
+              ./gradlew --debug --project-dir symbol-e2e-tests/ test
+            '''
+          }
+          else {
+            bat '''
+              gradlew.bat --debug --project-dir symbol-e2e-tests/ test
+            '''
+          }
+        }
+      }
+    }
+  }
 }
