@@ -1,10 +1,12 @@
 pipeline {
-    agent {
-        label 'cat-server'
+  agent {
+    label 'cat-server'
+  }
+  stages {
+    stage ('one') {
+      steps{
+        echo 'pipeline working...'
+      }
     }
-    stages {
-        stage ('one') {
-            echo 'pipeline working...'
-        }
-    }
+  }
 }
