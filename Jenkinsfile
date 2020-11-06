@@ -4,7 +4,8 @@ pipeline {
   }
   triggers { cron('* H(0-2) * * *') }
   parameters { 
-    choice(name: 'ENVIRONMENT', choices: ['testnet', 'bootstrap'], description: 'Test environment') 
+    string(name: 'TESTNET_API_URL', defaultValue: '', description: 'The URL of the testnet API')
+    choice(name: 'ENVIRONMENT', choices: ['testnet', 'bootstrap'], description: 'Test environment')
   }
   stages {
     stage ('Setup gradle env') {
