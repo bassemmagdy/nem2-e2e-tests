@@ -4,7 +4,12 @@ pipeline {
   }
   triggers { cron('* H(0-2) * * *') }
   parameters { 
-    gitParameter(name: 'TESTS_REPO_BRANCH', defaultValue: 'feature/tests-pipeline', description: 'The branch ', listSize: '10', quickFilterEnabled: false, selectedValue: 'DEFAULT', sortMode: 'ASCENDING_SMART', tagFilter: '*', type: 'PT_BRANCH_TAG')
+    gitParameter(
+      name: 'TESTS_REPO_BRANCH_OR_TAG', defaultValue: 'feature/tests-pipeline',
+      description: 'Name of the branch or tag from Symbol e2e tests repo to checkout and run tests from',
+      listSize: '10', quickFilterEnabled: false, selectedValue: 'DEFAULT', sortMode: 'ASCENDING_SMART',
+      tagFilter: '*', type: 'PT_BRANCH_TAG'
+    )
     string(name: 'TESTNET_API_URL', defaultValue: '', description: 'The URL of the testnet API')
     choice(name: 'ENVIRONMENT', choices: ['testnet', 'bootstrap'], description: 'Test environment')
   }
