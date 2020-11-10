@@ -5,13 +5,16 @@ pipeline {
   triggers { cron('* H(0-2) * * *') }
   parameters { 
     gitParameter(
-      name: 'TESTS_REPO_BRANCH_OR_TAG', defaultValue: 'feature/tests-pipeline',
-      description: 'Name of the branch or tag from Symbol e2e tests repo to checkout and run tests from',
+      name: 'TESTS_VERSION', defaultValue: 'feature/tests-pipeline',
+      description: 'Name of the branch or tag from Symbol e2e tests repo to checkout and run tests from.',
       listSize: '10', quickFilterEnabled: false, selectedValue: 'DEFAULT', sortMode: 'ASCENDING_SMART',
       tagFilter: '*', type: 'PT_BRANCH_TAG'
     )
-    string(name: 'TESTNET_API_URL', defaultValue: '', description: 'The URL of the testnet API')
-    choice(name: 'ENVIRONMENT', choices: ['testnet', 'bootstrap'], description: 'Test environment')
+    choice(name: 'ENVIRONMENT', choices: ['testnet', 'bootstrap'], description: '''Environment to run the tests against.
+    testnet: The tests will be executed against the given testnet environment specified by the TESTNET_API_URL param.
+    bootstrap: The tests will be executed against a clean bootstrap environment brought up locally from the branch specified by BOOTSTRAP_VERSION param.''')
+    string(name: 'TESTNET_API_URL', defaultValue: '', description: 'The URL of the testnet API.')
+    string(name: 'BOOTSTRAP_VERSION', defaultValue: '', description: 'Name of the branch or tag from Symbol bootstrap repo to checkout and start the bootstrap from.')
   }
   stages {
     stage ('Setup gradle env') {
