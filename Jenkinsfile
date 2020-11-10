@@ -4,6 +4,7 @@ pipeline {
   }
   triggers { cron('* H(0-2) * * *') }
   parameters { 
+    gitParameter(name: 'TESTS_REPO_BRANCH', defaultValue: 'feature/tests-pipeline', description: 'The branch ', listSize: '10', quickFilterEnabled: false, selectedValue: 'DEFAULT', sortMode: 'ASCENDING_SMART', tagFilter: '*', type: 'PT_BRANCH_TAG')
     string(name: 'TESTNET_API_URL', defaultValue: '', description: 'The URL of the testnet API')
     choice(name: 'ENVIRONMENT', choices: ['testnet', 'bootstrap'], description: 'Test environment')
   }
@@ -44,8 +45,7 @@ pipeline {
         }
       }
     }
-  }
-  stage ('Execute e2e tests') {
+    stage ('Execute e2e tests') {
       steps{
         script {
           if (isUnix()) {
