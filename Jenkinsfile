@@ -5,7 +5,7 @@ pipeline {
   triggers { cron('* H(0-2) * * *') }
   parameters { 
     gitParameter(
-      name: 'TESTS_VERSION', defaultValue: 'feature/tests-pipeline',
+      name: 'TESTS_VERSION', defaultValue: 'origin/feature/tests-pipeline',
       description: 'Name of the branch or tag from Symbol e2e tests repo to checkout and run tests from.',
       listSize: '10', quickFilterEnabled: false, selectedValue: 'DEFAULT', sortMode: 'ASCENDING_SMART',
       tagFilter: '*', type: 'PT_BRANCH_TAG'
@@ -42,12 +42,12 @@ pipeline {
         script {
           if (isUnix()) {
             sh '''
-              ./gradlew --debug --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
+              ./gradlew --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
             '''
           }
           else {
             bat '''
-              gradlew.bat --debug --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
+              gradlew.bat --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
             '''
           }
         }
@@ -58,12 +58,12 @@ pipeline {
         script {
           if (isUnix()) {
             sh '''
-              ./gradlew --debug --project-dir symbol-e2e-tests/ test
+              ./gradlew --project-dir symbol-e2e-tests/ test
             '''
           }
           else {
             bat '''
-              gradlew.bat --debug --project-dir symbol-e2e-tests/ test
+              gradlew.bat --project-dir symbol-e2e-tests/ test
             '''
           }
         }
