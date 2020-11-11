@@ -102,7 +102,12 @@ pipeline {
         script {
           echo 'Starting symbol bootstrap...'
           sh 'symbol-bootstrap start -p bootstrap --detached'
-          sh 'curl -v localhost:3000/node/info'
+          sh '''
+            curl localhost:3000/node/info
+            curl localhost:3000/node/server
+            curl localhost:3000/node/health
+            curl localhost:3000/chain/info
+          '''
         }
       }
     }
