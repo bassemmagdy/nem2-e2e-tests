@@ -16,6 +16,9 @@ pipeline {
     string(name: 'TESTNET_API_URL', defaultValue: '', description: 'The URL of the testnet API.')
     string(name: 'BOOTSTRAP_VERSION', defaultValue: '', description: 'Name of the branch or tag from Symbol bootstrap repo to checkout and start the bootstrap from.')
   }
+  environment {
+    IS_BOOTSTRAP_RUN  = "${params.ENVIRONMENT == 'bootstrap' ? 'true' : 'false'}"
+  }
   stages {
     stage ('Setup gradle env') {
       steps {
@@ -37,35 +40,65 @@ pipeline {
         }
       }
     }
-    stage ('Build e2e tests project') {
-      steps{
+    // stage ('Build e2e tests project') {
+    //   steps{
+    //     script {
+    //       if (isUnix()) {
+    //         sh '''
+    //           ./gradlew --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
+    //         '''
+    //       }
+    //       else {
+    //         bat '''
+    //           gradlew.bat --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
+    //         '''
+    //       }
+    //     }
+    //   }
+    // }
+    // stage ('Execute e2e tests') {
+    //   steps{
+    //     script {
+    //       if (isUnix()) {
+    //         sh '''
+    //           ./gradlew --project-dir symbol-e2e-tests/ test
+    //         '''
+    //       }
+    //       else {
+    //         bat '''
+    //           gradlew.bat --project-dir symbol-e2e-tests/ test
+    //         '''
+    //       }
+    //     }
+    //   }
+    // }
+    stage ('Install Symbol bootstrap') {
+      when {
+        environment ignoreCase: true, name: 'IS_BOOTSTRAP_RUN', value: 'true'
+      }
+      steps {
         script {
-          if (isUnix()) {
-            sh '''
-              ./gradlew --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
-            '''
+          if (params.BOOTSTRAP_VERSION == '') {
+            error('ENVIRONMENT is bootstrap, but BOOTSTRAP_VERSION is not specified.')
           }
-          else {
-            bat '''
-              gradlew.bat --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
-            '''
-          }
+          echo "Installing symbol bootstrap version ${params.BOOTSTRAP_VERSION}"
+          sh "npm install -g symbol-bootstrap@${params.BOOTSTRAP_VERSION}"
+          sh '''
+            symbol-bootstrap -v
+            symbol-bootstrap start -p bootstrap --detached
+          '''
         }
       }
     }
-    stage ('Execute e2e tests') {
-      steps{
+    stage ('Start Symbol bootstrap') {
+      when {
+        environment ignoreCase: true, name: 'IS_BOOTSTRAP_RUN', value: 'true'
+      }
+      steps {
         script {
-          if (isUnix()) {
-            sh '''
-              ./gradlew --project-dir symbol-e2e-tests/ test
-            '''
-          }
-          else {
-            bat '''
-              gradlew.bat --project-dir symbol-e2e-tests/ test
-            '''
-          }
+          echo 'Starting symbol bootstrap...'
+          sh 'symbol-bootstrap start -p bootstrap --detached'
+          sh 'curl -v localhost:3000/node/info'
         }
       }
     }
