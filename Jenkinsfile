@@ -19,27 +19,31 @@ pipeline {
   environment {
     IS_BOOTSTRAP_RUN  = "${params.ENVIRONMENT == 'bootstrap' ? 'true' : 'false'}"
   }
+  tools {
+    nodejs 'nodejs-15.0.1'
+    gradle 'gradle-6.7'
+  }
   stages {
-    stage ('Setup gradle env') {
-      steps {
-        script {
-          if (isUnix()) {
-            sh '''
-              gradle --version
-              gradle wrapper --gradle-version 6.2 --distribution-type all
-              ./gradlew --version
-            '''
-          }
-          else {
-            bat '''
-              gradle --version
-              gradle wrapper --gradle-version 6.2 --distribution-type all
-              gradlew.bat --version
-            '''
-          }
-        }
-      }
-    }
+    // stage ('Setup gradle env') {
+    //   steps {
+    //     script {
+    //       if (isUnix()) {
+    //         sh '''
+    //           gradle --version
+    //           gradle wrapper --gradle-version 6.2 --distribution-type all
+    //           ./gradlew --version
+    //         '''
+    //       }
+    //       else {
+    //         bat '''
+    //           gradle --version
+    //           gradle wrapper --gradle-version 6.2 --distribution-type all
+    //           gradlew.bat --version
+    //         '''
+    //       }
+    //     }
+    //   }
+    // }
     // stage ('Build e2e tests project') {
     //   steps{
     //     script {
