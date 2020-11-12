@@ -2,7 +2,13 @@ pipeline {
   agent {
     label 'cat-server'
   }
-  triggers { cron('* H(0-2) * * *') }
+  triggers { 
+    cron('''
+      TZ=America/New_York
+      # This job needs to be started once every day between midnight and 2AM US Eastern time
+      H H(0-2) * * *
+    ''')
+  }
   parameters { 
     gitParameter(
       name: 'TESTS_VERSION', defaultValue: 'origin/feature/tests-pipeline',
@@ -107,24 +113,24 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
         }
       }
     }
-    stage ('Execute e2e tests') {
-      steps{
-        script {
-          if (params.ENVIRONMENT == 'testnet') {
+    // stage ('Execute e2e tests') {
+    //   steps{
+    //     script {
+    //       if (params.ENVIRONMENT == 'testnet') {
 
-          }
-          if (isUnix()) {
-            sh '''
-              ./gradlew --project-dir symbol-e2e-tests/ test
-            '''
-          }
-          else {
-            bat '''
-              gradlew.bat --project-dir symbol-e2e-tests/ test
-            '''
-          }
-        }
-      }
-    }
+    //       }
+    //       if (isUnix()) {
+    //         sh '''
+    //           ./gradlew --project-dir symbol-e2e-tests/ test
+    //         '''
+    //       }
+    //       else {
+    //         bat '''
+    //           gradlew.bat --project-dir symbol-e2e-tests/ test
+    //         '''
+    //       }
+    //     }
+    //   }
+    // }
   }
 }
