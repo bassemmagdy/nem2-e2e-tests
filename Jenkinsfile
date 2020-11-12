@@ -2,14 +2,13 @@ pipeline {
   agent {
     label 'cat-server'
   }
-  triggers { 
-    cron('''
-      TZ=America/New_York
+  triggers {
+    cron '''TZ=America/New_York
       # This job needs to be started once every day between midnight and 2AM US Eastern time
       H H(0-2) * * *
-    ''')
+    '''
   }
-  parameters { 
+  parameters {
     gitParameter(
       name: 'TESTS_VERSION', defaultValue: 'origin/feature/tests-pipeline',
       description: 'Name of the branch or tag from Symbol e2e tests repo to checkout and run tests from.',
