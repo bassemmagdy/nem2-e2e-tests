@@ -20,11 +20,12 @@ testnet: The tests will be executed against the given testnet environment specif
 bootstrap: The tests will be executed against a clean bootstrap environment brought up locally using symbol-bootstrap tool version specified by BOOTSTRAP_VERSION param.''')
     string(name: 'TESTNET_API_URL', defaultValue: 'http://api-01.us-west-2.0.10.0.x.symboldev.network:3000', description: 'The URL of the testnet API.')
     string(name: 'BOOTSTRAP_VERSION', defaultValue: '', description: 'symbol-bootstrap tool version to install and start bootstrap with.')
-    string(name: 'AUTOMATION_USER_PRIVATE_KEY', defaultValue: '4191972F8F40CF2D7132A0F26B4839C606259AC872DA78318945E1A2039B4A3D', description: 'Automation user private key.')
+    string(name: 'E2E_TEST_USER_PRIVATE_KEY', defaultValue: '4191972F8F40CF2D7132A0F26B4839C606259AC872DA78318945E1A2039B4A3D', description: 'Automation user private key.')
   }
   environment {
     IS_BOOTSTRAP_RUN  = "${params.ENVIRONMENT == 'bootstrap' ? 'true' : 'false'}"
-    API_URL = "${params.ENVIRONMENT == 'testnet' ? params.TESTNET_API_URL : 'http://localhost:3000'}"
+    SYMBOL_API_URL = "${params.ENVIRONMENT == 'testnet' ? params.TESTNET_API_URL : 'http://localhost:3000'}"
+    AUTOMATION_TEST_USER_PRIVATE_KEY = "${params.ENVIRONMENT == 'testnet' ? params.E2E_TEST_USER_PRIVATE_KEY : ''}"
   }
   tools {
     nodejs 'nodejs-15.0.1'
@@ -72,34 +73,52 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
         environment ignoreCase: true, name: 'IS_BOOTSTRAP_RUN', value: 'true'
       }
       steps {
-        echo 'Starting symbol bootstrap...'
-        runScript('symbol-bootstrap start -p bootstrap --detached', 'Start Symbol bootstrap')
+        dir ('symbol-bootstrap') {
+          echo 'Starting symbol bootstrap...'
+          runScript('symbol-bootstrap start -p bootstrap --detached', 'Start Symbol bootstrap')
+        }
       }
     }
     stage ('Check Symbol is running') {
       steps {
         script {
           echo 'Checking whether symbol is running at the given URL...'
-          def nodeInfo = runScript("curl ${API_URL}/node/info", 'get node info', true)
-          def nodeHealth = runScript("curl ${API_URL}/node/health", 'get node health', true)
-          def versions = runScript("curl ${API_URL}/node/server", 'get server versions', true)
-          def chainInfo = runScript("curl ${API_URL}/chain/info", 'get chain info', true)
+          def nodeInfo = runScript("curl ${SYMBOL_API_URL}/node/info", 'get node info', true)
+          def nodeHealth = runScript("curl ${SYMBOL_API_URL}/node/health", 'get node health', true)
+          def versions = runScript("curl ${SYMBOL_API_URL}/node/server", 'get server versions', true)
+          def chainInfo = runScript("curl ${SYMBOL_API_URL}/chain/info", 'get chain info', true)
           
-          echo nodeInfo
-          echo nodeHealth
-          echo versions
-          echo chainInfo
+          echo "Node info: ${nodeInfo}"
+          echo "Node health: ${nodeHealth}"
+          echo "Symbol versions: ${versions}"
+          echo "Chain info: ${chainInfo}"
+        }
+      }
+    }
+    stage ('Extract info from Symbol') {
+      when {
+        environment ignoreCase: true, name: 'IS_BOOTSTRAP_RUN', value: 'true'
+      }
+      steps {
+        dir ('symbol-bootstrap') {
+          def addresses = readYaml file: 'target/addresses.yml'
+          def automationUserPrivateKey = addresses.mosaics[0].accounts[0].privateKey
+          if (automationUserPrivateKey) {
+            env.AUTOMATION_TEST_USER_PRIVATE_KEY = automationUserPrivateKey
+          }
         }
       }
     }
     stage ('Execute e2e tests') {
       steps{
         script {
+          echo "Automation user private key: ${env.AUTOMATION_TEST_USER_PRIVATE_KEY}"
+          echo "Symbol API URL: ${env.SYMBOL_API_URL}"
           if (params.ENVIRONMENT == 'testnet') {
             runGradle('--project-dir symbol-e2e-tests/ test')
           }
           else {
-
+            runGradle("--project-dir symbol-e2e-tests/ test -DrestGatewayUrl=${env.SYMBOL_API_URL} -DuserPrivateKey=${env.AUTOMATION_TEST_USER_PRIVATE_KEY}")
           }
         }
       }
