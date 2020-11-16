@@ -101,10 +101,12 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
       }
       steps {
         dir ('symbol-bootstrap') {
-          def addresses = readYaml file: 'target/addresses.yml'
-          def automationUserPrivateKey = addresses.mosaics[0].accounts[0].privateKey
-          if (automationUserPrivateKey) {
-            env.AUTOMATION_TEST_USER_PRIVATE_KEY = automationUserPrivateKey
+          script {
+            def addresses = readYaml file: 'target/addresses.yml'
+            def automationUserPrivateKey = addresses.mosaics[0].accounts[0].privateKey
+            if (automationUserPrivateKey) {
+              env.AUTOMATION_TEST_USER_PRIVATE_KEY = automationUserPrivateKey
+            }
           }
         }
       }
