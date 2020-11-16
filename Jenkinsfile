@@ -34,20 +34,10 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
     stage ('Setup gradle env') {
       steps {
         script {
-          if (isUnix()) {
-            sh '''
-              gradle --version
+          runScript('''gradle --version
               gradle wrapper --gradle-version 6.7 --distribution-type bin
-              ./gradlew --version
-            '''
-          }
-          else {
-            bat '''
-              gradle --version
-              gradle wrapper --gradle-version 6.7 --distribution-type bin
-              gradlew.bat --version
-            '''
-          }
+            ''')
+          runGradle('--version')
         }
       }
     }
@@ -55,16 +45,7 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
       steps{
         catchError(buildResult: 'UNSTABLE', message: 'e2e tests compile failed', stageResult: 'FAILURE') {
           script {
-            if (isUnix()) {
-              sh '''
-                ./gradlew --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
-              '''
-            }
-            else {
-              bat '''
-                gradlew.bat --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
-              '''
-            }
+            runGradle('--project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses')
           }
         }
       }
@@ -80,11 +61,10 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
           }
         }
         echo "Installing symbol bootstrap version ${params.BOOTSTRAP_VERSION}"
-        sh "npm install -g symbol-bootstrap@${params.BOOTSTRAP_VERSION}"
-        sh '''
+        runScript("""npm install -g symbol-bootstrap@${params.BOOTSTRAP_VERSION}
           symbol-bootstrap -v
           symbol-bootstrap start -p bootstrap --detached
-        '''
+        """)
       }
     }
     stage ('Start Symbol bootstrap') {
@@ -93,17 +73,17 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
       }
       steps {
         echo 'Starting symbol bootstrap...'
-        sh label: 'Start Symbol bootstrap', script: 'symbol-bootstrap start -p bootstrap --detached'
+        runScript('symbol-bootstrap start -p bootstrap --detached', 'Start Symbol bootstrap')
       }
     }
     stage ('Check Symbol is running') {
       steps {
         script {
           echo 'Checking whether symbol is running at the given URL...'
-          def nodeInfo = sh label: 'get node info', returnStdout: true, script: "curl ${API_URL}/node/info"
-          def nodeHealth = sh label: 'get node health', returnStdout: true, script: "curl ${API_URL}/node/health"
-          def versions = sh label: 'get server versions', returnStdout: true, script: "curl ${API_URL}/node/server"
-          def chainInfo = sh label: 'get chain info', returnStdout: true, script: "curl ${API_URL}/chain/info"
+          def nodeInfo = runScript("curl ${API_URL}/node/info", 'get node info', true)
+          def nodeHealth = runScript("curl ${API_URL}/node/health", 'get node health', true)
+          def versions = runScript("curl ${API_URL}/node/server", 'get server versions', true)
+          def chainInfo = runScript("curl ${API_URL}/chain/info", 'get chain info', true)
           
           echo nodeInfo
           echo nodeHealth
@@ -112,24 +92,35 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
         }
       }
     }
-    // stage ('Execute e2e tests') {
-    //   steps{
-    //     script {
-    //       if (params.ENVIRONMENT == 'testnet') {
+    stage ('Execute e2e tests') {
+      steps{
+        script {
+          if (params.ENVIRONMENT == 'testnet') {
+            runGradle('--project-dir symbol-e2e-tests/ test')
+          }
+          else {
 
-    //       }
-    //       if (isUnix()) {
-    //         sh '''
-    //           ./gradlew --project-dir symbol-e2e-tests/ test
-    //         '''
-    //       }
-    //       else {
-    //         bat '''
-    //           gradlew.bat --project-dir symbol-e2e-tests/ test
-    //         '''
-    //       }
-    //     }
-    //   }
-    // }
+          }
+        }
+      }
+    }
+  }
+}
+
+def runScript(String script, String label='', Boolean returnStdout=false, Boolean returnStatus=false, String encoding='') {
+  if (isUnix()) {
+    sh label: label, script: script, encoding: encoding, returnStdout: returnStdout, returnStatus: returnStatus
+  }
+  else {
+    bat label: label, script: script, encoding: encoding, returnStdout: returnStdout, returnStatus: returnStatus
+  }
+}
+
+def runGradle(String command) {
+  if (isUnix()) {
+    sh "./gradlew ${command}"
+  }
+  else {
+    bat "gradlew.bat ${command}"
   }
 }
