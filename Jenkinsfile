@@ -25,7 +25,6 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
   environment {
     IS_BOOTSTRAP_RUN  = "${params.ENVIRONMENT == 'bootstrap' ? 'true' : 'false'}"
     SYMBOL_API_URL = "${params.ENVIRONMENT == 'testnet' ? params.TESTNET_API_URL : 'http://localhost:3000'}"
-    AUTOMATION_TEST_USER_PRIVATE_KEY = "${params.ENVIRONMENT == 'testnet' ? params.E2E_TEST_USER_PRIVATE_KEY : ''}"
   }
   tools {
     nodejs 'nodejs-15.0.1'
@@ -64,7 +63,6 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
         echo "Installing symbol bootstrap version ${params.BOOTSTRAP_VERSION}"
         runScript("""npm install -g symbol-bootstrap@${params.BOOTSTRAP_VERSION}
           symbol-bootstrap -v
-          symbol-bootstrap start -p bootstrap --detached
         """)
       }
     }
@@ -74,6 +72,7 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
       }
       steps {
         dir ('symbol-bootstrap') {
+          deleteDir()
           echo 'Starting symbol bootstrap...'
           runScript('symbol-bootstrap start -p bootstrap --detached', 'Start Symbol bootstrap')
         }
@@ -103,10 +102,9 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
         dir ('symbol-bootstrap') {
           script {
             def addresses = readYaml file: 'target/addresses.yml'
-            def automationUserPrivateKey = addresses.mosaics[0].accounts[0].privateKey
-            if (automationUserPrivateKey) {
-              env.AUTOMATION_TEST_USER_PRIVATE_KEY = automationUserPrivateKey
-            }
+            // variable declared without def becomes a global scoped variable and can be reassigned too
+            automationUserPrivateKey = addresses.mosaics[0].accounts[0].privateKey
+            echo "automationUserPrivateKey: ${automationUserPrivateKey}"
           }
         }
       }
@@ -114,13 +112,26 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
     stage ('Execute e2e tests') {
       steps{
         script {
-          echo "Automation user private key: ${env.AUTOMATION_TEST_USER_PRIVATE_KEY}"
+          AUTOMATION_TEST_USER_PRIVATE_KEY = "${params.ENVIRONMENT == 'testnet' ? params.E2E_TEST_USER_PRIVATE_KEY : automationUserPrivateKey}"
+          echo "Automation user private key: ${AUTOMATION_TEST_USER_PRIVATE_KEY}"
           echo "Symbol API URL: ${env.SYMBOL_API_URL}"
           if (params.ENVIRONMENT == 'testnet') {
             runGradle('--project-dir symbol-e2e-tests/ test')
           }
           else {
-            runGradle("--project-dir symbol-e2e-tests/ test -DrestGatewayUrl=${env.SYMBOL_API_URL} -DuserPrivateKey=${env.AUTOMATION_TEST_USER_PRIVATE_KEY}")
+            runGradle("--project-dir symbol-e2e-tests/ test -DrestGatewayUrl=${env.SYMBOL_API_URL} -DuserPrivateKey=${AUTOMATION_TEST_USER_PRIVATE_KEY}")
+          }
+        }
+      }
+    }
+  }
+  post{
+    always{
+      dir ('symbol-bootstrap') {
+        script {
+          if (env.IS_BOOTSTRAP_RUN == 'true') {
+            echo 'Stopping symbol bootstrap...'
+            runScript('symbol-bootstrap stop', 'Stop symbol bootstrap')
           }
         }
       }
