@@ -83,10 +83,11 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
         script {
           echo 'Checking whether symbol is running at the given URL...'
           runScript("symbol-bootstrap healthCheck", 'bootstrap health check')
-          def nodeInfo = runScript("curl ${SYMBOL_API_URL}/node/info", 'get node info', true)
-          def nodeHealth = runScript("curl ${SYMBOL_API_URL}/node/health", 'get node health', true)
-          def versions = runScript("curl ${SYMBOL_API_URL}/node/server", 'get server versions', true)
-          def chainInfo = runScript("curl ${SYMBOL_API_URL}/chain/info", 'get chain info', true)
+          def curlCmd = 'curl --silent --show-error'
+          def nodeInfo = runScript("${curlCmd} ${SYMBOL_API_URL}/node/info", 'get node info', true)
+          def nodeHealth = runScript("${curlCmd} ${SYMBOL_API_URL}/node/health", 'get node health', true)
+          def versions = runScript("${curlCmd} ${SYMBOL_API_URL}/node/server", 'get server versions', true)
+          def chainInfo = runScript("${curlCmd} ${SYMBOL_API_URL}/chain/info", 'get chain info', true)
           
           echo "Node info: ${nodeInfo}"
           echo "Node health: ${nodeHealth}"
