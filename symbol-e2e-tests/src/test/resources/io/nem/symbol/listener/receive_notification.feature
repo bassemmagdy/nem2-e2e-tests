@@ -58,9 +58,9 @@ Feature: Receive a notification
   Scenario: Alice registers for confirmed notification when transaction failed
     Given Alice register to receive confirmed transaction notification
     And Alice defined the following bonded escrow contract:
-      | type          | sender | recipient | data           |
-      | send-an-asset | Alice  | Bob       | 1 cat.currency |
-      | send-an-asset | Bob    | Sue       | 2 cat.currency |
+      | type          | sender | recipient | data               |
+      | send-an-asset | Alice  | Bob       | 1 network currency |
+      | send-an-asset | Bob    | Sue       | 2 network currency |
     When she publishes no funds bonded contract
     Then Alice should receive a transaction notification
 
@@ -68,9 +68,9 @@ Feature: Receive a notification
   Scenario: Alice registers for confirmed notification when transaction failed
     Given Alice register to receive confirmed transaction notification
     And Alice defined the following bonded escrow contract:
-      | type          | sender | recipient | data           |
-      | send-an-asset | Alice  | Bob       | 1 cat.currency |
-      | send-an-asset | Bob    | Sue       | 2 cat.currency |
+      | type          | sender | recipient | data               |
+      | send-an-asset | Alice  | Bob       | 1 network currency |
+      | send-an-asset | Bob    | Sue       | 2 network currency |
     When she publishes no funds bonded contract
     Then Alice should receive a transaction notification
 
@@ -80,9 +80,9 @@ Feature: Receive a notification
     And Bob register to receive a notification when a bonded transaction requires signing
     And Sue register to receive a notification when a bonded transaction requires signing
     And Alice defined the following bonded escrow contract:
-      | type          | sender | recipient | data            |
+      | type          | sender | recipient | data                |
       | send-an-asset | Alice  | Bob       | 20 network currency |
-      | send-an-asset | Sue    | Alice     | 2 euros         |
+      | send-an-asset | Sue    | Alice     | 2 euros             |
     When Alice published the bonded contract
     Then Alice should receive a transaction notification
     And Bob should receive a transaction notification
@@ -92,9 +92,9 @@ Feature: Receive a notification
   Scenario: Alice gets notification when aggregate bonded transaction is completely signed.
     Given Alice register to receive notification when bonded transaction is signed by all cosigners
     And Alice defined the following bonded escrow contract:
-      | type          | sender | recipient | data            |
+      | type          | sender | recipient | data                |
       | send-an-asset | Alice  | Bob       | 20 network currency |
-      | send-an-asset | Sue    | Alice     | 2 euros         |
+      | send-an-asset | Sue    | Alice     | 2 euros             |
     And Alice published the bonded contract
     When "Sue" accepts the transaction
     Then Alice should receive a notification that the cosigner have signed the transaction
@@ -103,9 +103,9 @@ Feature: Receive a notification
   Scenario: Alice gets notification when aggregate bonded transaction is signed by a cosigner
     Given Alice register to receive notification when bonded transaction is signed by Sue
     And Alice defined the following bonded escrow contract:
-      | type          | sender | recipient | data            |
+      | type          | sender | recipient | data                |
       | send-an-asset | Alice  | Bob       | 20 network currency |
-      | send-an-asset | Sue    | Alice     | 2 euros         |
+      | send-an-asset | Sue    | Alice     | 2 euros             |
     And Alice published the bonded contract
     When "Sue" accepts the transaction
     Then Alice should receive a cosign transaction notification that Sue cosigned

@@ -48,6 +48,6 @@ public class FinalizedBlocksCollection {
    * @return Chain info.
    */
   public FinalizedBlock getLastFinalizedBlock() {
-    return catapultCollection.findAll().get(0);
+    return catapultCollection.findLast().get();
   }
 }

@@ -37,8 +37,9 @@ import io.nem.symbol.sdk.model.transaction.NamespaceRegistrationTransaction;
 import io.nem.symbol.sdk.model.transaction.SignedTransaction;
 
 import java.math.BigInteger;
+import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /** Register namespace tests. */
 public class RegisterNamespace extends BaseTest {
@@ -127,6 +128,15 @@ public class RegisterNamespace extends BaseTest {
     final String actualNamespaceName = resolveNamespaceName(namespaceName);
     verifyNamespaceInfo(
         userName, NamespaceId.createFromName(actualNamespaceName), addMinDuration(duration));
+  }
+
+  @And("^(\\w+) is not the owner of the namespace (\\w+)$")
+  public void verifyNamespaceNotFound(
+          final String userName, final String namespaceName) {
+    final String actualNamespaceName = resolveNamespaceName(namespaceName);
+    final Optional<NamespaceInfo> namespaceInfo =
+            new NamespaceHelper(getTestContext()).getNamespaceInfoNoThrow(NamespaceId.createFromName(actualNamespaceName));
+    assertFalse("Namespace was found after deletion:" + actualNamespaceName, namespaceInfo.isPresent());
   }
 
   @Then("^every sender participant should receive a notification to accept the contract$")

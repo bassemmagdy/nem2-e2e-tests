@@ -28,10 +28,10 @@ import io.nem.symbol.automation.common.BaseTest;
 import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.automationHelpers.helper.sdk.AggregateHelper;
 import io.nem.symbol.automationHelpers.helper.sdk.BlockChainHelper;
-import io.nem.symbol.catapult.builders.FinalizedBlockHeaderBuilder;
 import io.nem.symbol.sdk.api.Listener;
 import io.nem.symbol.sdk.model.account.*;
 import io.nem.symbol.sdk.model.blockchain.BlockInfo;
+import io.nem.symbol.sdk.model.blockchain.ChainInfo;
 import io.nem.symbol.sdk.model.blockchain.FinalizedBlock;
 import io.nem.symbol.sdk.model.namespace.NamespaceId;
 import io.nem.symbol.sdk.model.transaction.CosignatureSignedTransaction;
@@ -165,9 +165,14 @@ public class ReceiveNotification extends BaseTest {
   @Then("^(\\w+) should receive a finalized block notification$")
   public void verifyFinalizedBlock(final String username) {
     final FinalizedBlock blockInfo = getTestContext().getScenarioContext().getContext(BLOCK_INFO_NAME);
+    final ChainInfo chainInfo = getTestContext().getRepositoryFactory().createChainRepository().getChainInfo().blockingFirst();
 
     assertEquals(
-            "Block signature didn't match", blockInfo.getSignature(), blockInfoDb.getSignature());
+            "Epoch didn't match", blockInfo.getFinalizationEpoch(), chainInfo.getLatestFinalizedBlock().getFinalizationEpoch());
+    assertEquals(
+            "Point didn't match", blockInfo.getFinalizationPoint(), chainInfo.getLatestFinalizedBlock().getFinalizationPoint());
+    assertEquals(
+            "Height didn't match", blockInfo.getHeight().longValue(), chainInfo.getLatestFinalizedBlock().getHeight().longValue());
   }
 
   @Given("^(\\w+) register to receive unconfirmed transaction notification$")

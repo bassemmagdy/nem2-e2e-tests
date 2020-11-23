@@ -25,6 +25,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.nem.symbol.automation.common.BaseTest;
 import io.nem.symbol.automationHelpers.common.TestContext;
+import io.nem.symbol.automationHelpers.helper.catbuffer.MosaicNoCheck;
 import io.nem.symbol.automationHelpers.helper.sdk.*;
 import io.nem.symbol.sdk.api.RepositoryCallException;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.common.RetryCommand;
@@ -37,6 +38,7 @@ import io.nem.symbol.sdk.model.transaction.*;
 import java.math.BigInteger;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
@@ -241,5 +243,13 @@ public class SendTransaction extends BaseTest {
 
     }
     assertFalse("Transaction was found.", found);
+  }
+
+  @When("^(\\w+) send transaction with invalid size")
+  public void sendTransactionWithInvalidSize(final String sender) {
+    //TODO: getTestContext().getNetworkType().getAddressPrefix()
+    triesToTransferAssetsNoCheck(sender,  getTestContext().getNetworkType().getValue() + "invalid", new ArrayList<>(),
+            PlainMessage.create(
+            ""));
   }
 }

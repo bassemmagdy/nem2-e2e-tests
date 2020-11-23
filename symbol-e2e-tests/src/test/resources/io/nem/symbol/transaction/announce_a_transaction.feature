@@ -63,3 +63,7 @@ Feature: Announce a transaction
     Given Alice announced a valid transaction with max fee set below the in require fee
     When the transaction is dropped
     Then Alice balance should remain intact
+
+  Scenario: Transaction with invalid size gets submitted
+    When Alice send transaction with invalid size
+    Then Alice balance should remain intact

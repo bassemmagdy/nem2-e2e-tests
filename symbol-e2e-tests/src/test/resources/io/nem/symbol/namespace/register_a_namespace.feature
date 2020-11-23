@@ -77,3 +77,14 @@ Feature: Register a namespace
     Given Sue has has no "network currency"
     When Sue tries to registers a namespace named "sue" for 6 block
     Then she should receive the error "FAILURE_CORE_INSUFFICIENT_BALANCE"
+
+  Scenario: Verify namespace gets clean up from database when deleted
+    Given Alice registers a namespace named "token" for 6 blocks
+    When the namespace is now deleted
+    Then Alice is not the owner of the namespace token
+
+  Scenario: An account register a namespace which was just deleted
+    Given Alice registers a namespace named "token" for 6 blocks
+    And the namespace is now deleted
+    When Bob registers a namespace named "token" for 10 block
+    Then Bob should become the owner of the new namespace token for least 10 block

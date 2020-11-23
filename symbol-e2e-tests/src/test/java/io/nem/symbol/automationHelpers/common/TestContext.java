@@ -27,7 +27,7 @@ import io.nem.symbol.sdk.api.RepositoryFactory;
 import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.account.PublicAccount;
 import io.nem.symbol.sdk.model.blockchain.BlockInfo;
-import io.nem.symbol.sdk.model.mosaic.NetworkCurrency;
+import io.nem.symbol.sdk.model.mosaic.Currency;
 import io.nem.symbol.sdk.model.mosaic.UnresolvedMosaicId;
 import io.nem.symbol.sdk.model.network.NetworkType;
 import io.nem.symbol.sdk.model.transaction.*;
@@ -204,10 +204,8 @@ public class TestContext {
    *
    * @return Namespace id.
    */
-  public NetworkCurrency getNetworkCurrency() {
+  public Currency getNetworkCurrency() {
      return repositoryFactory.getNetworkCurrency().blockingFirst();
-    //return NetworkCurrency.CAT_CURRENCY;
-    //return NetworkCurrency.SYMBOL_XYM;
   }
 
   /**

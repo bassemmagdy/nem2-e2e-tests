@@ -43,7 +43,7 @@ public class NamespacesMapper implements Function<JsonObject, NamespaceInfo> {
     public NamespaceInfo apply(final JsonObject jsonObject) {
         final String id = MapperUtils.toRecordId(jsonObject);
         final JsonObject metaJsonObject = jsonObject.getJsonObject("meta");
-        final boolean active = metaJsonObject.getBoolean("active");
+        final boolean active = metaJsonObject.getBoolean("latest");
         final Integer index = metaJsonObject.getInteger("index");
         final JsonObject namespaceJsonObject = jsonObject.getJsonObject("namespace");
         final String metaId = "";

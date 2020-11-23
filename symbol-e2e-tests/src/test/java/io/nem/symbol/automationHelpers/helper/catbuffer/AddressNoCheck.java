@@ -25,6 +25,7 @@ import io.nem.symbol.core.crypto.PublicKey;
 import io.nem.symbol.core.crypto.RawAddress;
 import io.nem.symbol.core.utils.Base32Encoder;
 import io.nem.symbol.core.utils.ConvertUtils;
+import io.nem.symbol.sdk.model.account.Address;
 import io.nem.symbol.sdk.model.account.UnresolvedAddress;
 import io.nem.symbol.sdk.model.network.NetworkType;
 import java.util.Arrays;
@@ -69,16 +70,6 @@ public class AddressNoCheck implements UnresolvedAddress {
     public AddressNoCheck(String prettyOrRaw, NetworkType networkType) {
         this.plainAddress = toPlainAddress(Validate.notNull(prettyOrRaw, "address must not be null"));
         this.networkType = Objects.requireNonNull(networkType, "networkType must not be null");
-        char addressNetwork = this.plainAddress.charAt(0);
-        if (networkType.equals(NetworkType.MAIN_NET) && addressNetwork != 'N') {
-            throw new IllegalArgumentException("MAIN_NET Address must start with N");
-        } else if (networkType.equals(NetworkType.TEST_NET) && addressNetwork != 'T') {
-            throw new IllegalArgumentException("TEST_NET Address must start with T");
-        } else if (networkType.equals(NetworkType.MIJIN) && addressNetwork != 'M') {
-            throw new IllegalArgumentException("MIJIN Address must start with M");
-        } else if (networkType.equals(NetworkType.MIJIN_TEST) && addressNetwork != 'S') {
-            throw new IllegalArgumentException("MIJIN_TEST Address must start with S");
-        }
     }
 
     /**
@@ -97,40 +88,10 @@ public class AddressNoCheck implements UnresolvedAddress {
      * @param rawAddress String
      * @return {@link AddressNoCheck}
      */
-    public static AddressNoCheck createFromRawAddress(String rawAddress) {
-        return new AddressNoCheck(rawAddress, resolveNetworkType(rawAddress));
+    public static AddressNoCheck createFromRawAddress(String rawAddress, NetworkType networkType) {
+        return new AddressNoCheck(rawAddress, networkType);
     }
 
-    /**
-     * It resolve the network type from a given address using the first character.
-     *
-     * @param plainAddress the plain address
-     * @return the network type.
-     */
-    private static NetworkType resolveNetworkType(String plainAddress) {
-        char addressNetwork = plainAddress.charAt(0);
-        if (addressNetwork == 'N') {
-            return NetworkType.MAIN_NET;
-        } else if (addressNetwork == 'T') {
-            return NetworkType.TEST_NET;
-        } else if (addressNetwork == 'M') {
-            return NetworkType.MIJIN;
-        } else if (addressNetwork == 'S') {
-            return NetworkType.MIJIN_TEST;
-        }
-        throw new IllegalArgumentException(plainAddress + " is an invalid address.");
-
-    }
-
-    /**
-     * Create an Address from a given encoded address.
-     *
-     * @param encodedAddress String
-     * @return {@link AddressNoCheck}
-     */
-    public static AddressNoCheck createFromEncoded(String encodedAddress) {
-        return createFromRawAddress(fromEncodedToPlain(encodedAddress));
-    }
 
     /**
      * Get address in plain format ex: SB3KUBHATFCPV7UZQLWAQ2EUR6SIHBSBEOEDDDF3.

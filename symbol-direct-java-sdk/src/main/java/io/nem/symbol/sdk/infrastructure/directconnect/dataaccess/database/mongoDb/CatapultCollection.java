@@ -34,6 +34,7 @@ import org.bson.types.Binary;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -47,9 +48,9 @@ import java.util.stream.Collectors;
  * @param <U> Mapper type.
  */
 class CatapultCollection<T, U extends Function<JsonObject, T>>
-    implements Searchable<Bson, List<Document>> {
+    implements Searchable<Bson, Document> {
   /* Collection name */
-  private final MongoCollection mongoCollection;
+  private final MongoCollection<Document> mongoCollection;
   /* Mapper object */
   private final Supplier<U> mapper;
 
@@ -109,8 +110,20 @@ class CatapultCollection<T, U extends Function<JsonObject, T>>
    */
   @Override
   public List<Document> find(final Bson queryParams) {
-    return (List<Document>) mongoCollection.find(queryParams).into(new ArrayList<Document>());
+    return mongoCollection.find(queryParams).into(new ArrayList<>());
   }
+
+  /**
+   * Find last document.
+   *
+   * @param queryParams Query parameter.
+   * @return List of document.
+   */
+  @Override
+  public Document findLast(final Bson queryParams) {
+    return mongoCollection.find(queryParams).sort(new Document("_id", -1)).first();
+  }
+
 
   /**
    * Find documents.
@@ -141,10 +154,10 @@ class CatapultCollection<T, U extends Function<JsonObject, T>>
    * @return List of document.
    */
   public List<T> findAll() {
-    final List<Document> documents =
-        (List<Document>) mongoCollection.find().into(new ArrayList<Document>());
+    final List<Document> documents = mongoCollection.find().into(new ArrayList<>());
     return ConvertResult(documents);
   }
+
   /**
    * Find documents.
    *
@@ -237,5 +250,15 @@ class CatapultCollection<T, U extends Function<JsonObject, T>>
   public Optional<T> findOneR(final Bson queryParams, final int timeoutInSeconds) {
     List<T> results = findR(queryParams, timeoutInSeconds);
     return GetOneResult(results);
+  }
+
+  /**
+   * Find last document.
+   *
+   * @return List of document.
+   */
+  public Optional<T> findLast() {
+    Document document = mongoCollection.find().sort(new Document("_id", -1)).first();
+    return document == null ? Optional.empty() : Optional.of(ConvertResult(Arrays.asList(document)).get(0));
   }
 }

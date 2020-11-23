@@ -239,7 +239,18 @@ public class MosaicMetadata extends MetadataBase<UnresolvedMosaicId> {
                 .targetId(new MosaicId(targetId.getId())))
         .blockingFirst()
         .getData()
-        .get(0);
+        .stream()
+        .findAny()
+        .orElseThrow(
+            () ->
+                new RuntimeException(
+                    "TargetId: "
+                        + targetId.getId()
+                        + " was not found for target"
+                        + " address: "
+                        + targetAddress.plain()
+                        + " with meta key: "
+                        + scopedMetadataKey.longValue()));
   }
 
   @Override

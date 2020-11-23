@@ -18,34 +18,26 @@
  * along with Catapult.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.common;
+package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers;
 
-import java.util.List;
+import io.nem.symbol.core.crypto.VotingKey;
+import io.nem.symbol.sdk.model.account.AccountLinkVotingKey;
+import io.vertx.core.json.JsonObject;
 
-/** Searchable entity by key */
-public interface Searchable<T, R> {
-  /**
-   * Find key if present.
-   *
-   * @param key Key to find.
-   * @return Object of type R.
-   */
-  List<R> find(final T key);
+import java.util.function.Function;
+
+public class VotingKeyMapper implements Function<JsonObject, AccountLinkVotingKey> {
 
   /**
-   * Find key with timeout.
+   * Converts from Json to Importances.
    *
-   * @param key Key to find.
-   * @param timeout Timeout value.
-   * @return Object of type R.
+   * @param jsonObject Json object.
+   * @return Importances pbject.
    */
-  List<R> find(final T key, final int timeout);
-
-  /**
-   * Find key if present.
-   *
-   * @param key Last key to find.
-   * @return Object of type R.
-   */
-  R findLast(final T key);
+  public AccountLinkVotingKey apply(final JsonObject jsonObject) {
+    return new AccountLinkVotingKey(
+        jsonObject.getString("publicKey"),
+        jsonObject.getLong("startEpoch"),
+        jsonObject.getLong("endEpoch"));
+  }
 }

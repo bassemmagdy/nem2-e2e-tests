@@ -78,6 +78,10 @@ public abstract class TransactionCollectionBase
             aggregateTransaction.getDeadline(),
             innerTransaction,
             aggregateTransaction.getCosignatures());
+    aggregateTransaction.getTransactionInfo().ifPresent(t -> factory.transactionInfo(t));
+    aggregateTransaction.getGroup().ifPresent(g -> factory.group(g));
+    aggregateTransaction.getSigner().ifPresent(s -> factory.signer(s));
+    aggregateTransaction.getSignature().ifPresent(s -> factory.signature(s));
     return factory.build();
   }
 
@@ -137,11 +141,7 @@ public abstract class TransactionCollectionBase
     final byte[] keyValueBytes = ConvertUtils.getBytes(transactionHash);
     Optional<Transaction> transactionOptional =
         catapultCollection.findOne(keyName, keyValueBytes, timeoutInSeconds);
-    if (!transactionOptional.isPresent()) {
-      return transactionOptional;
-    }
-    final Transaction updateTransaction = addInnerTransactions(transactionOptional.get());
-    return transactionOptional;
+    return transactionOptional.isPresent() ? Optional.of(addInnerTransactions(transactionOptional.get())) : transactionOptional;
   }
 
   /**
@@ -155,15 +155,17 @@ public abstract class TransactionCollectionBase
     final Optional<Transaction> transactionOptional = findByHash(hash, 0);
     if (transactionOptional.isPresent()) {
       final Transaction transaction = transactionOptional.get();
-      final TransactionInfo transactionInfo = transaction.getTransactionInfo().get();
-      final TransactionStatus status =
-          new TransactionStatus(
-              TransactionState.valueOf(getGroupStatus().toUpperCase()),
-              "Success",
-              transactionInfo.getHash().get(),
-              transaction.getDeadline(),
-              transactionInfo.getHeight());
-      return Optional.of(status);
+      if (transaction.getTransactionInfo().isPresent()) {
+        final TransactionInfo transactionInfo = transaction.getTransactionInfo().get();
+        final TransactionStatus status =
+            new TransactionStatus(
+                TransactionState.valueOf(getGroupStatus().toUpperCase()),
+                "Success",
+                transactionInfo.getHash().get(),
+                transaction.getDeadline(),
+                transactionInfo.getHeight());
+        return Optional.of(status);
+      }
     }
     return Optional.empty();
   }

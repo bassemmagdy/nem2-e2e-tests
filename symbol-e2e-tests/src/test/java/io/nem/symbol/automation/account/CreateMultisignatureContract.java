@@ -33,10 +33,8 @@ import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.account.Address;
 import io.nem.symbol.sdk.model.account.MultisigAccountInfo;
 import io.nem.symbol.sdk.model.account.UnresolvedAddress;
-import io.nem.symbol.sdk.model.transaction.AggregateTransaction;
-import io.nem.symbol.sdk.model.transaction.MultisigAccountModificationTransaction;
-import io.nem.symbol.sdk.model.transaction.SignedTransaction;
-import io.nem.symbol.sdk.model.transaction.TransactionType;
+import io.nem.symbol.sdk.model.transaction.*;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -64,10 +62,7 @@ public class CreateMultisignatureContract extends BaseTest {
     List<Account> cosigners = new Vector<>();
     if (multisigAccountInfoOptional.isPresent()) {
       cosigners =
-          multisigAccountInfoOptional
-              .get()
-              .getCosignatoryAddresses()
-              .parallelStream()
+          multisigAccountInfoOptional.get().getCosignatoryAddresses().parallelStream()
               .map(
                   publicAccount -> {
                     final Account cosignerAccount =
@@ -83,13 +78,14 @@ public class CreateMultisignatureContract extends BaseTest {
     return cosigners;
   }
 
-  private void createMultisigAccount(
-      final String userName,
-      final byte minimumApproval,
-      final byte numberOfCosignatory,
-      final String multisigAccountName,
-      final byte minimumRemoval,
-      final List<String> cosignatories) {
+  private Pair<MultisigAccountModificationTransaction, List<Account>>
+      createMultisigAccountTransaction(
+          final String userName,
+          final byte minimumApproval,
+          final byte numberOfCosignatory,
+          final String multisigAccountName,
+          final byte minimumRemoval,
+          final List<String> cosignatories) {
     final Account signerAccount = getUser(userName);
     final Account multiSigAccount = getUserWithCurrency(multisigAccountName);
     getTestContext()
@@ -123,24 +119,45 @@ public class CreateMultisignatureContract extends BaseTest {
             .flatMap(Collection::stream)
             .collect(Collectors.toList());
     final List<UnresolvedAddress> accountsAdditions =
-        cosignatories
-            .parallelStream()
+        cosignatories.parallelStream()
             .map(s -> getUser(s).getAddress())
             .collect(Collectors.toList());
     final MultisigAccountModificationTransaction modifyMultisigAccountTransaction =
         multisigAccountHelper.createMultisigAccountModificationTransaction(
             minimumApproval, minimumRemoval, accountsAdditions, new ArrayList<>());
-    getTestContext().addTransaction(modifyMultisigAccountTransaction);
+    return Pair.of(modifyMultisigAccountTransaction, cosignerAccounts);
+  }
+
+  private void createMultisigAccountAndSave(
+      final String userName,
+      final byte minimumApproval,
+      final byte numberOfCosignatory,
+      final String multisigAccountName,
+      final byte minimumRemoval,
+      final List<String> cosignatories) {
+    final Account multiSigAccount = getUserWithCurrency(multisigAccountName);
+    final Pair<MultisigAccountModificationTransaction, List<Account>> modifyMultisigAccountInfo =
+        createMultisigAccountTransaction(
+            userName,
+            minimumApproval,
+            numberOfCosignatory,
+            multisigAccountName,
+            minimumRemoval,
+            cosignatories);
+    getTestContext().addTransaction(modifyMultisigAccountInfo.getKey());
     final AggregateTransaction aggregateTransaction =
         new AggregateHelper(getTestContext())
             .createAggregateBondedTransaction(
                 Arrays.asList(
-                    modifyMultisigAccountTransaction.toAggregate(
-                        multiSigAccount.getPublicAccount())),
-                cosignerAccounts.size());
+                    modifyMultisigAccountInfo
+                        .getKey()
+                        .toAggregate(multiSigAccount.getPublicAccount())),
+                modifyMultisigAccountInfo.getValue().size());
     final TransactionHelper transactionHelper = new TransactionHelper(getTestContext());
     transactionHelper.signTransaction(aggregateTransaction, multiSigAccount);
-    getTestContext().getScenarioContext().setContext(COSIGNATORIES_LIST, cosignerAccounts);
+    getTestContext()
+        .getScenarioContext()
+        .setContext(COSIGNATORIES_LIST, modifyMultisigAccountInfo.getValue());
     getTestContext().getScenarioContext().setContext(MULTISIG_ACCOUNT_INFO, multiSigAccount);
   }
 
@@ -173,7 +190,7 @@ public class CreateMultisignatureContract extends BaseTest {
       final String multisigAccountName,
       final byte minimumRemoval,
       final List<String> cosignatories) {
-    createMultisigAccount(
+    createMultisigAccountAndSave(
         userName,
         minimumApproval,
         numberOfCosignatory,
@@ -198,7 +215,7 @@ public class CreateMultisignatureContract extends BaseTest {
       final String multisigAccountName) {
     final List<String> cosignatories = generateCosignerList(numberOfCosignatory);
     final byte minimumRemoval = 1;
-    createMultisigAccount(
+    createMultisigAccountAndSave(
         userName,
         minimumApproval,
         numberOfCosignatory,
@@ -295,7 +312,9 @@ public class CreateMultisignatureContract extends BaseTest {
     for (final UnresolvedAddress unresolvedAddress :
         modifyMultisigAccountTransaction.getAddressDeletions()) {
       assertEquals(
-          errorMessage, false, multisigAccountInfo.getCosignatoryAddresses().contains(unresolvedAddress));
+          errorMessage,
+          false,
+          multisigAccountInfo.getCosignatoryAddresses().contains(unresolvedAddress));
     }
   }
 
@@ -314,7 +333,7 @@ public class CreateMultisignatureContract extends BaseTest {
       final String multisigAccountName,
       final byte minimumRemoval,
       final List<String> cosignatories) {
-    createMultisigAccount(
+    createMultisigAccountAndSave(
         userName,
         minimumApproval,
         numberOfCosignatory,
@@ -335,7 +354,7 @@ public class CreateMultisignatureContract extends BaseTest {
       final String multisigAccountName) {
     final byte minimumRemoval = 1;
     final List<String> cosignatories = generateCosignerList(numberOfCosignatory);
-    createMultisigAccount(
+    createMultisigAccountAndSave(
         userName,
         minimumApproval,
         numberOfCosignatory,
@@ -361,28 +380,32 @@ public class CreateMultisignatureContract extends BaseTest {
   @Given("^(\\w+) is a cosignatory on the max multisig contracts$")
   public void addToMultiSignatureContracts(final String userName) {
     final String signer = AUTOMATION_USER_ALICE;
-    final byte minimumApproval = 1;
-    final byte minimumRemoval = 1;
-    final byte numberOfCosignatory = 1;
+//    final byte minimumApproval = 1;
+//    final byte minimumRemoval = 1;
+//    final byte numberOfCosignatory = 1;
+//
+//    getUserWithCurrency(userName);
+//    final Runnable runnable =
+//        () -> {
+//          final String multisigAccountName = CommonHelper.getRandomName("harry");
+//          createMultisigAccountAndSave(
+//              signer,
+//              minimumApproval,
+//              numberOfCosignatory,
+//              multisigAccountName,
+//              minimumRemoval,
+//              Arrays.asList(userName));
+//          publishBondedTransaction(signer);
+//          cosignMultiSignatureAccount();
+//        };
+//    CommonHelper.executeInParallel(
+//        runnable,
+//        getTestContext().getSymbolConfig().getMaxCosignedAccountsPerAccount(),
+//        20 * getTestContext().getSymbolConfig().getBlockGenerationTargetTime());
 
-    getUserWithCurrency(userName);
-    final Runnable runnable =
-        () -> {
-          final String multisigAccountName = CommonHelper.getRandomName("harry");
-          createMultisigAccount(
-              signer,
-              minimumApproval,
-              numberOfCosignatory,
-              multisigAccountName,
-              minimumRemoval,
-              Arrays.asList(userName));
-          publishBondedTransaction(signer);
-          cosignMultiSignatureAccount();
-        };
-    CommonHelper.executeInParallel(
-        runnable,
-        getTestContext().getSymbolConfig().getMaxCosignedAccountsPerAccount(),
-        20 * getTestContext().getSymbolConfig().getBlockGenerationTargetTime());
+    createGroupMultiSig(signer, userName);
+    publishBondedTransaction(signer);
+    cosignMultiSignatureAccount();
   }
 
   @Then("^the multisignature contract should become a (\\d+) level multisignature contract$")
@@ -394,5 +417,40 @@ public class CreateMultisignatureContract extends BaseTest {
         "Multisig account level did not match.",
         level,
         getMultisigAccountLevelDepth(multisigAccount.getAddress()));
+  }
+
+  private void createGroupMultiSig(final String signer, final String cosigner) {
+    final byte minimumApproval = 1;
+    final byte minimumRemoval = 1;
+    final byte numberOfCosignatory = 1;
+    final Account account = getUserWithCurrency(cosigner);
+    final List<Transaction> multisigTransactions = new ArrayList<>();
+    final List<Account> signerList = new ArrayList<>();
+
+    for (int i = 0;
+        i < getTestContext().getSymbolConfig().getMaxCosignedAccountsPerAccount();
+        i++) {
+      final String multisigAccountName = CommonHelper.getRandomName("harry");
+      final Account multiSigAccount = getUserWithCurrency(multisigAccountName);
+      signerList.add(multiSigAccount);
+      final Pair<MultisigAccountModificationTransaction, List<Account>> modifyMultisigAccountInfo =
+          createMultisigAccountTransaction(
+              signer,
+              minimumApproval,
+              numberOfCosignatory,
+              multisigAccountName,
+              minimumRemoval,
+              Arrays.asList(cosigner));
+      multisigTransactions.add(
+          modifyMultisigAccountInfo.getKey().toAggregate(multiSigAccount.getPublicAccount()));
+    }
+
+    final AggregateTransaction aggregateTransaction =  new AggregateHelper(getTestContext())
+        .createAggregateBondedTransaction(multisigTransactions, 1);
+    final TransactionHelper transactionHelper = new TransactionHelper(getTestContext());
+    transactionHelper.signTransaction(aggregateTransaction, account);
+    getTestContext()
+            .getScenarioContext()
+            .setContext(COSIGNATORIES_LIST, signerList);
   }
 }

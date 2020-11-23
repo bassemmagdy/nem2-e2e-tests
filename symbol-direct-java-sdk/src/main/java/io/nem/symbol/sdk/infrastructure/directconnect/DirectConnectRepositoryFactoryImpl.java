@@ -25,17 +25,22 @@ import io.nem.symbol.sdk.infrastructure.common.CatapultContext;
 import io.nem.symbol.sdk.infrastructure.common.ConfigurationHelper;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.dao.*;
 import io.nem.symbol.sdk.infrastructure.directconnect.listener.ListenerImpl;
+import io.nem.symbol.sdk.model.account.Address;
 import io.nem.symbol.sdk.model.blockchain.BlockInfo;
-import io.nem.symbol.sdk.model.mosaic.MosaicId;
-import io.nem.symbol.sdk.model.mosaic.MosaicInfo;
-import io.nem.symbol.sdk.model.mosaic.NetworkCurrency;
-import io.nem.symbol.sdk.model.mosaic.NetworkCurrencyBuilder;
+import io.nem.symbol.sdk.model.mosaic.*;
+import io.nem.symbol.sdk.model.mosaic.Currency;
+import io.nem.symbol.sdk.model.mosaic.CurrencyBuilder;
+import io.nem.symbol.sdk.model.namespace.AliasType;
+import io.nem.symbol.sdk.model.namespace.NamespaceInfo;
 import io.nem.symbol.sdk.model.network.NetworkConfiguration;
 import io.nem.symbol.sdk.model.network.NetworkType;
 import io.reactivex.Observable;
 
 import java.math.BigInteger;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /** Implementation for the direct connect. */
 public class DirectConnectRepositoryFactoryImpl implements RepositoryFactory {
@@ -43,6 +48,7 @@ public class DirectConnectRepositoryFactoryImpl implements RepositoryFactory {
   private final CatapultContext context;
   private final BlockInfo firstBlock;
   private final NetworkConfiguration networkConfiguration;
+  private Map<String, Currency> currencyMap;
 
   /**
    * Constructor.
@@ -53,15 +59,38 @@ public class DirectConnectRepositoryFactoryImpl implements RepositoryFactory {
     this.context = context;
     this.firstBlock = createBlockRepository().getBlockByHeight(BigInteger.ONE).blockingFirst();
     this.networkConfiguration = createNetworkRepository().getNetworkProperties().blockingFirst();
+    this.currencyMap = new HashMap<>();
   }
 
-  private NetworkCurrency getNetworkCurrency(final String mosaicIdValue) {
+  private Currency getNetworkCurrency(final String mosaicIdValue) {
     final MosaicId mosaicId = new MosaicId(toHex(mosaicIdValue));
     final MosaicInfo mosaicInfo = createMosaicRepository().getMosaic(mosaicId).blockingFirst();
-    return new NetworkCurrencyBuilder(mosaicId, mosaicInfo.getDivisibility())
-        .withSupplyMutable(mosaicInfo.isSupplyMutable())
-        .withTransferable(mosaicInfo.isTransferable())
-        .build();
+    final CurrencyBuilder builder =
+        new CurrencyBuilder(mosaicId, mosaicInfo.getDivisibility())
+            .withSupplyMutable(mosaicInfo.isSupplyMutable())
+            .withTransferable(mosaicInfo.isTransferable());
+    final Optional<NamespaceInfo> namespaceInfoOptional = createNamespaceRepository()
+        .search(
+            new NamespaceSearchCriteria()
+                .aliasType(AliasType.MOSAIC)
+                .ownerAddress((Address) mosaicInfo.getOwnerAddress()))
+        .blockingFirst()
+        .getData()
+        .stream()
+        .filter(
+            namespaceInfo ->
+                namespaceInfo.isActive()
+                    && namespaceInfo.getStartHeight() == BigInteger.ONE
+                    && ((MosaicId) namespaceInfo.getAlias().getAliasValue()).getIdAsLong()
+                        == mosaicInfo.getMosaicId().getIdAsLong())
+        .findFirst();
+
+    namespaceInfoOptional.ifPresent(n -> builder.withNamespaceId(n.getId()));
+    return builder.build();
+  }
+
+  private Currency getCurrency(final String mosaicId) {
+    return currencyMap.computeIfAbsent(mosaicId, this::getNetworkCurrency);
   }
 
   /**
@@ -85,15 +114,28 @@ public class DirectConnectRepositoryFactoryImpl implements RepositoryFactory {
   }
 
   @Override
-  public Observable<NetworkCurrency> getNetworkCurrency() {
+  public Observable<Currency> getNetworkCurrency() {
     return Observable.fromCallable(
-        () -> getNetworkCurrency(networkConfiguration.getChain().getCurrencyMosaicId()));
+        () -> getCurrency(networkConfiguration.getChain().getCurrencyMosaicId()));
   }
 
   @Override
-  public Observable<NetworkCurrency> getHarvestCurrency() {
+  public Observable<Currency> getHarvestCurrency() {
     return Observable.fromCallable(
-        () -> getNetworkCurrency(networkConfiguration.getChain().getHarvestingMosaicId()));
+        () -> getCurrency(networkConfiguration.getChain().getHarvestingMosaicId()));
+  }
+
+  /**
+   * @return the configured harvest currencies configuration like "cat.currency" or "cat.harvest".
+   * This method uses the user configured properties if provided. If it's not provided, it
+   * resolves the configuration * from the /network/properties endpoint. This method is cached,
+   * the server is only called the * first time. The network currency configuration
+   * @see CurrencyService
+   * @see RepositoryFactoryConfiguration
+   */
+  @Override
+  public Observable<NetworkCurrencies> getNetworkCurrencies() {
+    return null;
   }
 
   /**
@@ -220,6 +262,14 @@ public class DirectConnectRepositoryFactoryImpl implements RepositoryFactory {
   @Override
   public SecretLockRepository createSecretLockRepository() {
     throw new UnsupportedOperationException("Method not implemented");
+  }
+
+  /**
+   * @return a newly created {@link FinalizationRepository}
+   */
+  @Override
+  public FinalizationRepository createFinalizationRepository() {
+    return null;
   }
 
   @Override
