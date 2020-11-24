@@ -44,7 +44,7 @@ dependencies {
     compile "io.reactivex.rxjava2:rxjava:${rxjavaVersion}"
 
     // https://mvnrepository.com/artifact/io.nem/sdk-core
-    implementation 'io.nem:symbol-sdk-vertx-client:0.21.1-20201123.193308-14'
+    implementation 'io.nem:symbol-sdk-vertx-client:0.21.1-20201030.110101-13'
     implementation 'io.nem:catbuffer-java:0.0.24-SNAPSHOT'
 
     // https://mvnrepository.com/artifact/org.openjsse/openjsse
