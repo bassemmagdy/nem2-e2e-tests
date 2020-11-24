@@ -147,7 +147,7 @@ Feature: Apply global restrictions on mosaics
     When Alex deletes the following restrictions
       | Mosaic                 | Restriction Key | Restriction value | Restriction Type |
       | MyCompanySharesPrivate | can_hold        | 1                 | EQ               |
-    And Bobby tries to send 1 asset "MyCompanySharesPrivate" to Carol
+    And Bobby tries to send 1 asset of "MyCompanySharesPrivate" to Carol
     Then Bobby should receive the error "FAILURE_RESTRICTIONMOSAIC_ACCOUNT_UNAUTHORIZED"
 
   Scenario: Delegate mosaic restrictions to a third party
@@ -166,5 +166,5 @@ Feature: Apply global restrictions on mosaics
     And EligibilityProvider gives Carol the following restriction keys
       | Mosaic                 | Restriction key | Restriction value |
       | MyCompanySharesPrivate | Is_Verified     | 4                 |
-    When Bobby sends 1 asset "MyCompanySharesPrivate" to Carol
+    When Bobby sends 1 asset of "MyCompanySharesPrivate" to Carol
     Then Carol should receive 1 of asset "MyCompanySharesPrivate"

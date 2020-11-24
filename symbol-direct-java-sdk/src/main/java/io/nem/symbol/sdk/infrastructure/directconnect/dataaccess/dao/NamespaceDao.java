@@ -61,8 +61,8 @@ public class NamespaceDao implements NamespaceRepository {
         return Observable.fromCallable(
                 () ->
                         new NamespacesCollection(catapultContext.getDataAccessContext())
-                                .findById(namespaceId.getId().longValue())
-                                .get());
+                                .findById(namespaceId.getId().longValue()).orElseThrow(() -> new RuntimeException("NamespaceId not " +
+                                "found:" + namespaceId.getIdAsHex())));
     }
 
     /**

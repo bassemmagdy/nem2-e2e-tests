@@ -34,184 +34,182 @@ import io.nem.symbol.sdk.model.transaction.TransferTransactionFactory;
 
 import java.util.List;
 
-/**
- * Transfer helper.
- */
+/** Transfer helper. */
 public class TransferHelper extends BaseHelper<TransferHelper> {
-    private final TransactionHelper transactionHelper;
 
-    /**
-     * Constructor.
-     *
-     * @param testContext Test context.
-     */
-    public TransferHelper(final TestContext testContext) {
-        super(testContext);
-        this.transactionHelper = new TransactionHelper(testContext);
-    }
+  /**
+   * Constructor.
+   *
+   * @param testContext Test context.
+   */
+  public TransferHelper(final TestContext testContext) {
+    super(testContext);
+  }
 
-    private TransferTransaction createPersistentDelegationRequestTransaction(
-            final Account remoteAccount, final Account harvester, final PublicAccount nodePublicAccount) {
-        final TransferTransactionFactory transferTransactionFactory =
-                TransferTransactionFactory.createPersistentDelegationRequestTransaction(
-                        testContext.getNetworkType(),
-                        transactionHelper.getDefaultDeadline(),
-                        harvester.getKeyPair().getPrivateKey(),
-                        remoteAccount.getKeyPair().getPrivateKey(),
-                        nodePublicAccount.getPublicKey());
-        return buildTransaction(transferTransactionFactory);
-    }
+  private TransferTransaction createPersistentDelegationRequestTransaction(
+      final Account remoteAccount,
+      final Account vrfAccount,
+      final PublicAccount nodePublicAccount) {
+    final TransferTransactionFactory transferTransactionFactory =
+        TransferTransactionFactory.createPersistentDelegationRequestTransaction(
+            testContext.getNetworkType(),
+            transactionHelper.getDefaultDeadline(),
+            remoteAccount.getKeyPair().getPrivateKey(),
+            vrfAccount.getKeyPair().getPrivateKey(),
+            nodePublicAccount.getPublicKey());
+    return buildTransaction(transferTransactionFactory);
+  }
 
-    /**
-     * Gets transfer transaction.
-     *
-     * @param networkType                Network type.
-     * @param unresolvedRecipientAddress Recipient address.
-     * @param mosaics                    Mosaics to send.
-     * @param message                    Message to send.
-     * @return Transfer transaction.
-     */
-    public TransferTransaction createTransferTransaction(
-            final NetworkType networkType,
-            final UnresolvedAddress unresolvedRecipientAddress,
-            final List<Mosaic> mosaics,
-            final Message message) {
-        final TransferTransactionFactory transferTransactionFactory =
-                TransferTransactionFactory.create(
-                        networkType,
-                        transactionHelper.getDefaultDeadline(),
-                        unresolvedRecipientAddress,
-                        mosaics);
-        transferTransactionFactory.message(message);
-        return buildTransaction(transferTransactionFactory);
-    }
+  /**
+   * Gets transfer transaction.
+   *
+   * @param networkType Network type.
+   * @param unresolvedRecipientAddress Recipient address.
+   * @param mosaics Mosaics to send.
+   * @param message Message to send.
+   * @return Transfer transaction.
+   */
+  public TransferTransaction createTransferTransaction(
+      final NetworkType networkType,
+      final UnresolvedAddress unresolvedRecipientAddress,
+      final List<Mosaic> mosaics,
+      final Message message) {
+    final TransferTransactionFactory transferTransactionFactory =
+        TransferTransactionFactory.create(
+            networkType,
+            transactionHelper.getDefaultDeadline(),
+            unresolvedRecipientAddress,
+            mosaics);
+    transferTransactionFactory.message(message);
+    return buildTransaction(transferTransactionFactory);
+  }
 
-    /**
-     * Gets transfer transaction.
-     *
-     * @param unresolvedRecipientAddress Recipient address.
-     * @param mosaics                    Mosaics to send.
-     * @return Transfer transaction.
-     */
-    public TransferTransaction createTransferTransaction(
-            final UnresolvedAddress unresolvedRecipientAddress,
-            final List<Mosaic> mosaics) {
-        return createTransferTransaction(unresolvedRecipientAddress, mosaics);
-    }
+  /**
+   * Gets transfer transaction.
+   *
+   * @param unresolvedRecipientAddress Recipient address.
+   * @param mosaics Mosaics to send.
+   * @return Transfer transaction.
+   */
+  public TransferTransaction createTransferTransaction(
+      final UnresolvedAddress unresolvedRecipientAddress, final List<Mosaic> mosaics) {
+    return createTransferTransaction(unresolvedRecipientAddress, mosaics, null);
+  }
 
-    /**
-     * Gets transfer transaction.
-     *
-     * @param unresolvedRecipientAddress Recipient address.
-     * @param mosaics                    Mosaics to send.
-     * @param message                    Message to send.
-     * @return Transfer transaction.
-     */
-    public TransferTransaction createTransferTransaction(
-            final UnresolvedAddress unresolvedRecipientAddress,
-            final List<Mosaic> mosaics,
-            final Message message) {
-        return createTransferTransaction(
-                testContext.getNetworkType(), unresolvedRecipientAddress, mosaics, message);
-    }
+  /**
+   * Gets transfer transaction.
+   *
+   * @param unresolvedRecipientAddress Recipient address.
+   * @param mosaics Mosaics to send.
+   * @param message Message to send.
+   * @return Transfer transaction.
+   */
+  public TransferTransaction createTransferTransaction(
+      final UnresolvedAddress unresolvedRecipientAddress,
+      final List<Mosaic> mosaics,
+      final Message message) {
+    return createTransferTransaction(
+        testContext.getNetworkType(), unresolvedRecipientAddress, mosaics, message);
+  }
 
-    /**
-     * Creates a transfer transaction and announce.
-     *
-     * @param sender    Sender account.
-     * @param recipient Recipient unresolved address.
-     * @param mosaics   Mosaics to send.
-     * @return Signed transaction.
-     */
-    public SignedTransaction createTransferAndAnnounce(
-            final Account sender, final UnresolvedAddress recipient, final List<Mosaic> mosaics) {
-        return createTransferAndAnnounce(sender, recipient, mosaics, null);
-    }
+  /**
+   * Creates a transfer transaction and announce.
+   *
+   * @param sender Sender account.
+   * @param recipient Recipient unresolved address.
+   * @param mosaics Mosaics to send.
+   * @return Signed transaction.
+   */
+  public SignedTransaction createTransferAndAnnounce(
+      final Account sender, final UnresolvedAddress recipient, final List<Mosaic> mosaics) {
+    return createTransferAndAnnounce(sender, recipient, mosaics, null);
+  }
 
-    /**
-     * Creates a transfer transaction and announce.
-     *
-     * @param sender    Sender account.
-     * @param recipient Recipient unresolved address.
-     * @param mosaics   Mosaics to send.
-     * @param message   Message to send.
-     * @return Signed transaction.
-     */
-    public SignedTransaction createTransferAndAnnounce(
-            final Account sender,
-            final UnresolvedAddress recipient,
-            final List<Mosaic> mosaics,
-            final Message message) {
-        return transactionHelper.signAndAnnounceTransaction(
-                sender, () -> createTransferTransaction(recipient, mosaics, message));
-    }
+  /**
+   * Creates a transfer transaction and announce.
+   *
+   * @param sender Sender account.
+   * @param recipient Recipient unresolved address.
+   * @param mosaics Mosaics to send.
+   * @param message Message to send.
+   * @return Signed transaction.
+   */
+  public SignedTransaction createTransferAndAnnounce(
+      final Account sender,
+      final UnresolvedAddress recipient,
+      final List<Mosaic> mosaics,
+      final Message message) {
+    return transactionHelper.signAndAnnounceTransaction(
+        sender, () -> createTransferTransaction(recipient, mosaics, message));
+  }
 
-    /**
-     * Creates a transfer transaction and announce.
-     *
-     * @param sender    Sender account.
-     * @param recipient Recipient address.
-     * @param mosaics   Mosaics to send.
-     * @param message   Message to send.
-     * @return Transfer transaction.
-     */
-    public TransferTransaction submitTransferAndWait(
-            final Account sender,
-            final Address recipient,
-            final List<Mosaic> mosaics,
-            final Message message) {
-        return transactionHelper.signAndAnnounceTransactionAndWait(
-                sender, () -> createTransferTransaction(recipient, mosaics, message));
-    }
+  /**
+   * Creates a transfer transaction and announce.
+   *
+   * @param sender Sender account.
+   * @param recipient Recipient address.
+   * @param mosaics Mosaics to send.
+   * @param message Message to send.
+   * @return Transfer transaction.
+   */
+  public TransferTransaction submitTransferAndWait(
+      final Account sender,
+      final Address recipient,
+      final List<Mosaic> mosaics,
+      final Message message) {
+    return transactionHelper.signAndAnnounceTransactionAndWait(
+        sender, () -> createTransferTransaction(recipient, mosaics, message));
+  }
 
-    /**
-     * Creates a transfer transaction and announce.
-     *
-     * @param sender    Sender account.
-     * @param recipient Recipient alias.
-     * @param mosaics   Mosaics to send.
-     * @param message   Message to send.
-     * @return Transfer transaction.
-     */
-    public TransferTransaction submitTransferAndWait(
-            final Account sender,
-            final UnresolvedAddress recipient,
-            final List<Mosaic> mosaics,
-            final Message message) {
-        return transactionHelper.signAndAnnounceTransactionAndWait(
-                sender, () -> createTransferTransaction(recipient, mosaics, message));
-    }
+  /**
+   * Creates a transfer transaction and announce.
+   *
+   * @param sender Sender account.
+   * @param recipient Recipient alias.
+   * @param mosaics Mosaics to send.
+   * @param message Message to send.
+   * @return Transfer transaction.
+   */
+  public TransferTransaction submitTransferAndWait(
+      final Account sender,
+      final UnresolvedAddress recipient,
+      final List<Mosaic> mosaics,
+      final Message message) {
+    return transactionHelper.signAndAnnounceTransactionAndWait(
+        sender, () -> createTransferTransaction(recipient, mosaics, message));
+  }
 
-    /**
-     * Creates a transfer transaction and announce.
-     *
-     * @param sender    Sender account.
-     * @param recipient Recipient alias.
-     * @param mosaics   Mosaics to send.
-     * @return Transfer transaction.
-     */
-    public TransferTransaction submitTransferAndWait(
-            final Account sender, final UnresolvedAddress recipient, final List<Mosaic> mosaics) {
-        return submitTransferAndWait(sender, recipient, mosaics, null);
-    }
+  /**
+   * Creates a transfer transaction and announce.
+   *
+   * @param sender Sender account.
+   * @param recipient Recipient alias.
+   * @param mosaics Mosaics to send.
+   * @return Transfer transaction.
+   */
+  public TransferTransaction submitTransferAndWait(
+      final Account sender, final UnresolvedAddress recipient, final List<Mosaic> mosaics) {
+    return submitTransferAndWait(sender, recipient, mosaics, null);
+  }
 
-    /**
-     * Create persistent delegation request transaction and announce and wait.
-     *
-     * @param sender            Sender account.
-     * @param remoteAccount     Remote account.
-     * @param nodePublicAccount Node public key.
-     * @return Transfer transaction.
-     */
-    public TransferTransaction submitPersistentDelegationRequestAndWait(
-            final Account sender,
-            final Account harvester,
-            final Account remoteAccount,
-            final PublicAccount nodePublicAccount) {
-        return transactionHelper.signAndAnnounceTransactionAndWait(
-                sender,
-                () ->
-                        createPersistentDelegationRequestTransaction(
-                                remoteAccount, harvester, nodePublicAccount));
-    }
+  /**
+   * Create persistent delegation request transaction and announce and wait.
+   *
+   * @param sender Sender account.
+   * @param vrfAccount vrf account
+   * @param remoteAccount Remote account.
+   * @param nodePublicAccount Node public key.
+   * @return Transfer transaction.
+   */
+  public TransferTransaction submitPersistentDelegationRequestAndWait(
+      final Account sender,
+      final Account vrfAccount,
+      final Account remoteAccount,
+      final PublicAccount nodePublicAccount) {
+    return transactionHelper.signAndAnnounceTransactionAndWait(
+        sender,
+        () ->
+            createPersistentDelegationRequestTransaction(
+                remoteAccount, vrfAccount, nodePublicAccount));
+  }
 }

@@ -151,7 +151,7 @@ Feature: Edit a multisignature contract
       | cosignatory | operation |
       | cosignerOver| add       |
       | cosignerex  | add       |
-    And computer published the bonded contract
+    And cosigner1 published the bonded contract
     And "cosignerOver" accepts the transaction
     And "cosignerex" accepts the transaction
     Then "Alice" should receive the error "FAILURE_MULTISIG_MAX_COSIGNATORIES"

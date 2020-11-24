@@ -6,13 +6,14 @@ import io.nem.symbol.sdk.model.transaction.Transaction;
 import io.nem.symbol.sdk.model.transaction.TransactionFactory;
 
 import java.math.BigInteger;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public abstract class BaseHelper<U extends BaseHelper> {
 
   protected final TestContext testContext;
   private Supplier<Deadline> deadlineSupplier;
-  private BigInteger maxFee;
+  private Optional<BigInteger> maxFee;
   protected final TransactionHelper transactionHelper;
 
   /**
@@ -24,7 +25,7 @@ public abstract class BaseHelper<U extends BaseHelper> {
     this.testContext = testContext;
     this.transactionHelper = new TransactionHelper(testContext);
     deadlineSupplier = () -> transactionHelper.getDefaultDeadline();
-    maxFee = BigInteger.ZERO;
+    maxFee = Optional.empty();
   }
 
   /**
@@ -49,7 +50,7 @@ public abstract class BaseHelper<U extends BaseHelper> {
     final T transaction = factory.build();
     final Long feeMultiplier = testContext.getMinFeeMultiplier();
     final Long fee =
-        maxFee.intValue() != 0 ? maxFee.intValue() : transaction.getSize() * feeMultiplier;
+        maxFee.isPresent() ? maxFee.get().longValue() : transaction.getSize() * feeMultiplier;
     return factory.deadline(deadlineLocal).maxFee(BigInteger.valueOf(fee));
   }
 
@@ -75,7 +76,7 @@ public abstract class BaseHelper<U extends BaseHelper> {
    * @return this
    */
   public U withMaxFee(final BigInteger maxFee) {
-    this.maxFee = maxFee;
+    this.maxFee = Optional.of(maxFee);
     return getThis();
   }
 }

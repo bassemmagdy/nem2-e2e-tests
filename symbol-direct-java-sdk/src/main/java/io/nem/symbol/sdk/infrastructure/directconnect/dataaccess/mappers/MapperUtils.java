@@ -20,6 +20,7 @@
 
 package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers;
 
+import io.nem.symbol.core.crypto.PublicKey;
 import io.nem.symbol.sdk.infrastructure.SerializationUtils;
 import io.nem.symbol.sdk.model.account.Address;
 import io.nem.symbol.sdk.model.account.UnresolvedAddress;
@@ -59,6 +60,10 @@ public final class MapperUtils {
 
   public static Address toAddress(final JsonObject jsonObject, final String name) {
     return Address.createFromEncoded(jsonObject.getString(name));
+  }
+
+  public static PublicKey toPublicKey(final JsonObject jsonObject, final String name) {
+    return PublicKey.fromHexString(jsonObject.getString(name));
   }
 
   public static AddressResolutionStatement createAddressResolutionStatement(

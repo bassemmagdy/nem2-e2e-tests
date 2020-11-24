@@ -120,7 +120,7 @@ public class MongoDbFilterBuilder {
   }
 
   public MongoDbFilterBuilder withIsActive() {
-    withBooleanValue("meta.active", true);
+    withBooleanValue("meta.latest", true);
     return this;
   }
 

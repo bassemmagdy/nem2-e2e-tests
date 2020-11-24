@@ -74,6 +74,6 @@ public class SendAMessage extends BaseTest {
     final SignedTransaction signedTransaction = getTestContext().getSignedTransaction();
     final TransferTransaction transferTransaction =
         new TransactionHelper(getTestContext()).waitForTransactionToComplete(signedTransaction);
-    assertEquals(message, transferTransaction.getMessage().get().getText());
+    assertEquals("Message test is not the same", message, transferTransaction.getMessage().get().getText());
   }
 }

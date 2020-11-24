@@ -53,12 +53,7 @@ public class TransferCatbufferHelper extends BaseHelper {
     }
 
     private ByteBuffer getMessageBuffer(Message message) {
-        final byte byteMessageType = (byte) message.getType().getValue();
-        final byte[] bytePayload = message.getPayload();
-        final ByteBuffer messageBuffer = ByteBuffer.allocate(bytePayload.length + 1 /* for the message type */);
-        messageBuffer.put(byteMessageType);
-        messageBuffer.put(bytePayload);
-        return messageBuffer;
+        return  message == null ? ByteBuffer.allocate(0) : message.getPayloadByteBuffer();
     }
 
     /**

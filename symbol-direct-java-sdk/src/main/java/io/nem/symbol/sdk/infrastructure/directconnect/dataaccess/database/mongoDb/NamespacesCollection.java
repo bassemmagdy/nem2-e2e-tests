@@ -28,9 +28,11 @@ import io.nem.symbol.sdk.model.namespace.NamespaceInfo;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class NamespacesCollection {
   /* Catapult context. */
@@ -80,8 +82,19 @@ public class NamespacesCollection {
     final List<Document> results =
         catapultCollection.find(
             addFilterActiveTrueCondition(Filters.or(filters)), timeoutInSeconds);
-    final List<NamespaceInfo> namespaceInfos = catapultCollection.ConvertResult(results);
+    final List<NamespaceInfo> namespaceInfos =
+        getActiveNamespace(catapultCollection.ConvertResult(results));
     return catapultCollection.GetOneResult(namespaceInfos);
+  }
+
+  private List<NamespaceInfo> getActiveNamespace(final List<NamespaceInfo> namespaceInfos) {
+    final BigInteger chainHeight = new ChainStatisticCollection(context).get().getNumBlocks();
+    return namespaceInfos.stream()
+        .filter(
+            n ->
+                (n.getEndHeight().longValue() == -1)
+                    || (n.getEndHeight().longValue() > chainHeight.longValue()))
+        .collect(Collectors.toList());
   }
 
   /**
@@ -91,23 +104,29 @@ public class NamespacesCollection {
    * @return Combined filter.
    */
   private Bson addFilterActiveTrueCondition(final Bson filter) {
-    final String keyActiveName = "meta.active";
+    final String keyActiveName = "meta.latest";
     return Filters.and(Filters.eq(keyActiveName, true), filter);
   }
 
   private Bson toSearchCriteria(final NamespaceSearchCriteria criteria) {
     final MongoDbFilterBuilder builder =
-        new MongoDbFilterBuilder().withIsActive()
+        new MongoDbFilterBuilder()
+            .withIsActive()
             .withAddress("namespace.ownerAddress", criteria.getOwnerAddress())
-            .withNumericHexValue("namespace.level0", criteria.getLevel0())
-            .withNumericValue(
-                "namespace.registrationType", criteria.getRegistrationType().getValue())
-            .withNumericValue("namespace.alias.type", criteria.getAliasType().getValue());
+            .withNumericHexValue("namespace.level0", criteria.getLevel0());
+    if (criteria.getRegistrationType() != null) {
+      builder.withNumericValue(
+          "namespace.registrationType", criteria.getRegistrationType().getValue());
+    }
+    if (criteria.getAliasType() != null) {
+      builder.withNumericValue("namespace.alias.type", criteria.getAliasType().getValue());
+    }
     return builder.build();
   }
 
   public List<NamespaceInfo> search(final NamespaceSearchCriteria criteria) {
-    return catapultCollection.findR(
-        toSearchCriteria(criteria), context.getDatabaseTimeoutInSeconds());
+    return getActiveNamespace(
+        catapultCollection.findR(
+            toSearchCriteria(criteria), context.getDatabaseTimeoutInSeconds()));
   }
 }

@@ -20,6 +20,8 @@
 
 package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers;
 
+import io.nem.symbol.core.utils.ConvertUtils;
+
 /** Transaction status codes. */
 public enum TransactionStatusCode {
   SUCCESS(0x00000000),
@@ -197,7 +199,7 @@ public enum TransactionStatusCode {
       }
     }
     throw new IllegalArgumentException(
-        value + " was not a backing value for TransactionStatusCode.");
+        value + "(" + Integer.toHexString(value) + ") was not a backing value for TransactionStatusCode.");
   }
 
   /**

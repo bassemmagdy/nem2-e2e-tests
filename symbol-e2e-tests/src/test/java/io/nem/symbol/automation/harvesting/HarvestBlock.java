@@ -29,9 +29,10 @@ import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.account.AccountInfo;
 import io.nem.symbol.sdk.model.account.PublicAccount;
 import io.nem.symbol.sdk.model.blockchain.BlockInfo;
-import io.nem.symbol.sdk.model.mosaic.Mosaic;
 import io.nem.symbol.sdk.model.mosaic.ResolvedMosaic;
-import io.nem.symbol.sdk.model.transaction.*;
+import io.nem.symbol.sdk.model.transaction.LinkAction;
+import io.nem.symbol.sdk.model.transaction.TransactionType;
+import io.nem.symbol.sdk.model.transaction.TransferTransaction;
 
 import java.math.BigInteger;
 
@@ -39,62 +40,70 @@ import static org.junit.Assert.assertEquals;
 
 public class HarvestBlock extends BaseTest {
 
-	/**
-	 * Constructor.
-	 *
-	 * @param testContext Test context.
-	 */
-	public HarvestBlock(final TestContext testContext) {
-		super(testContext);
-	}
+  /**
+   * Constructor.
+   *
+   * @param testContext Test context.
+   */
+  public HarvestBlock(final TestContext testContext) {
+    super(testContext);
+  }
 
-	@Given("^(\\w+) is running a node$")
-	public void runningNode(final String harvester) {
-		final PublicAccount publicAccount =
-				PublicAccount.createFromPublicKey(
-						getTestContext().getConfigFileReader().getHarvesterPublicKey(),
-						getTestContext().getNetworkType());
-		storeUserInfoInContext(harvester, publicAccount.getAddress(), getTestContext());
-	}
+  @Given("^(\\w+) is running a node$")
+  public void runningNode(final String harvester) {
+    final PublicAccount publicAccount =
+        PublicAccount.createFromPublicKey(
+            getTestContext().getConfigFileReader().getHarvesterPublicKey(),
+            getTestContext().getNetworkType());
+    storeUserInfoInContext(harvester, publicAccount.getAddress(), getTestContext());
+  }
 
-	@Given("^(\\w+) account has harvested a block$")
-	public void runningHarvestingNode(final String userName) {
-		getUserWithCurrency("TestToTriggerTransfer");
-	}
+  @Given("^(\\w+) account has harvested a block$")
+  public void runningHarvestingNode(final String userName) {
+    getUserWithCurrency("TestToTriggerTransfer");
+  }
 
-	@Then("^(\\w+) should be able to see the resulting fees$")
-	public void checkAccountBalance(final String harvester) {
-		final TransferTransaction transferTransaction =
-				getTestContext().<TransferTransaction>findTransaction(TransactionType.TRANSFER).get();
-		final BigInteger height = transferTransaction.getTransactionInfo().get().getHeight();
-		final BlockInfo blockInfo = new BlockChainHelper(getTestContext()).getBlockByHeight(height);
-		final AccountInfo accountInfoBefore = getAccountInfoFromContext(harvester);
-		final ResolvedMosaic initialMosaic =
-				getMosaic(accountInfoBefore, getTestContext().getSymbolConfig().getCurrencyMosaicId())
-						.get();
-		final AccountInfo accountInfoAfter =
-				new AccountHelper(getTestContext()).getAccountInfo(accountInfoBefore.getAddress());
-		final ResolvedMosaic mosaicAfter =
-				getMosaic(accountInfoAfter, getTestContext().getSymbolConfig().getCurrencyMosaicId()).get();
-		assertEquals(
-				"Harvesting account did not increase by the correct account",
-				mosaicAfter.getAmount().subtract(initialMosaic.getAmount()).intValue(),
-				blockInfo.getFeeMultiplier() * transferTransaction.getSize());
-	}
+  @Then("^(\\w+) should be able to see the resulting fees$")
+  public void checkAccountBalance(final String harvester) {
+    final TransferTransaction transferTransaction =
+        getTestContext().<TransferTransaction>findTransaction(TransactionType.TRANSFER).get();
+    final BigInteger height = transferTransaction.getTransactionInfo().get().getHeight();
+    final BlockInfo blockInfo = new BlockChainHelper(getTestContext()).getBlockByHeight(height);
+    final AccountInfo accountInfoBefore = getAccountInfoFromContext(harvester);
+    final ResolvedMosaic initialMosaic =
+        getMosaic(accountInfoBefore, getTestContext().getSymbolConfig().getCurrencyMosaicId())
+            .get();
+    final AccountInfo accountInfoAfter =
+        new AccountHelper(getTestContext()).getAccountInfo(accountInfoBefore.getAddress());
+    final ResolvedMosaic mosaicAfter =
+        getMosaic(accountInfoAfter, getTestContext().getSymbolConfig().getCurrencyMosaicId()).get();
+    assertEquals(
+        "Harvesting account did not increase by the correct account after block "
+            + blockInfo.getHeight().longValue(),
+        mosaicAfter.getAmount().subtract(initialMosaic.getAmount()).intValue(),
+        blockInfo.getFeeMultiplier() * transferTransaction.getSize());
+  }
 
-	@Given("^(\\w+) delegated her account importance to (\\w+)$")
-	public void setupRemoteHarvesting(final String harvester, final String nodeName) {
-		final Account harvesterAccount =
-				Account.createFromPrivateKey(
-						getTestContext().getConfigFileReader().getHarvesterPrivateKey(),
-						getTestContext().getNetworkType());
-		final PublicAccount nodePublicAccount =
-				PublicAccount.createFromPublicKey(getTestContext().getConfigFileReader().getNodePublicKey(),
-						getTestContext().getNetworkType());
-		final Account remoteAccount = Account.generateNewAccount(getTestContext().getNetworkType());
-		new AccountKeyLinkHelper(getTestContext()).submitAccountKeyLinkAndWait(harvesterAccount, remoteAccount.getPublicAccount(), LinkAction.LINK);
-		new NodeKeyLinkHelper(getTestContext()).submitNodeKeyLinkTransactionAndWait(harvesterAccount, nodePublicAccount.getPublicKey(), LinkAction.LINK);
-		new TransferHelper(getTestContext()).submitPersistentDelegationRequestAndWait(harvesterAccount, harvesterAccount, remoteAccount, nodePublicAccount);
-		storeUserInfoInContext(harvester, harvesterAccount.getAddress(), getTestContext());
-	}
+  @Given("^(\\w+) delegated her account importance to (\\w+)$")
+  public void setupRemoteHarvesting(final String harvester, final String nodeName) {
+    final Account harvesterAccount =
+        Account.createFromPrivateKey(
+            getTestContext().getConfigFileReader().getHarvesterPrivateKey(),
+            getTestContext().getNetworkType());
+    final PublicAccount nodePublicAccount =
+        PublicAccount.createFromPublicKey(
+            getTestContext().getConfigFileReader().getNodePublicKey(),
+            getTestContext().getNetworkType());
+    final Account remoteAccount = Account.generateNewAccount(getTestContext().getNetworkType());
+    new AccountKeyLinkHelper(getTestContext())
+        .submitAccountKeyLinkAndWait(
+            harvesterAccount, remoteAccount.getPublicAccount(), LinkAction.LINK);
+    new NodeKeyLinkHelper(getTestContext())
+        .submitNodeKeyLinkTransactionAndWait(
+            harvesterAccount, nodePublicAccount.getPublicKey(), LinkAction.LINK);
+    new TransferHelper(getTestContext())
+        .submitPersistentDelegationRequestAndWait(
+            harvesterAccount, harvesterAccount, remoteAccount, nodePublicAccount);
+    storeUserInfoInContext(harvester, harvesterAccount.getAddress(), getTestContext());
+  }
 }

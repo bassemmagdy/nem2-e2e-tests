@@ -37,7 +37,26 @@ public enum PacketType {
   /** Node information has been requested by a peer. */
   NODE_DISCOVERY_PULL_PING(273),
   /** Node time information has been requested by a peer. */
-  TIME_SYNC_NODE_TIME(288);
+  TIME_SYNC_NODE_TIME(288),
+  ACCOUNT_STATE_PATH(0x243),
+
+  HASH_LOCK_STATE_PATH(0x248),
+
+  SECRET_LOCK_STATE_PATH(0x252),
+
+  METADATA_STATE_PATH(0x244),
+
+  MOSAIC_STATE_PATH(0x24D),
+
+  MULTISIG_STATE_PATH(0x255),
+
+  NAMESPACE_STATE_PATH(0x24E),
+
+  ACCOUNT_RESTRICTIONS_STATE_PATH(0x250),
+
+  MOSAIC_RESTRICTIONS_STATE_PATH(0x251),
+
+  UNLOCKED_ACCOUNTS(0x304);
 
   /* Enum value. */
   final int packetType;

@@ -16,14 +16,15 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.automationHelpers.helper.sdk.*;
+import io.nem.symbol.catapult.builders.AddressDto;
 import io.nem.symbol.catapult.builders.GeneratorUtils;
+import io.nem.symbol.core.crypto.Hashes;
 import io.nem.symbol.core.crypto.PublicKey;
 import io.nem.symbol.core.crypto.VotingKey;
 import io.nem.symbol.core.utils.ConvertUtils;
 import io.nem.symbol.core.utils.ExceptionUtils;
 import io.nem.symbol.sdk.api.AccountRepository;
 import io.nem.symbol.sdk.infrastructure.BinarySerializationImpl;
-import io.nem.symbol.sdk.infrastructure.SerializationUtils;
 import io.nem.symbol.sdk.infrastructure.directconnect.DirectConnectRepositoryFactoryImpl;
 import io.nem.symbol.sdk.infrastructure.directconnect.network.SocketClient;
 import io.nem.symbol.sdk.infrastructure.directconnect.packet.Packet;
@@ -32,7 +33,6 @@ import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.account.AccountInfo;
 import io.nem.symbol.sdk.model.account.Address;
 import io.nem.symbol.sdk.model.account.PublicAccount;
-import io.nem.symbol.sdk.model.message.PlainMessage;
 import io.nem.symbol.sdk.model.mosaic.ResolvedMosaic;
 import io.nem.symbol.sdk.model.network.NetworkType;
 import io.nem.symbol.sdk.model.transaction.*;
@@ -216,25 +216,30 @@ public class ExampleSteps {
         accountRepository.getAccountInfo(signerAccount.getAddress()).toFuture().get();
     testContext.getScenarioContext().setContext(signerAccountInfoKey, signerAccountInfo);
 
-      final NamespaceRegistrationTransaction namespaceRegistrationTransaction =
-              new NamespaceHelper(testContext).createRootNamespaceTransaction("test345", BigInteger.valueOf(20));
-      SignedTransaction signedTransaction = namespaceRegistrationTransaction.signWith(signerAccount,
-              testContext.getSymbolConfig().getGenerationHashSeed());
+//      byte[] state = signerAccountInfo.serialize();
+//      String hash = ConvertUtils.toHex(Hashes.sha3_256(state));
+//      AddressDto address = SerializationUtils.toAddressDto(signerAccountInfo.getAddress());
+//      writePacket(PacketType.NODE_DISCOVERY_PULL_PING, new byte[0]);
+//      final ByteBuffer response0 = readBytes();
+//      writePacket(PacketType.ACCOUNT_STATE_PATH, address.serialize());
+//      final ByteBuffer response = readBytes();
 
-      byte[] bytes = ConvertUtils.getBytes(signedTransaction.getPayload());
-      TransactionFactory transaction =
-              BinarySerializationImpl.INSTANCE.deserializeToFactory(bytes);
-      Transaction transaction1 = transaction.build();
 
-//    final Address dest = Address.createFromRawAddress("TCGH4E4TGFTTY22DS3M5IMB4Z3TYJQV523SP4KI");
-//    new TransferHelper(testContext)
-//            .withMaxFee(BigInteger.valueOf(100000))
-//            .createTransferAndAnnounce(
-//                    signerAccount,
-//                    dest,
-//                    Arrays.asList(testContext.getNetworkCurrency().createRelative(BigInteger.valueOf(50000000))),
-//                    null);
-//
+    Account account = Account.createFromPrivateKey("A54A64B90BC6C8E90E62B7777C37379005F601C69A0090FF543251F1C21E84C1",
+            testContext.getNetworkType());
+    PublicAccount publicAccount = PublicAccount.createFromPublicKey("07BD1120EFF5CD9D7EAAF60B9FFE7CDE1DB44F768C859235C5AD0255D98295F5",
+            testContext.getNetworkType());
+    Address addressp = publicAccount.getAddress();
+    String adds = addressp.plain();
+    final Address dest = Address.createFromRawAddress("TAY5UVI3HUW5GYMBQI6XPIZKVNAOOOJMHKHCSNQ");
+    new TransferHelper(testContext)
+            .withMaxFee(BigInteger.valueOf(100000))
+            .submitTransferAndWait(
+                    signerAccount,
+                    dest,
+                    Arrays.asList(testContext.getNetworkCurrency().createRelative(BigInteger.valueOf(11029999))),
+                    null);
+
       breakMaxTransactionFee(signerAccount);
     breakMaximizeFee(signerAccount);
     // resubmitTxs("/Users/tbdev/test/hang/files", signerAccount);
@@ -333,8 +338,7 @@ public class ExampleSteps {
     //      listener.open();
     //      BlockInfo blockInfo = listener.newBlock().take(1).blockingFirst();
 
-                writePacket(PacketType.NODE_DISCOVERY_PULL_PING, new byte[0]);
-                final ByteBuffer response = readBytes();
+
     //      ((DirectConnectRepositoryFactoryImpl) testContext.getRepositoryFactory()).getContext().getApiNodeContext().getAuthenticatedSocket
     //      ().getSocketClient().close();
 

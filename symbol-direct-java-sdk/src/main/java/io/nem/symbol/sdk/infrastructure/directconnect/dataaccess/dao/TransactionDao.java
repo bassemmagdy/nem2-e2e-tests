@@ -137,9 +137,9 @@ public class TransactionDao implements TransactionRepository, TransactionStatusR
         () -> {
           final List<TransactionCurrentState> transactionCurrentStates =
               Arrays.asList(
+                  new TransactionsCollection(catapultContext.getDataAccessContext()),
                   new UnconfirmedTransactionsCollection(catapultContext.getDataAccessContext()),
                   new PartialTransactionsCollection(catapultContext.getDataAccessContext()),
-                  new TransactionsCollection(catapultContext.getDataAccessContext()),
                   new TransactionCurrentStatusesCollection(catapultContext.getDataAccessContext()));
           final int maxRetries = 0;
           final int waitTimeInMilliseconds = 0;

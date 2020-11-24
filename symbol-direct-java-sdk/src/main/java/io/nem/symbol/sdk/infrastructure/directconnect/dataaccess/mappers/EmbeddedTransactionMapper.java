@@ -22,10 +22,12 @@ package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers;
 
 import io.nem.symbol.sdk.model.account.PublicAccount;
 import io.nem.symbol.sdk.model.network.NetworkType;
+import io.nem.symbol.sdk.model.transaction.Deadline;
 import io.nem.symbol.sdk.model.transaction.Transaction;
 import io.nem.symbol.sdk.model.transaction.TransactionFactory;
 import io.vertx.core.json.JsonObject;
 
+import java.math.BigInteger;
 import java.util.function.Function;
 
 public class EmbeddedTransactionMapper extends TransactionMapper
@@ -47,5 +49,10 @@ public class EmbeddedTransactionMapper extends TransactionMapper
     final PublicAccount signer =
         new PublicAccount(transaction.getString("signerPublicKey"), networkType);
     return factory.signer(signer).version(version).build();
+  }
+
+  @Override
+  protected Deadline getDeadline(final JsonObject jsonObject) {
+    return new Deadline(BigInteger.ZERO);
   }
 }

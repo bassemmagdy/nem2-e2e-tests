@@ -20,64 +20,100 @@
 
 package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers;
 
+import io.nem.symbol.core.crypto.PublicKey;
 import io.nem.symbol.sdk.model.account.*;
-import io.nem.symbol.sdk.model.mosaic.Mosaic;
 import io.nem.symbol.sdk.model.mosaic.ResolvedMosaic;
 import io.vertx.core.json.JsonObject;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Account info mapper.
- */
+/** Account info mapper. */
 public class AccountInfoMapper implements Function<JsonObject, AccountInfo> {
-    /**
-     * Converts a json object to account info.
-     *
-     * @param jsonObject Json object.
-     * @return Account info.
-     */
-    public AccountInfo apply(final JsonObject jsonObject) {
-        final String id = MapperUtils.toRecordId(jsonObject);
-        final JsonObject accountJsonObject = jsonObject.getJsonObject("account");
-        final Address address = Address.createFromEncoded(accountJsonObject.getString("address"));
-        final BigInteger addressHeight =
-                MapperUtils.toBigInteger(accountJsonObject, "addressHeight");
-        final String publicKey = accountJsonObject.getString("publicKey");
-        final BigInteger publicHeight =
-                MapperUtils.toBigInteger(accountJsonObject, "publicKeyHeight");
-        final ImportancesMapper importancesMapper = new ImportancesMapper();
-        final List<Importances> importances =
-                accountJsonObject.getJsonArray("importances").stream()
-                        .map(jsonObj -> importancesMapper.apply((JsonObject) jsonObj))
-                        .collect(Collectors.toList());
-        final Importances importance =
-                importances.size() > 0
-                        ? importances.get(0)
-                        : new Importances(BigInteger.ZERO, BigInteger.ZERO);
+  /**
+   * Converts a json object to account info.
+   *
+   * @param jsonObject Json object.
+   * @return Account info.
+   */
+  public AccountInfo apply(final JsonObject jsonObject) {
+    final String id = MapperUtils.toRecordId(jsonObject);
+    final JsonObject accountJsonObject = jsonObject.getJsonObject("account");
+    final Address address = Address.createFromEncoded(accountJsonObject.getString("address"));
+    final BigInteger addressHeight = MapperUtils.toBigInteger(accountJsonObject, "addressHeight");
+    final BigInteger publicHeight = MapperUtils.toBigInteger(accountJsonObject, "publicKeyHeight");
+    final ImportancesMapper importancesMapper = new ImportancesMapper();
+    final List<Importances> importances =
+        accountJsonObject.getJsonArray("importances").stream()
+            .map(jsonObj -> importancesMapper.apply((JsonObject) jsonObj))
+            .collect(Collectors.toList());
+    final Importances importance =
+        importances.size() > 0
+            ? importances.get(0)
+            : new Importances(BigInteger.ZERO, BigInteger.ZERO);
 
-        final MosaicMapper mosaicMapper = new MosaicMapper();
-        final List<ResolvedMosaic> resolvedMosaics =
-                accountJsonObject.getJsonArray("mosaics").stream()
-                        .map(jsonObj -> new ResolvedMosaicMapper().apply((JsonObject) jsonObj))
-                        .collect(Collectors.toList());
-        final List<ActivityBucket> activityBuckets = new ArrayList<>();
-        final SupplementalAccountKeys accountKeys = null;
-        return new AccountInfo(
-                id,
-                address,
-                addressHeight,
-                publicKey,
-                publicHeight,
-                importance.getValue(),
-                importance.getHeight(),
-                resolvedMosaics,
-                AccountType.UNLINKED,
-                accountKeys,
-                activityBuckets);
+    final List<ResolvedMosaic> resolvedMosaics =
+        accountJsonObject.getJsonArray("mosaics").stream()
+            .map(jsonObj -> new ResolvedMosaicMapper().apply((JsonObject) jsonObj))
+            .collect(Collectors.toList());
+    final List<ActivityBucket> activityBuckets = new ArrayList<>();
+    final SupplementalAccountKeys accountKeys =
+        getSupplementalAccountKeys(accountJsonObject.getJsonObject("supplementalPublicKeys"));
+    return new AccountInfo(
+        id,
+        address,
+        addressHeight,
+        accountJsonObject.getString("publicKey"),
+        publicHeight,
+        importance.getValue(),
+        importance.getHeight(),
+        resolvedMosaics,
+        AccountType.UNLINKED,
+        accountKeys,
+        activityBuckets);
+  }
+
+  private SupplementalAccountKeys getSupplementalAccountKeys(final JsonObject jsonObject) {
+    PublicKey vrfPublickey = null;
+    PublicKey linkedPublickey = null;
+    PublicKey nodePublickey = null;
+    List<AccountLinkVotingKey> voting = new ArrayList<>();
+    if (jsonObject.containsKey("vrf")) {
+      final JsonObject vrfJsonObject = jsonObject.getJsonObject("vrf");
+      vrfPublickey = MapperUtils.toPublicKey(vrfJsonObject, "publicKey");
     }
+
+    if (jsonObject.containsKey("node")) {
+      final JsonObject nodeJsonObject = jsonObject.getJsonObject("node");
+      nodePublickey = MapperUtils.toPublicKey(nodeJsonObject, "publicKey");
+    }
+
+    if (jsonObject.containsKey("voting")) {
+      final JsonObject votingJsonObject = jsonObject.getJsonObject("voting");
+      final VotingKeyMapper votingKeyMapper = new VotingKeyMapper();
+      voting =
+          votingJsonObject.getJsonArray("publicKeys").stream()
+              .map(v -> votingKeyMapper.apply((JsonObject) v))
+              .collect(Collectors.toList());
+    }
+
+    if (jsonObject.containsKey("linked")) {
+      final JsonObject linkedJsonObject = jsonObject.getJsonObject("linked");
+      linkedPublickey = MapperUtils.toPublicKey(linkedJsonObject, "publicKey");
+    }
+
+    return new SupplementalAccountKeys(
+        getOptionalPublicKey(linkedPublickey),
+        getOptionalPublicKey(nodePublickey),
+        getOptionalPublicKey(vrfPublickey),
+        voting);
+  }
+
+  private Optional<String> getOptionalPublicKey(final PublicKey publicKey) {
+    return publicKey == null ? Optional.empty() : Optional.of(publicKey.toHex());
+  }
 }

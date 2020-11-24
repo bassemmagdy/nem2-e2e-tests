@@ -44,6 +44,7 @@ import org.zeromq.ZMQ.Poller;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,9 +58,9 @@ public class ListenerImpl extends ListenerBase {
   private final AtomicBoolean listenerRunning;
   private final ExecutorService es;
   private final Logger logger;
+  private final NetworkType networkType;
   private ZContext context;
   private ZMQ.Socket subscriber;
-  private final NetworkType networkType;
 
   public ListenerImpl(final BrokerNodeContext context, final NetworkType networkType) {
     super(new JsonHelperJackson2(JsonHelperJackson2.configureMapper(Json.mapper)), null, null);
@@ -73,13 +74,29 @@ public class ListenerImpl extends ListenerBase {
   }
 
   /**
+   * Reverse and copy to a new array.
+   *
+   * @param array Array to copy.
+   * @return Reverse array.
+   */
+  public static byte[] reverseCopy(final byte[] array) {
+    final byte[] reverseArray = new byte[array.length];
+
+    for (int i = 0, j = array.length - 1; i < array.length; i++, j--) {
+      reverseArray[j] = array[i];
+    }
+    return reverseArray;
+  }
+
+  /**
    * I fires the new message object to the subject listenrs.
    *
    * @param channel the channel
+   * @param channelParams the topic param.
    * @param messageObject the message object.
    */
-  private void onNext(ListenerChannel channel, Object messageObject) {
-    this.getMessageSubject().onNext(new ListenerMessage(channel,"", messageObject));
+  private void onNext(ListenerChannel channel, String channelParams, Object messageObject) {
+    this.getMessageSubject().onNext(new ListenerMessage(channel, channelParams, messageObject));
   }
 
   @Override
@@ -91,19 +108,42 @@ public class ListenerImpl extends ListenerBase {
               + ConvertUtils.toHex(messageBytes)
               + " length = "
               + messageBytes.length);
+      logger.error("Message returned: " + Arrays.toString(messageBytes));
       final String hex =
           messageBytes.length == 8 // block notification.
               ? ConvertUtils.toHex(reverseCopy(messageBytes))
               : ConvertUtils.toHex(messageBytes);
+      final ByteBuffer byteBuffer =
+          ByteBuffer.allocate(messageBytes.length)
+              .order(ByteOrder.LITTLE_ENDIAN)
+              .put(messageBytes)
+              .order(ByteOrder.BIG_ENDIAN);
+      byteBuffer.rewind();
+      byteBuffer.get();
+
+      final String address = Base32Encoder.getString(reverseCopy(byteBuffer.array()));
+      final String rawAddress =
+          messageBytes.length == 8 // block notification.
+              ? ""
+              : Base32Encoder.getString(Arrays.copyOfRange(messageBytes, 1, messageBytes.length))
+                  .substring(0, 39);
+      logger.error("address:" + address);
+      logger.error("raw address:" + rawAddress);
+      ByteBuffer slicedBuf = byteBuffer.slice();
+      byte[] bytes = new byte[slicedBuf.remaining()];
+      slicedBuf.get(bytes);
+      logger.error("Byte Address returned: " + Arrays.toString(bytes));
+      logger.error("aactual address returned: " + Base32Encoder.getString(bytes));
       logger.error("Actual message: " + hex);
       final MessageMarker messageMarker = MessageMarker.rawValueOf(hex);
-      final Object objectMessage = messageMarker.getMessageHandler().handleMessage(subscriber, networkType);
+      final Object objectMessage =
+          messageMarker.getMessageHandler().handleMessage(subscriber, networkType);
       logger.error(
           "Channel: "
               + messageMarker.getChannelName()
               + " Object type: "
               + objectMessage.toString());
-      onNext(ListenerChannel.rawValueOf(messageMarker.getChannelName()), objectMessage);
+      onNext(ListenerChannel.rawValueOf(messageMarker.getChannelName()), rawAddress, objectMessage);
     } catch (final Exception ex) {
       logger.error(ex.getMessage());
     }
@@ -154,7 +194,8 @@ public class ListenerImpl extends ListenerBase {
    * @return the model {@link CosignatureSignedTransaction}
    */
   @Override
-  protected CosignatureSignedTransaction toCosignatureSignedTransaction(Object cosignature, NetworkType networkType) {
+  protected CosignatureSignedTransaction toCosignatureSignedTransaction(
+      Object cosignature, NetworkType networkType) {
     throw new UnsupportedOperationException("Method not implemented");
   }
 
@@ -167,6 +208,11 @@ public class ListenerImpl extends ListenerBase {
     final byte[] messageMakerBytes = ConvertUtils.fromHexToBytes(reverseMessageMaker);
     final byte[] addressBytes =
         channelParts.length > 1 ? Base32Encoder.getBytes(channelParts[1]) : new byte[0];
+    if (channelParts.length > 1) {
+      logger.error("Address: " + channelParts[1]);
+      logger.error("Byte Address: " + Arrays.toString(addressBytes));
+      logger.error("revert Address: " + Base32Encoder.getString(addressBytes));
+    }
     final ByteBuffer byteBuffer =
         ByteBuffer.allocate(messageMakerBytes.length + addressBytes.length)
             .order(ByteOrder.LITTLE_ENDIAN)
@@ -221,21 +267,5 @@ public class ListenerImpl extends ListenerBase {
         handle(message, null);
       }
     }
-  }
-
-
-  /**
-   * Reverse and copy to a new array.
-   *
-   * @param array Array to copy.
-   * @return Reverse array.
-   */
-  public static byte[] reverseCopy(final byte[] array) {
-    final byte[] reverseArray = new byte[array.length];
-
-    for (int i = 0, j = array.length - 1; i < array.length; i++, j--) {
-      reverseArray[j] = array[i];
-    }
-    return reverseArray;
   }
 }

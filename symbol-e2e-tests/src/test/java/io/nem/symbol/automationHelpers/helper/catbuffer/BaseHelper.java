@@ -59,7 +59,7 @@ public abstract class BaseHelper {
 
     private Serializer getBaseTransaction(final PublicKey signerPublicKey) {
         final KeyDto publicKeyDto = toKeyDto(signerPublicKey);
-        final TimestampDto deadline = new TimestampDto(testContext.getDefaultDeadline().getInstant(testContext.getRepositoryFactory().getEpochAdjustment().blockingFirst()).getEpochSecond());
+        final TimestampDto deadline = new TimestampDto(testContext.getDefaultDeadline().getValue());
         return TransactionBuilder.create(this.signature, publicKeyDto, this.version, this.network, this.type, this.maxFee, deadline);
     }
 
