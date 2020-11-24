@@ -46,7 +46,6 @@ public class NamespacesMapper implements Function<JsonObject, NamespaceInfo> {
         final boolean active = metaJsonObject.getBoolean("latest");
         final Integer index = metaJsonObject.getInteger("index");
         final JsonObject namespaceJsonObject = jsonObject.getJsonObject("namespace");
-        final String metaId = "";
         final NamespaceRegistrationType type =
                 NamespaceRegistrationType.rawValueOf(namespaceJsonObject.getInteger("registrationType"));
         final Integer depth = namespaceJsonObject.getInteger("depth");
@@ -65,7 +64,7 @@ public class NamespacesMapper implements Function<JsonObject, NamespaceInfo> {
         final BigInteger endHeight = MapperUtils.toBigInteger(namespaceJsonObject, "endHeight");
         final Alias alias = getAlias(namespaceJsonObject);
         return new NamespaceInfo(
-                id, active, index, metaId, type, depth, levels, parentId, address, startHeight, endHeight, alias);
+                id, active, index, type, depth, levels, parentId, address, startHeight, endHeight, alias);
     }
 
     /**

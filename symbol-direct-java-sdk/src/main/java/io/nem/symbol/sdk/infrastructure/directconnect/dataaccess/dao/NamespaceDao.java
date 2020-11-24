@@ -28,6 +28,7 @@ import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoD
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoDb.NamespacesCollection;
 import io.nem.symbol.sdk.model.account.AccountNames;
 import io.nem.symbol.sdk.model.account.Address;
+import io.nem.symbol.sdk.model.blockchain.MerkleStateInfo;
 import io.nem.symbol.sdk.model.mosaic.MosaicId;
 import io.nem.symbol.sdk.model.mosaic.MosaicNames;
 import io.nem.symbol.sdk.model.namespace.AliasType;
@@ -63,6 +64,17 @@ public class NamespaceDao implements NamespaceRepository {
                         new NamespacesCollection(catapultContext.getDataAccessContext())
                                 .findById(namespaceId.getId().longValue()).orElseThrow(() -> new RuntimeException("NamespaceId not " +
                                 "found:" + namespaceId.getIdAsHex())));
+    }
+
+    /**
+     * Gets the NamespaceInfo merkle for a given namespaceId.
+     *
+     * @param namespaceId NamespaceId
+     * @return {@link Observable} of {@link MerkleStateInfo}
+     */
+    @Override
+    public Observable<MerkleStateInfo> getNamespaceMerkle(NamespaceId namespaceId) {
+        throw new UnsupportedOperationException("Method not implemented");
     }
 
     /**

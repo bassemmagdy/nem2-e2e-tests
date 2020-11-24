@@ -20,7 +20,9 @@
 
 package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers;
 
+import io.nem.symbol.sdk.infrastructure.SerializationUtils;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoDb.FullBlockInfo;
+import io.nem.symbol.sdk.model.blockchain.BlockType;
 import io.nem.symbol.sdk.model.network.NetworkType;
 import io.vertx.core.json.JsonObject;
 
@@ -57,7 +59,7 @@ public class BlocksInfoMapper implements Function<JsonObject, FullBlockInfo> {
     final String signer = blockJsonObject.getString("signerPublicKey");
     final int version = blockJsonObject.getInteger("version");
     final NetworkType networkType = NetworkType.rawValueOf(blockJsonObject.getInteger("network"));
-    final int type = blockJsonObject.getInteger("type");
+    final BlockType type = BlockType.rawValueOf(SerializationUtils.shortToUnsignedInt(blockJsonObject.getInteger("type").shortValue()));
     final BigInteger height = MapperUtils.toBigInteger(blockJsonObject, "height");
     final BigInteger timestamp = MapperUtils.toBigInteger(blockJsonObject, "timestamp");
     final BigInteger difficulty = MapperUtils.toBigInteger(blockJsonObject, "difficulty");

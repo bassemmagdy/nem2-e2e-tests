@@ -28,6 +28,7 @@ import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers.MapperU
 import io.nem.symbol.sdk.model.account.Address;
 import io.nem.symbol.sdk.model.account.PublicAccount;
 import io.nem.symbol.sdk.model.blockchain.BlockInfo;
+import io.nem.symbol.sdk.model.blockchain.BlockType;
 import io.nem.symbol.sdk.model.network.NetworkType;
 import org.zeromq.ZMQ.Socket;
 
@@ -55,6 +56,7 @@ public class BlockMessageHandler extends MessageBaseHandler {
     final NetworkType blockNetworkType =
         NetworkType.rawValueOf(
             SerializationUtils.byteToUnsignedInt(blockHeaderBuilder.getNetwork().getValue()));
+    final BlockType blockType = BlockType.rawValueOf(SerializationUtils.shortToUnsignedInt(blockHeaderBuilder.getType().getValue()));
     return new BlockInfo(
         "0",
         MapperUtils.toUnsignedLong(blockHeaderBuilder.getSize()),
@@ -72,7 +74,7 @@ public class BlockMessageHandler extends MessageBaseHandler {
             blockNetworkType),
         blockNetworkType,
         Integer.valueOf(blockHeaderBuilder.getVersion()),
-        SerializationUtils.shortToUnsignedInt(blockHeaderBuilder.getType().getValue()),
+        blockType,
         BigInteger.valueOf(blockHeaderBuilder.getHeight().getHeight()),
         BigInteger.valueOf(blockHeaderBuilder.getTimestamp().getTimestamp()),
         BigInteger.valueOf(blockHeaderBuilder.getDifficulty().getDifficulty()),
