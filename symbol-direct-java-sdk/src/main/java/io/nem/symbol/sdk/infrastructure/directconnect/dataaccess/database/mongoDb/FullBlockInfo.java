@@ -22,6 +22,7 @@ package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongo
 
 import io.nem.symbol.sdk.model.account.Address;
 import io.nem.symbol.sdk.model.account.PublicAccount;
+import io.nem.symbol.sdk.model.blockchain.BlockType;
 import io.nem.symbol.sdk.model.network.NetworkType;
 
 import java.math.BigInteger;
@@ -46,7 +47,7 @@ public class FullBlockInfo {
   private final PublicAccount signerPublicAccount;
   private final NetworkType networkType;
   private final Integer version;
-  private final int type;
+  private final BlockType type;
   private final BigInteger height;
   private final BigInteger timestamp;
   private final BigInteger difficulty;
@@ -77,7 +78,7 @@ public class FullBlockInfo {
       final PublicAccount signerPublicAccount,
       final NetworkType networkType,
       final Integer version,
-      final int type,
+      final BlockType type,
       final BigInteger height,
       final BigInteger timestamp,
       final BigInteger difficulty,
@@ -137,7 +138,7 @@ public class FullBlockInfo {
       String signer,
       NetworkType networkType,
       Integer version,
-      int type,
+      BlockType type,
       BigInteger height,
       BigInteger timestamp,
       BigInteger difficulty,
@@ -336,9 +337,9 @@ public class FullBlockInfo {
   /**
    * Returns block transaction type.
    *
-   * @return int
+   * @return BlockType
    */
-  public int getType() {
+  public BlockType getType() {
     return type;
   }
 
