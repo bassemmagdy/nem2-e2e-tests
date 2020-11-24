@@ -26,6 +26,7 @@ import io.nem.symbol.sdk.api.Page;
 import io.nem.symbol.sdk.infrastructure.common.CatapultContext;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoDb.MosaicsCollection;
 import io.nem.symbol.sdk.model.account.Address;
+import io.nem.symbol.sdk.model.blockchain.MerkleStateInfo;
 import io.nem.symbol.sdk.model.mosaic.MosaicId;
 import io.nem.symbol.sdk.model.mosaic.MosaicInfo;
 import io.reactivex.Observable;
@@ -59,6 +60,17 @@ public class MosaicsDao implements MosaicRepository {
             new MosaicsCollection(catapultContext.getDataAccessContext())
                 .find(mosaicId.getIdAsLong())
                 .get());
+  }
+
+  /**
+   * Gets a MosaicInfo merkle for a given mosaicId
+   *
+   * @param mosaicId {@link MosaicId}
+   * @return Observable of {@link MerkleStateInfo}
+   */
+  @Override
+  public Observable<MerkleStateInfo> getMosaicMerkle(MosaicId mosaicId) {
+    return null;
   }
 
   /**

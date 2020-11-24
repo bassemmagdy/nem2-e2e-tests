@@ -7,6 +7,7 @@ import io.nem.symbol.sdk.infrastructure.common.CatapultContext;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoDb.MetadataCollection;
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers.MapperUtils;
 import io.nem.symbol.sdk.model.account.Address;
+import io.nem.symbol.sdk.model.blockchain.MerkleStateInfo;
 import io.nem.symbol.sdk.model.metadata.Metadata;
 import io.nem.symbol.sdk.model.mosaic.MosaicId;
 import io.nem.symbol.sdk.model.namespace.NamespaceId;
@@ -44,5 +45,27 @@ public class MetadataDao implements MetadataRepository {
   @Override
   public Observable<Page<Metadata>> search(MetadataSearchCriteria criteria) {
     return Observable.fromCallable(() -> new Page<>(metadataCollection.search(criteria)));
+  }
+
+  /**
+   * Get metadata of the given id.
+   *
+   * @param compositeHash Metadata composite hash id
+   * @return Observable {@link Metadata}
+   */
+  @Override
+  public Observable<Metadata> getMetadata(String compositeHash) {
+    return null;
+  }
+
+  /**
+   * Get metadata merkle info of the given id.
+   *
+   * @param compositeHash MerkleStateInfo composite hash id
+   * @return Observable {@link MerkleStateInfo}
+   */
+  @Override
+  public Observable<MerkleStateInfo> getMetadataMerkle(String compositeHash) {
+    return null;
   }
 }

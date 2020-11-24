@@ -27,6 +27,7 @@ import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers.MapperU
 import io.nem.symbol.sdk.model.account.Address;
 import io.nem.symbol.sdk.model.account.MultisigAccountGraphInfo;
 import io.nem.symbol.sdk.model.account.MultisigAccountInfo;
+import io.nem.symbol.sdk.model.blockchain.MerkleStateInfo;
 import io.reactivex.Observable;
 
 /** Multisig dao repository. */
@@ -60,5 +61,16 @@ public class MultisigDao implements MultisigRepository {
   @Override
   public Observable<MultisigAccountGraphInfo> getMultisigAccountGraphInfo(Address address) {
     throw new IllegalStateException("Method not implemented");
+  }
+
+  /**
+   * Gets the merkle information of the multisig account
+   *
+   * @param address the address
+   * @return Observable of {@link MerkleStateInfo}
+   */
+  @Override
+  public Observable<MerkleStateInfo> getMultisigAccountInfoMerkle(Address address) {
+    return null;
   }
 }

@@ -29,6 +29,7 @@ import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.database.mongoD
 import io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers.MapperUtils;
 import io.nem.symbol.sdk.model.account.AccountInfo;
 import io.nem.symbol.sdk.model.account.Address;
+import io.nem.symbol.sdk.model.blockchain.MerkleStateInfo;
 import io.reactivex.Observable;
 
 import java.util.List;
@@ -70,6 +71,17 @@ public class AccountsDao implements AccountRepository {
    */
   @Override
   public Observable<List<AccountInfo>> getAccountsInfo(List<Address> addresses) {
+    throw new UnsupportedOperationException("Method not implemented");
+  }
+
+  /**
+   * Returns the merkle information of the given account.
+   *
+   * @param address Address
+   * @return Observable {@link MerkleStateInfo}
+   */
+  @Override
+  public Observable<MerkleStateInfo> getAccountInfoMerkle(Address address) {
     throw new UnsupportedOperationException("Method not implemented");
   }
 
