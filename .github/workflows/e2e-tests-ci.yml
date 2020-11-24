@@ -21,6 +21,6 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build Symbol Direct Java SDK project
-      run: ./gradlew --project-dir symbol-direct-java-sdk/ --refresh-dependencies --rerun-tasks clean classes javadocJar
+      run: ./gradlew --project-dir symbol-direct-java-sdk/ --refresh-dependencies --rerun-tasks clean compileJava classes
     - name: Build Symbol end-to-end tests project
-      run: ./gradlew --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses
+      run: ./gradlew --project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean compileTestJava testClasses
