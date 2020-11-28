@@ -82,7 +82,7 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
       steps {
         script {
           echo 'Checking whether symbol is running at the given URL...'
-          if ($env.IS_BOOTSTRAP_RUN.toLowerCase() == 'true') {
+          if (IS_BOOTSTRAP_RUN.toLowerCase() == 'true') {
             runScript("symbol-bootstrap healthCheck", 'bootstrap health check')
           }
           def curlCmd = 'curl --silent --show-error'
