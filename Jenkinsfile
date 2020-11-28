@@ -82,7 +82,9 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
       steps {
         script {
           echo 'Checking whether symbol is running at the given URL...'
-          runScript("symbol-bootstrap healthCheck", 'bootstrap health check')
+          if ($env.IS_BOOTSTRAP_RUN.toLowerCase() == 'true') {
+            runScript("symbol-bootstrap healthCheck", 'bootstrap health check')
+          }
           def curlCmd = 'curl --silent --show-error'
           def nodeInfo = runScript("${curlCmd} ${SYMBOL_API_URL}/node/info", 'get node info', true)
           def nodeHealth = runScript("${curlCmd} ${SYMBOL_API_URL}/node/health", 'get node health', true)
