@@ -20,8 +20,8 @@
 
 package io.nem.symbol.automation.restriction;
 
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.When;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.When;
 import io.nem.symbol.automation.common.BaseTest;
 import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.automationHelpers.helper.sdk.AccountRestrictionHelper;

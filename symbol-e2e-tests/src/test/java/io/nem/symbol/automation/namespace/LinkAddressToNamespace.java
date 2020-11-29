@@ -20,8 +20,8 @@
 
 package io.nem.symbol.automation.namespace;
 
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.When;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.When;
 import io.nem.symbol.automation.common.BaseTest;
 import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.automationHelpers.helper.sdk.AccountHelper;

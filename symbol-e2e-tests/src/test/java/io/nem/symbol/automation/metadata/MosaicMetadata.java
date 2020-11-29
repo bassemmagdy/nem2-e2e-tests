@@ -20,10 +20,10 @@
 
 package io.nem.symbol.automation.metadata;
 
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import io.nem.symbol.automation.account.CreateMultisignatureContract;
 import io.nem.symbol.automation.account.EditMultisignatureContract;
 import io.nem.symbol.automationHelpers.common.TestContext;
