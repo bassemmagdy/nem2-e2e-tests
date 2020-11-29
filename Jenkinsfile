@@ -130,6 +130,30 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
     }
   }
   post{
+    failure {
+      echo "Tests failed"
+      cucumber failedFeaturesNumber: -1, 
+              failedScenariosNumber: -1, 
+              failedStepsNumber: -1, 
+              fileIncludePattern: 'cucumber-report.json', 
+              pendingStepsNumber: -1, 
+              skippedStepsNumber: -1, 
+              sortingMethod: 'ALPHABETICAL',
+              undefinedStepsNumber: -1
+      publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: '.', reportFiles: 'cucumber-report.html', reportName: 'Cucumber HTML Report', reportTitles: ''])
+    }
+    success {
+      echo "Tests passed"
+      cucumber failedFeaturesNumber: -1, 
+              failedScenariosNumber: -1, 
+              failedStepsNumber: -1, 
+              fileIncludePattern: 'cucumber-report.json', 
+              pendingStepsNumber: -1, 
+              skippedStepsNumber: -1, 
+              sortingMethod: 'ALPHABETICAL',
+              undefinedStepsNumber: -1
+      publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: '.', reportFiles: 'cucumber-report.html', reportName: 'Cucumber HTML Report', reportTitles: ''])
+    }
     always{
       dir ('symbol-bootstrap') {
         script {
