@@ -103,12 +103,20 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
         environment ignoreCase: true, name: 'IS_BOOTSTRAP_RUN', value: 'true'
       }
       steps {
-        dir ('symbol-bootstrap') {
-          script {
+        script {
+          dir ('symbol-bootstrap') {
             def addresses = readYaml file: 'target/addresses.yml'
             // variable declared without def becomes a global scoped variable and can be reassigned too
             automationUserPrivateKey = addresses.mosaics[0].accounts[0].privateKey
             echo "automationUserPrivateKey: ${automationUserPrivateKey}"
+          }
+          dir ('symbol-e2e-tests') {
+            def props = readProperties file: 'src/test/resources/configs/config-default.properties'
+            echo "config-default.properties read: ${props}"
+            props['userPrivateKey'] = automationUserPrivateKey
+            props['restGatewayUrl'] = env.SYMBOL_API_URL
+
+            echo "config-default.properties after update: ${props}"
           }
         }
       }
@@ -119,13 +127,17 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
           AUTOMATION_TEST_USER_PRIVATE_KEY = "${params.ENVIRONMENT == 'testnet' ? params.E2E_TEST_USER_PRIVATE_KEY : automationUserPrivateKey}"
           echo "Automation user private key: ${AUTOMATION_TEST_USER_PRIVATE_KEY}"
           echo "Symbol API URL: ${env.SYMBOL_API_URL}"
-          if (params.ENVIRONMENT == 'testnet') {
-            runGradle('--project-dir symbol-e2e-tests/ test')
+          try {
+            if (params.ENVIRONMENT == 'testnet') {
+              runGradle('--project-dir symbol-e2e-tests/ test')
+            }
+            else {
+              runGradle("--project-dir symbol-e2e-tests/ test -DrestGatewayUrl=${env.SYMBOL_API_URL} -DuserPrivateKey=${AUTOMATION_TEST_USER_PRIVATE_KEY}")
+            }
           }
-          else {
-            runGradle("--project-dir symbol-e2e-tests/ test -DrestGatewayUrl=${env.SYMBOL_API_URL} -DuserPrivateKey=${AUTOMATION_TEST_USER_PRIVATE_KEY}")
+          finally {
+            stash includes: 'cucumber-report.json,cucumber-report.html', name: 'cucumber-reports'
           }
-          stash includes: 'cucumber-report.json,cucumber-report.html', name: 'cucumber-reports'
         }
       }
     }
