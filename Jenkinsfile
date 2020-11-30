@@ -111,12 +111,24 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
             echo "automationUserPrivateKey: ${automationUserPrivateKey}"
           }
           dir ('symbol-e2e-tests') {
-            def props = readProperties file: 'src/test/resources/configs/config-default.properties'
-            echo "config-default.properties read: ${props}"
-            props['userPrivateKey'] = automationUserPrivateKey
-            props['restGatewayUrl'] = env.SYMBOL_API_URL
+            // def props = readProperties file: 'src/test/resources/configs/config-default.properties'
+            // echo "config-default.properties read: ${props}"
+            // props['userPrivateKey'] = automationUserPrivateKey
+            // props['restGatewayUrl'] = env.SYMBOL_API_URL
 
-            echo "config-default.properties after update: ${props}"
+            // echo "config-default.properties after update: ${props}"
+            def propertyReader = new PropertyReader('src/test/resources/configs/config-default.properties')
+
+            assert propertyReader.RepositoryFactoryType == 'Vertx'
+            assert propertyReader.restGatewayUrl == 'http://api-01.us-west-2.0.10.0.x.symboldev.network:3000'
+
+            propertyReader.restGatewayUrl(env.SYMBOL_API_URL)
+            propertyReader.userPrivateKey(automationUserPrivateKey)
+
+            assert propertyReader.restGatewayUrl == env.SYMBOL_API_URL
+            assert propertyReader.userPrivateKey == automationUserPrivateKey
+
+            sh 'cat src/test/resources/configs/config-default.properties'
           }
         }
       }
@@ -128,12 +140,12 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
           echo "Automation user private key: ${AUTOMATION_TEST_USER_PRIVATE_KEY}"
           echo "Symbol API URL: ${env.SYMBOL_API_URL}"
           try {
-            if (params.ENVIRONMENT == 'testnet') {
+            // if (params.ENVIRONMENT == 'testnet') {
               runGradle('--project-dir symbol-e2e-tests/ test')
-            }
-            else {
-              runGradle("--project-dir symbol-e2e-tests/ test -DrestGatewayUrl=${env.SYMBOL_API_URL} -DuserPrivateKey=${AUTOMATION_TEST_USER_PRIVATE_KEY}")
-            }
+            // }
+            // else {
+            //   runGradle("--project-dir symbol-e2e-tests/ test")
+            // }
           }
           finally {
             dir ('symbol-e2e-tests') {
@@ -202,4 +214,32 @@ def runGradle(String command) {
   else {
     bat "gradlew.bat ${command}"
   }
+}
+
+class PropertyReader {
+
+    String filePath
+
+    PropertyReader(String filePath) {
+        this.filePath = filePath
+    }
+
+    def propertyMissing(String name) {
+        Properties props = new Properties()
+        File propsFile = new File(filePath)
+        propsFile.withInputStream {
+            props.load it
+        }
+        props."$name"
+    }
+
+    def methodMissing(String name, args) {
+        Properties props = new Properties()
+        File propsFile = new File(filePath)
+
+        props.load propsFile.newDataInputStream()
+        props.setProperty name, args.toString() - '[' - ']'
+        props.store propsFile.newWriter(), null
+    }
+
 }
