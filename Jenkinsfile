@@ -136,7 +136,11 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
             }
           }
           finally {
-            stash includes: 'cucumber-report.json,cucumber-report.html', name: 'cucumber-reports'
+            dir ('symbol-e2e-tests') {
+              sh 'ls -altr'
+              // sh 'tree .'
+              stash includes: 'cucumber-report.json,cucumber-report.html', name: 'cucumber-reports'
+            }
           }
         }
       }
