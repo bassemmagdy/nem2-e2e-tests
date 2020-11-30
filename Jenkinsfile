@@ -125,6 +125,7 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
           else {
             runGradle("--project-dir symbol-e2e-tests/ test -DrestGatewayUrl=${env.SYMBOL_API_URL} -DuserPrivateKey=${AUTOMATION_TEST_USER_PRIVATE_KEY}")
           }
+          stash includes: 'cucumber-report.json,cucumber-report.html', name: 'cucumber-reports'
         }
       }
     }
@@ -132,6 +133,7 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
   post{
     failure {
       echo "Tests failed"
+      unstash 'cucumber-reports'
       cucumber failedFeaturesNumber: -1, 
               failedScenariosNumber: -1, 
               failedStepsNumber: -1, 
@@ -144,6 +146,7 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
     }
     success {
       echo "Tests passed"
+      unstash 'cucumber-reports'
       cucumber failedFeaturesNumber: -1, 
               failedScenariosNumber: -1, 
               failedStepsNumber: -1, 
