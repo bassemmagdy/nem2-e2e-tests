@@ -119,7 +119,7 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
             // echo "config-default.properties after update: ${props}"
             def propertyReader = new PropertyReader('src/test/resources/configs/config-default.properties')
 
-            assert propertyReader.RepositoryFactoryType == 'Vertx'
+            assert propertyReader.repositoryFactoryType == 'Vertx'
             assert propertyReader.restGatewayUrl == 'http://api-01.us-west-2.0.10.0.x.symboldev.network:3000'
 
             propertyReader.restGatewayUrl(env.SYMBOL_API_URL)

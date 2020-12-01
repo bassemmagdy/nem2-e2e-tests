@@ -216,7 +216,7 @@ public class ConfigFileReader {
    * @return Repository factory type.
    */
   public RepositoryFactoryType getRepositoryFactoryType() {
-    return RepositoryFactoryType.valueOf(getPropertyValue("RepositoryFactoryType").toUpperCase());
+    return RepositoryFactoryType.valueOf(getPropertyValue("repositoryFactoryType").toUpperCase());
   }
 
   /**
