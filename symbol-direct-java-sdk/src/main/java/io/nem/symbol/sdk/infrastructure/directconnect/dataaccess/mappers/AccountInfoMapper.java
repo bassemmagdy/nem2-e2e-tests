@@ -28,7 +28,6 @@ import io.vertx.core.json.JsonObject;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -47,14 +46,14 @@ public class AccountInfoMapper implements Function<JsonObject, AccountInfo> {
     final BigInteger addressHeight = MapperUtils.toBigInteger(accountJsonObject, "addressHeight");
     final BigInteger publicHeight = MapperUtils.toBigInteger(accountJsonObject, "publicKeyHeight");
     final ImportancesMapper importancesMapper = new ImportancesMapper();
-    final List<Importances> importances =
+    final List<Importance> importances =
         accountJsonObject.getJsonArray("importances").stream()
             .map(jsonObj -> importancesMapper.apply((JsonObject) jsonObj))
             .collect(Collectors.toList());
-    final Importances importance =
+    final Importance importance =
         importances.size() > 0
             ? importances.get(0)
-            : new Importances(BigInteger.ZERO, BigInteger.ZERO);
+            : new Importance(BigInteger.ZERO, BigInteger.ZERO);
 
     final List<ResolvedMosaic> resolvedMosaics =
         accountJsonObject.getJsonArray("mosaics").stream()
@@ -65,9 +64,10 @@ public class AccountInfoMapper implements Function<JsonObject, AccountInfo> {
         getSupplementalAccountKeys(accountJsonObject.getJsonObject("supplementalPublicKeys"));
     return new AccountInfo(
         id,
+        MapperUtils.getStateVersion(accountJsonObject),
         address,
         addressHeight,
-        accountJsonObject.getString("publicKey"),
+        MapperUtils.toPublicKey(accountJsonObject, "publicKey"),
         publicHeight,
         importance.getValue(),
         importance.getHeight(),
@@ -106,14 +106,6 @@ public class AccountInfoMapper implements Function<JsonObject, AccountInfo> {
       linkedPublickey = MapperUtils.toPublicKey(linkedJsonObject, "publicKey");
     }
 
-    return new SupplementalAccountKeys(
-        getOptionalPublicKey(linkedPublickey),
-        getOptionalPublicKey(nodePublickey),
-        getOptionalPublicKey(vrfPublickey),
-        voting);
-  }
-
-  private Optional<String> getOptionalPublicKey(final PublicKey publicKey) {
-    return publicKey == null ? Optional.empty() : Optional.of(publicKey.toHex());
+    return new SupplementalAccountKeys(linkedPublickey, nodePublickey, vrfPublickey, voting);
   }
 }

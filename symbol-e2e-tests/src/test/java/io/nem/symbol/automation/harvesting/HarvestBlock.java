@@ -97,7 +97,7 @@ public class HarvestBlock extends BaseTest {
     final Account remoteAccount = Account.generateNewAccount(getTestContext().getNetworkType());
     new AccountKeyLinkHelper(getTestContext())
         .submitAccountKeyLinkAndWait(
-            harvesterAccount, remoteAccount.getPublicAccount(), LinkAction.LINK);
+            harvesterAccount, remoteAccount.getPublicAccount().getPublicKey(), LinkAction.LINK);
     new NodeKeyLinkHelper(getTestContext())
         .submitNodeKeyLinkTransactionAndWait(
             harvesterAccount, nodePublicAccount.getPublicKey(), LinkAction.LINK);

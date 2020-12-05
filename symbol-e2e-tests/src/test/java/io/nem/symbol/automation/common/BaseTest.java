@@ -171,9 +171,10 @@ public abstract class BaseTest {
           Optional.of(
               new AccountInfo(
                   "",
+                  1,
                   address,
                   BigInteger.ZERO,
-                  account.getPublicAccount().getPublicKey().toHex(),
+                  account.getPublicAccount().getPublicKey(),
                   BigInteger.ZERO,
                   BigInteger.ZERO,
                   BigInteger.ZERO,

@@ -20,7 +20,6 @@
 
 package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers;
 
-import io.nem.symbol.core.crypto.VotingKey;
 import io.nem.symbol.sdk.model.account.AccountLinkVotingKey;
 import io.vertx.core.json.JsonObject;
 
@@ -36,7 +35,7 @@ public class VotingKeyMapper implements Function<JsonObject, AccountLinkVotingKe
    */
   public AccountLinkVotingKey apply(final JsonObject jsonObject) {
     return new AccountLinkVotingKey(
-        jsonObject.getString("publicKey"),
+        MapperUtils.toPublicKey(jsonObject, "publicKey"),
         jsonObject.getLong("startEpoch"),
         jsonObject.getLong("endEpoch"));
   }

@@ -37,12 +37,13 @@ public class MetadataEntryMapper implements Function<JsonObject, Metadata> {
         final int valueSize = metadataEntryJsonObject.getInteger("valueSize");
         return new Metadata(
                 id,
+                MapperUtils.getStateVersion(metadataEntryJsonObject),
                 compositeHash,
                 sourceAddress,
                 targetAddress,
                 scopedMetadataKey,
                 metadataType,
                 value,
-                Optional.of(targetIdHex));
+                targetIdHex);
     }
 }

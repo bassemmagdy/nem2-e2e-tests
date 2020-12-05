@@ -20,21 +20,21 @@
 
 package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers;
 
-import io.nem.symbol.sdk.model.account.Importances;
+import io.nem.symbol.sdk.model.account.Importance;
 import io.vertx.core.json.JsonObject;
 
 import java.util.function.Function;
 
 /** Importances mapper */
-public class ImportancesMapper implements Function<JsonObject, Importances> {
+public class ImportancesMapper implements Function<JsonObject, Importance> {
   /**
    * Converts from Json to Importances.
    *
    * @param jsonObject Json object.
    * @return Importances pbject.
    */
-  public Importances apply(final JsonObject jsonObject) {
-    return new Importances(
+  public Importance apply(final JsonObject jsonObject) {
+    return new Importance(
         MapperUtils.toBigInteger(jsonObject, "value"),
         MapperUtils.toBigInteger(jsonObject, "height"));
   }

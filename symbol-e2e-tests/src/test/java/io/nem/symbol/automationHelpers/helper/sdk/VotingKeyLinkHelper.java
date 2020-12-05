@@ -21,6 +21,7 @@
 package io.nem.symbol.automationHelpers.helper.sdk;
 
 import io.nem.symbol.automationHelpers.common.TestContext;
+import io.nem.symbol.core.crypto.PublicKey;
 import io.nem.symbol.core.crypto.VotingKey;
 import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.transaction.LinkAction;
@@ -40,7 +41,7 @@ public class VotingKeyLinkHelper extends BaseHelper<VotingKeyLinkHelper> {
   }
 
   private VotingKeyLinkTransaction createVotingKeyLinkTransaction(
-      final VotingKey linkedPublicKey,
+      final PublicKey linkedPublicKey,
       final long startEpoch,
       final long endEpoch,
       final LinkAction linkAction) {
@@ -67,7 +68,7 @@ public class VotingKeyLinkHelper extends BaseHelper<VotingKeyLinkHelper> {
    */
   public SignedTransaction createVotingKeyLinkTransactionAndAnnounce(
       final Account account,
-      final VotingKey linkedPublicKey,
+      final PublicKey linkedPublicKey,
       final long startEpoch,
       final long endEpoch,
       final LinkAction linkAction) {
@@ -90,7 +91,7 @@ public class VotingKeyLinkHelper extends BaseHelper<VotingKeyLinkHelper> {
    */
   public VotingKeyLinkTransaction submitVotingKeyLinkTransactionAndWait(
       final Account account,
-      final VotingKey linkedPublicKey,
+      final PublicKey linkedPublicKey,
       final long startEpoch,
       final long endEpoch,
       final LinkAction linkAction) {

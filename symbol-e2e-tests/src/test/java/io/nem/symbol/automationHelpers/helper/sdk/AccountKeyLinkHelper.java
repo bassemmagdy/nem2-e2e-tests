@@ -21,6 +21,7 @@
 package io.nem.symbol.automationHelpers.helper.sdk;
 
 import io.nem.symbol.automationHelpers.common.TestContext;
+import io.nem.symbol.core.crypto.PublicKey;
 import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.account.PublicAccount;
 import io.nem.symbol.sdk.model.transaction.AccountKeyLinkTransaction;
@@ -40,12 +41,12 @@ public class AccountKeyLinkHelper extends BaseHelper<AccountKeyLinkHelper> {
   }
 
   private AccountKeyLinkTransaction createAccountLinkTransaction(
-      final PublicAccount remoteAccount, final LinkAction linkAction) {
+      final PublicKey remotePublicKey, final LinkAction linkAction) {
     final AccountKeyLinkTransactionFactory accountLinkTransactionFactory =
         AccountKeyLinkTransactionFactory.create(
             testContext.getNetworkType(),
             transactionHelper.getDefaultDeadline(),
-            remoteAccount.getPublicKey(),
+            remotePublicKey,
             linkAction);
     return buildTransaction(accountLinkTransactionFactory);
   }
@@ -54,15 +55,15 @@ public class AccountKeyLinkHelper extends BaseHelper<AccountKeyLinkHelper> {
    * Creates an account metadata transaction and announce it to the network.
    *
    * @param account User account.
-   * @param remoteAccount Remote account.
+   * @param remotePublicKey Remote account public key.
    * @param linkAction Link action.
    * @return Signed transaction.
    */
   public SignedTransaction createAccountLinkAndAnnounce(
-      final Account account, final PublicAccount remoteAccount, final LinkAction linkAction) {
+      final Account account, final PublicKey remotePublicKey, final LinkAction linkAction) {
     final TransactionHelper transactionHelper = new TransactionHelper(testContext);
     return transactionHelper.signAndAnnounceTransaction(
-        account, () -> createAccountLinkTransaction(remoteAccount, linkAction));
+        account, () -> createAccountLinkTransaction(remotePublicKey, linkAction));
   }
 
   /**
@@ -70,14 +71,14 @@ public class AccountKeyLinkHelper extends BaseHelper<AccountKeyLinkHelper> {
    * status.
    *
    * @param account User account.
-   * @param remoteAccount Remote account.
+   * @param remotePublicKey Remote account public key.
    * @param linkAction Link action.
    * @return Mosaic supply change transaction.
    */
   public AccountKeyLinkTransaction submitAccountKeyLinkAndWait(
-      final Account account, final PublicAccount remoteAccount, final LinkAction linkAction) {
+      final Account account, final PublicKey remotePublicKey, final LinkAction linkAction) {
     final TransactionHelper transactionHelper = new TransactionHelper(testContext);
     return transactionHelper.signAndAnnounceTransactionAndWait(
-        account, () -> createAccountLinkTransaction(remoteAccount, linkAction));
+        account, () -> createAccountLinkTransaction(remotePublicKey, linkAction));
   }
 }
