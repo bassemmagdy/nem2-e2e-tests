@@ -1,3 +1,5 @@
+import java.nio.file.Paths
+
 pipeline {
   agent {
     label 'cat-server'
@@ -110,26 +112,28 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
             automationUserPrivateKey = addresses.mosaics[0].accounts[0].privateKey
             echo "automationUserPrivateKey: ${automationUserPrivateKey}"
           }
-          dir ('symbol-e2e-tests') {
-            // def props = readProperties file: 'src/test/resources/configs/config-default.properties'
-            // echo "config-default.properties read: ${props}"
-            // props['userPrivateKey'] = automationUserPrivateKey
-            // props['restGatewayUrl'] = env.SYMBOL_API_URL
+          // def props = readProperties file: 'src/test/resources/configs/config-default.properties'
+          // echo "config-default.properties read: ${props}"
+          // props['userPrivateKey'] = automationUserPrivateKey
+          // props['restGatewayUrl'] = env.SYMBOL_API_URL
 
-            // echo "config-default.properties after update: ${props}"
-            def propertyReader = new PropertyReader('src/test/resources/configs/config-default.properties')
+          // echo "config-default.properties after update: ${props}"
+          def workingDir = pwd()
+          echo "${workingDir}"
+          def propsFilePath = Paths.get(workingDir, 'symbol-e2e-tests/src/test/resources/configs/config-default.properties')
+          echo "${propsFilePath}"
+          def propertyReader = new PropertyReader(propsFilePath)
 
-            assert propertyReader.repositoryFactoryType == 'Vertx'
-            assert propertyReader.restGatewayUrl == 'http://api-01.us-west-2.0.10.0.x.symboldev.network:3000'
+          assert propertyReader.repositoryFactoryType == 'Vertx'
+          assert propertyReader.restGatewayUrl == 'http://api-01.us-west-2.0.10.0.x.symboldev.network:3000'
 
-            propertyReader.restGatewayUrl(env.SYMBOL_API_URL)
-            propertyReader.userPrivateKey(automationUserPrivateKey)
+          propertyReader.restGatewayUrl(env.SYMBOL_API_URL)
+          propertyReader.userPrivateKey(automationUserPrivateKey)
 
-            assert propertyReader.restGatewayUrl == env.SYMBOL_API_URL
-            assert propertyReader.userPrivateKey == automationUserPrivateKey
+          assert propertyReader.restGatewayUrl == env.SYMBOL_API_URL
+          assert propertyReader.userPrivateKey == automationUserPrivateKey
 
-            sh 'cat src/test/resources/configs/config-default.properties'
-          }
+          sh 'cat src/test/resources/configs/config-default.properties'
         }
       }
     }
