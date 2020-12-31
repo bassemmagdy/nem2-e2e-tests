@@ -9,5 +9,5 @@
       docker-compose logs --tail 50
     register: result
   - debug:
-      msg: "{{ result.stderr }}"
-      msg: "{{ result.stdout }}"
+      msg: "{{ result.stderr_lines }}"
+      msg: "{{ result.stdout_lines }}"
