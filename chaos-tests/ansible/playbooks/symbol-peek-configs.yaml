@@ -1,0 +1,11 @@
+---
+- hosts: all:!spammer*
+  gather_facts: no
+  tasks:
+  - name: symbol peek into configs
+    shell: |
+      cd ~/symbol-testnet/{{type}}/{{assembly}}/userconfig/resources
+      cat {{config_file}}
+    register: result
+  - debug:
+      var: result
