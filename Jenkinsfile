@@ -33,123 +33,102 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
     gradle 'gradle-6.7'
   }
   stages {
-    // stage ('Setup gradle env') {
-    //   steps {
-    //     script {
-    //       runScript('''gradle --version
-    //           gradle wrapper --gradle-version 6.7 --distribution-type bin
-    //         ''')
-    //       runGradle('--version')
-    //     }
-    //   }
-    // }
-    // stage ('Build e2e tests project') {
-    //   steps{
-    //     catchError(buildResult: 'UNSTABLE', message: 'e2e tests compile failed', stageResult: 'FAILURE') {
-    //       script {
-    //         runGradle('--project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses')
-    //       }
-    //     }
-    //   }
-    // }
-    // stage ('Install Symbol bootstrap') {
-    //   when {
-    //     environment ignoreCase: true, name: 'IS_BOOTSTRAP_RUN', value: 'true'
-    //   }
-    //   steps {
-    //     script {
-    //       if (params.BOOTSTRAP_VERSION == '') {
-    //         error('ENVIRONMENT is bootstrap, but BOOTSTRAP_VERSION is not specified.')
-    //       }
-    //     }
-    //     echo "Installing symbol bootstrap version ${params.BOOTSTRAP_VERSION}"
-    //     runScript("""npm install -g symbol-bootstrap@${params.BOOTSTRAP_VERSION}
-    //       symbol-bootstrap -v
-    //     """)
-    //   }
-    // }
-    // stage ('Start Symbol bootstrap') {
-    //   when {
-    //     environment ignoreCase: true, name: 'IS_BOOTSTRAP_RUN', value: 'true'
-    //   }
-    //   steps {
-    //     dir ('symbol-bootstrap') {
-    //       deleteDir()
-    //       echo 'Starting symbol bootstrap...'
-    //       runScript('symbol-bootstrap start -p bootstrap --detached', 'Start Symbol bootstrap')
-    //     }
-    //   }
-    // }
-    // stage ('Check Symbol is running') {
-    //   steps {
-    //     script {
-    //       echo 'Checking whether symbol is running at the given URL...'
-    //       if (IS_BOOTSTRAP_RUN.toLowerCase() == 'true') {
-    //         runScript("symbol-bootstrap healthCheck", 'bootstrap health check')
-    //       }
-    //       def curlCmd = 'curl --silent --show-error'
-    //       def nodeInfo = runScript("${curlCmd} ${SYMBOL_API_URL}/node/info", 'get node info', true)
-    //       def nodeHealth = runScript("${curlCmd} ${SYMBOL_API_URL}/node/health", 'get node health', true)
-    //       def versions = runScript("${curlCmd} ${SYMBOL_API_URL}/node/server", 'get server versions', true)
-    //       def chainInfo = runScript("${curlCmd} ${SYMBOL_API_URL}/chain/info", 'get chain info', true)
+    stage ('Setup gradle env') {
+      steps {
+        script {
+          runScript('''gradle --version
+              gradle wrapper --gradle-version 6.7 --distribution-type bin
+            ''')
+          runGradle('--version')
+        }
+      }
+    }
+    stage ('Build e2e tests project') {
+      steps{
+        catchError(buildResult: 'UNSTABLE', message: 'e2e tests compile failed', stageResult: 'FAILURE') {
+          script {
+            runGradle('--project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses')
+          }
+        }
+      }
+    }
+    stage ('Install Symbol bootstrap') {
+      when {
+        environment ignoreCase: true, name: 'IS_BOOTSTRAP_RUN', value: 'true'
+      }
+      steps {
+        script {
+          if (params.BOOTSTRAP_VERSION == '') {
+            error('ENVIRONMENT is bootstrap, but BOOTSTRAP_VERSION is not specified.')
+          }
+        }
+        echo "Installing symbol bootstrap version ${params.BOOTSTRAP_VERSION}"
+        runScript("""npm install -g symbol-bootstrap@${params.BOOTSTRAP_VERSION}
+          symbol-bootstrap -v
+        """)
+      }
+    }
+    stage ('Start Symbol bootstrap') {
+      when {
+        environment ignoreCase: true, name: 'IS_BOOTSTRAP_RUN', value: 'true'
+      }
+      steps {
+        dir ('symbol-bootstrap') {
+          deleteDir()
+          echo 'Starting symbol bootstrap...'
+          runScript('symbol-bootstrap start -p bootstrap --detached', 'Start Symbol bootstrap')
+        }
+      }
+    }
+    stage ('Check Symbol is running') {
+      steps {
+        script {
+          echo 'Checking whether symbol is running at the given URL...'
+          if (IS_BOOTSTRAP_RUN.toLowerCase() == 'true') {
+            runScript("symbol-bootstrap healthCheck", 'bootstrap health check')
+          }
+          def curlCmd = 'curl --silent --show-error'
+          def nodeInfo = runScript("${curlCmd} ${SYMBOL_API_URL}/node/info", 'get node info', true)
+          def nodeHealth = runScript("${curlCmd} ${SYMBOL_API_URL}/node/health", 'get node health', true)
+          def versions = runScript("${curlCmd} ${SYMBOL_API_URL}/node/server", 'get server versions', true)
+          def chainInfo = runScript("${curlCmd} ${SYMBOL_API_URL}/chain/info", 'get chain info', true)
           
-    //       echo "Node info: ${nodeInfo}"
-    //       echo "Node health: ${nodeHealth}"
-    //       echo "Symbol versions: ${versions}"
-    //       echo "Chain info: ${chainInfo}"
-    //     }
-    //   }
-    // }
+          echo "Node info: ${nodeInfo}"
+          echo "Node health: ${nodeHealth}"
+          echo "Symbol versions: ${versions}"
+          echo "Chain info: ${chainInfo}"
+        }
+      }
+    }
     stage ('Extract info from Symbol') {
       when {
         environment ignoreCase: true, name: 'IS_BOOTSTRAP_RUN', value: 'true'
       }
       steps {
         script {
-          // dir ('symbol-bootstrap') {
-          //   def addresses = readYaml file: 'target/addresses.yml'
-          //   // variable declared without def becomes a global scoped variable and can be reassigned too
-          //   automationUserPrivateKey = addresses.mosaics[0].accounts[0].privateKey
-          //   echo "automationUserPrivateKey: ${automationUserPrivateKey}"
-          // }
+          dir ('symbol-bootstrap') {
+            def addresses = readYaml file: 'target/addresses.yml'
+            // variable declared without def becomes a global scoped variable and can be reassigned too
+            automationUserPrivateKey = addresses.mosaics[0].accounts[0].privateKey
+            echo "automationUserPrivateKey: ${automationUserPrivateKey}"
+          }
           dir ('symbol-e2e-tests') {
             def props = readYaml file: 'src/test/resources/configs/config-default.yaml'
             echo "config-default.yaml read: ${props}"
-            props['userPrivateKey'] = automationUserPrivateKey
-            props['restGatewayUrl'] = env.SYMBOL_API_URL
+
+            props.userPrivateKey = automationUserPrivateKey
+            props.restGatewayUrl = env.SYMBOL_API_URL
 
             echo "config-default.yaml after update: ${props}"
+            echo "apiHost value: ${props.apiHost}"
 
-            assert props.repositoryFactoryType == 'Vertx'
-            assert props.restGatewayUrl == 'http://api-01.us-west-2.testnet.symboldev.network:3000'
+            // assert props.repositoryFactoryType == 'Vertx'
+            // assert props.restGatewayUrl == 'http://api-01.us-west-2.testnet.symboldev.network:3000'
 
             writeYaml file: 'src/test/resources/configs/config-default.yaml', data: props, overwrite: true
 
             def propsAfterUpdate = readYaml file: 'src/test/resources/configs/config-default.yaml'
             echo "config-default.yaml after written update: ${propsAfterUpdate}"
-
-            def workingDir = pwd()
-            echo "${workingDir}"
-            // def propsFilePath = Paths.get(workingDir, 'src/test/resources/configs/config-default.properties')
-            // echo "${propsFilePath}"
-            // // def propsFileExists = fileExists 'src/test/resources/configs/config-default.properties'
-            // // echo "Props file exists: ${propsFileExists}"
-            // def propertyReader = new PropertyReader(propsFilePath.toString().substring(1)) // remove leading slash (/)
-            // echo "property reader working dir: ${propertyReader.workingDir.getAbsolutePath()}"
-            // echo "property reader working dir contents: ${propertyReader.workingDir.list()}"
-
-            // echo "property reader props file path: ${propertyReader.filePath}"
-
-            // assert propertyReader.repositoryFactoryType == 'Vertx'
-            // assert propertyReader.restGatewayUrl == 'http://api-01.us-west-2.testnet.symboldev.network:3000'
-
-            // propertyReader.restGatewayUrl(env.SYMBOL_API_URL)
-            // propertyReader.userPrivateKey(automationUserPrivateKey)
-
-            // assert propertyReader.restGatewayUrl == env.SYMBOL_API_URL
-            // assert propertyReader.userPrivateKey == automationUserPrivateKey
-
-            // sh 'cat src/test/resources/configs/config-default.properties'
           }
         }
       }
