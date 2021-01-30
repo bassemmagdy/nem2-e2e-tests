@@ -1,0 +1,16 @@
+---
+apiHost: localhost
+apiPort: 7900
+brokerHost: localhost
+brokerPort: 7902
+mongodbHost: localhost
+mongodbPort: 27017
+socketTimeoutInMilliseconds: 10000
+databaseQueryTimeoutInSeconds: 120
+minFeeMultiplier: 100
+restGatewayUrl: http://api-01.us-west-2.0.10.0.x.symboldev.network:3000
+repositoryFactoryType: Vertx
+
+#bootstrap
+userPrivateKey: 4191972F8F40CF2D7132A0F26B4839C606259AC872DA78318945E1A2039B4A3D
+harvesterPublicKey: 4F9159250895C3AFE65CBF0F4D01FF9E59A3B3FB32A3D18AC58BEEBCAC419F37
