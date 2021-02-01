@@ -8,7 +8,7 @@ mongodbPort: 27017
 socketTimeoutInMilliseconds: 10000
 databaseQueryTimeoutInSeconds: 120
 minFeeMultiplier: 100
-restGatewayUrl: http://api-01.us-west-2.0.10.0.x.symboldev.network:3000
+restGatewayUrl: http://api-01.us-west-2.testnet.symboldev.network:3000
 repositoryFactoryType: Vertx
 
 #bootstrap

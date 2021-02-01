@@ -28,31 +28,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
 /** Config reader for the automation framework. */
 public class ConfigFileReader {
-  /** List of key-pair vaules. */
-  private final Properties properties;
   /** The config file. */
-  private final String propertyFile = "configs/config-default.properties";
+  private final String propertyFile = "configs/config-default.yaml";
+
+  private final Config config;
 
   /** Constructor. */
-  public ConfigFileReader() {
-    final BufferedReader reader;
+  public ConfigFileReader() throws FileNotFoundException {
+    final Path resourcePath = Paths
+        .get(Thread.currentThread().getContextClassLoader().getResource(propertyFile).getPath());
+    final ObjectMapper mapper = new ObjectMapper(new YAMLFactory()); // jackson databind
     try {
-      final Path resourcePath =
-          Paths.get(
-              Thread.currentThread().getContextClassLoader().getResource(propertyFile).getPath());
-      reader = new BufferedReader(new FileReader(resourcePath.toFile().getAbsolutePath()));
-      properties = new Properties();
-      try {
-        properties.load(reader);
-        reader.close();
-      } catch (final IOException e) {
-        e.printStackTrace();
-      }
-    } catch (final FileNotFoundException e) {
+      config = mapper.readValue(new File(resourcePath.toAbsolutePath().toString()), Config.class);
+    }
+    catch (final IOException e) {
       e.printStackTrace();
-      throw new RuntimeException(propertyFile + " file not found");
+      throw new RuntimeException("Could not read config file.");
     }
   }
 
@@ -62,7 +58,7 @@ public class ConfigFileReader {
    * @return Api host name/address.
    */
   public String getApiHost() {
-    return getPropertyValue("apiHost");
+    return config.getApiHost();
   }
 
   /**
@@ -71,7 +67,7 @@ public class ConfigFileReader {
    * @return Api host port.
    */
   public int getApiPort() {
-    return Integer.parseInt(getPropertyValue("apiPort"));
+    return Integer.parseInt(config.getApiPort());
   }
 
   /**
@@ -80,7 +76,7 @@ public class ConfigFileReader {
    * @return broker host name/address.
    */
   public String getBrokerHost() {
-    return getPropertyValue("brokerHost");
+    return config.getBrokerHost();
   }
 
   /**
@@ -89,34 +85,7 @@ public class ConfigFileReader {
    * @return broker host port.
    */
   public int getBrokerPort() {
-    return Integer.parseInt(getPropertyValue("brokerPort"));
-  }
-
-  /**
-   * Gets the api server full certificate file.
-   *
-   * @return Api node certificate file.
-   */
-  public File getApiServerCertificateFile() {
-    return new File(getPropertyValue("apiServerCertificateFile").toUpperCase());
-  }
-
-  /**
-   * Gets the automation key file.
-   *
-   * @return Automation key file.
-   */
-  public File getAutomationKeyFile() {
-    return new File(getPropertyValue("automationKeyFile").toUpperCase());
-  }
-
-  /**
-   * Gets the automation certificate file.
-   *
-   * @return Automation certificate file.
-   */
-  public File getAutomationCertificateFile() {
-    return new File(getPropertyValue("automationCertificateFile").toUpperCase());
+    return Integer.parseInt(config.getBrokerPort());
   }
 
   /**
@@ -125,7 +94,7 @@ public class ConfigFileReader {
    * @return Test user private key.
    */
   public String getUserPrivateKey() {
-    return getPropertyValue("userPrivateKey").toUpperCase();
+    return config.getUserPrivateKey().toUpperCase();
   }
 
   /**
@@ -134,7 +103,7 @@ public class ConfigFileReader {
    * @return Mongo database host name.
    */
   public String getMongodbHost() {
-    return getPropertyValue("mongodbHost");
+    return config.getMongodbHost();
   }
 
   /**
@@ -143,7 +112,7 @@ public class ConfigFileReader {
    * @return Mongo database port.
    */
   public int getMongodbPort() {
-    return Integer.parseInt(getPropertyValue("mongodbPort"));
+    return Integer.parseInt(config.getMongodbPort());
   }
 
   /**
@@ -152,7 +121,7 @@ public class ConfigFileReader {
    * @return Min fee multiplier.
    */
   public BigInteger getMinFeeMultiplier() {
-    return new BigInteger(getPropertyValue("minFeeMultiplier"));
+    return new BigInteger(config.getMinFeeMultiplier());
   }
 
   /**
@@ -161,7 +130,7 @@ public class ConfigFileReader {
    * @return Socket timeout in millisecond.
    */
   public int getSocketTimeoutInMilliseconds() {
-    return Integer.parseInt(getPropertyValue("socketTimeoutInMilliseconds"));
+    return Integer.parseInt(config.getSocketTimeoutInMilliseconds());
   }
 
   /**
@@ -170,7 +139,7 @@ public class ConfigFileReader {
    * @return Database query timeout in seconds.
    */
   public int getDatabaseQueryTimeoutInSeconds() {
-    return Integer.parseInt(getPropertyValue("databaseQueryTimeoutInSeconds"));
+    return Integer.parseInt(config.getDatabaseQueryTimeoutInSeconds());
   }
 
   /**
@@ -179,27 +148,8 @@ public class ConfigFileReader {
    * @return Public key.
    */
   public String getHarvesterPublicKey() {
-    return getPropertyValue("harvesterPublicKey");
+    return config.getHarvesterPublicKey().toUpperCase();
   }
-
-  /**
-   * Gets the harvester private key.
-   *
-   * @return Private key.
-   */
-  public String getHarvesterPrivateKey() {
-    return getPropertyValue("remoteHarvesterPrivateKey");
-  }
-
-  /**
-   * Gets the harvester private key.
-   *
-   * @return Public key.
-   */
-  public String getNodePublicKey() {
-    return getPropertyValue("nodePublicKey");
-  }
-
 
   /**
    * Gets the rest gateway url.
@@ -207,7 +157,7 @@ public class ConfigFileReader {
    * @return Url for the rest gateway.
    */
   public String getRestGatewayUrl() {
-    return getPropertyValue("restGatewayUrl");
+    return config.getRestGatewayUrl();
   }
 
   /**
@@ -216,29 +166,6 @@ public class ConfigFileReader {
    * @return Repository factory type.
    */
   public RepositoryFactoryType getRepositoryFactoryType() {
-    return RepositoryFactoryType.valueOf(getPropertyValue("repositoryFactoryType").toUpperCase());
-  }
-
-  /**
-   * Gets symbol config path.
-   *
-   * @return Symbol config path.
-   */
-  public String getSymbolConfigPath() {
-    return getPropertyValue("symbolConfigPath");
-  }
-
-  /**
-   * Gets a property value from the config file.
-   *
-   * @param propertyName Property name.
-   * @return Property value.
-   */
-  private String getPropertyValue(String propertyName) {
-    String propertyValue = properties.getProperty(propertyName);
-    if (propertyValue != null) {
-      return propertyValue;
-    }
-    throw new RuntimeException(propertyName + " not specified in the " + propertyFile + " file.");
+    return RepositoryFactoryType.valueOf(config.getRepositoryFactoryType().toUpperCase());
   }
 }
