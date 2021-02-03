@@ -47,7 +47,7 @@
 
   @bvt
   Scenario: An account registers a non-expiring asset
-    When Alice registers a non-expiring asset
+    When Alice registers a non-expiring asset "token"
     And Alice should become the owner of the new asset
     And Alice pays mosaic rental fee
 

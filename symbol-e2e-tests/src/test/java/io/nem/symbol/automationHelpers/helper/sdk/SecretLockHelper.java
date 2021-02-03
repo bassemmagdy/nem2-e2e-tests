@@ -22,6 +22,7 @@ package io.nem.symbol.automationHelpers.helper.sdk;
 
 import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.core.crypto.Hashes;
+import io.nem.symbol.sdk.api.SecretLockSearchCriteria;
 import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.account.Address;
 import io.nem.symbol.sdk.model.mosaic.Mosaic;
@@ -29,99 +30,110 @@ import io.nem.symbol.sdk.model.transaction.*;
 
 import java.math.BigInteger;
 
-/** Secret lock helper. */
+/**
+ * Secret lock helper.
+ */
 public class SecretLockHelper extends BaseHelper<SecretLockHelper> {
-  /**
-   * Constructor.
-   *
-   * @param testContext Test context.
-   */
-  public SecretLockHelper(final TestContext testContext) {
-    super(testContext);
-  }
-
-  private SecretLockTransaction createSecretLockTransaction(
-      final Mosaic mosaic,
-      final BigInteger duration,
-      final LockHashAlgorithm lockHashAlgorithmType,
-      final String secret,
-      final Address recipient) {
-    final SecretLockTransactionFactory secretLockTransactionFactory =
-            SecretLockTransactionFactory.create(
-                    testContext.getNetworkType(),
-                    transactionHelper.getDefaultDeadline(),
-                    mosaic,
-                    duration,
-                    lockHashAlgorithmType,
-                    secret,
-                    recipient);
-    return buildTransaction(secretLockTransactionFactory);
-  }
-
-  private byte[] getHash(
-      final LockHashAlgorithm lockHashAlgorithmType, final byte[] inputBytes) {
-    switch (lockHashAlgorithmType) {
-      case SHA3_256:
-        return Hashes.sha3_256(inputBytes);
-      case HASH_256:
-        return Hashes.hash256(inputBytes);
-      case HASH_160:
-        return Hashes.hash160(inputBytes);
-      default:
-        throw new IllegalArgumentException("Hash type is unknown: " + lockHashAlgorithmType);
+    /**
+     * Constructor.
+     *
+     * @param testContext Test context.
+     */
+    public SecretLockHelper(final TestContext testContext) {
+        super(testContext);
     }
-  }
 
-  public byte[] createHash(
-      final LockHashAlgorithm hashType, final byte[] inputBytes) {
-    return getHash(hashType, inputBytes);
-  }
+    private SecretLockTransaction createSecretLockTransaction(
+            final Mosaic mosaic,
+            final BigInteger duration,
+            final LockHashAlgorithm lockHashAlgorithmType,
+            final String secret,
+            final Address recipient) {
+        final SecretLockTransactionFactory secretLockTransactionFactory =
+                SecretLockTransactionFactory.create(
+                        testContext.getNetworkType(),
+                        transactionHelper.getDefaultDeadline(),
+                        mosaic,
+                        duration,
+                        lockHashAlgorithmType,
+                        secret,
+                        recipient);
+        return buildTransaction(secretLockTransactionFactory);
+    }
 
-  /**
-   * Creates a secret lock transaction and announce it to the network and wait for confirmed status.
-   *
-   * @param account User account.
-   * @param mosaic Mosaic to lock.
-   * @param duration Duration to lock.
-   * @param hashType Hash type.
-   * @param secret Secret string.
-   * @param recipient Recipient address.
-   * @return Signed transaction.
-   */
-  public SignedTransaction createSecretLockAndAnnounce(
-      final Account account,
-      final Mosaic mosaic,
-      final BigInteger duration,
-      final LockHashAlgorithm hashType,
-      final String secret,
-      final Address recipient) {
-    return new TransactionHelper(testContext)
-        .signAndAnnounceTransaction(
-            account,
-            () -> createSecretLockTransaction(mosaic, duration, hashType, secret, recipient));
-  }
+    private byte[] getHash(
+            final LockHashAlgorithm lockHashAlgorithmType, final byte[] inputBytes) {
+        switch (lockHashAlgorithmType) {
+            case SHA3_256:
+                return Hashes.sha3_256(inputBytes);
+            case HASH_256:
+                return Hashes.hash256(inputBytes);
+            case HASH_160:
+                return Hashes.hash160(inputBytes);
+            default:
+                throw new IllegalArgumentException("Hash type is unknown: " + lockHashAlgorithmType);
+        }
+    }
 
-  /**
-   * Creates a secret lock transaction and announce it to the network and wait for confirmed status.
-   *
-   * @param account User account.
-   * @param mosaic Mosaic to lock.
-   * @param duration Duration to lock.
-   * @param hashType Hash type.
-   * @param secret Secret string.
-   * @param recipient Recipient address.
-   * @return Secret lock transaction.
-   */
-  public SecretLockTransaction submitSecretLockTransactionAndWait(
-      final Account account,
-      final Mosaic mosaic,
-      final BigInteger duration,
-      final LockHashAlgorithm hashType,
-      final String secret,
-      final Address recipient) {
-    return new TransactionHelper(testContext)
-        .signAndAnnounceTransactionAndWait(
-            account,
-            () -> createSecretLockTransaction(mosaic, duration, hashType, secret, recipient));
-  }
+    public byte[] createHash(
+            final LockHashAlgorithm hashType, final byte[] inputBytes) {
+        return getHash(hashType, inputBytes);
+    }
+
+    /**
+     * Creates a secret lock transaction and announce it to the network and wait for confirmed status.
+     *
+     * @param account   User account.
+     * @param mosaic    Mosaic to lock.
+     * @param duration  Duration to lock.
+     * @param hashType  Hash type.
+     * @param secret    Secret string.
+     * @param recipient Recipient address.
+     * @return Signed transaction.
+     */
+    public SignedTransaction createSecretLockAndAnnounce(
+            final Account account,
+            final Mosaic mosaic,
+            final BigInteger duration,
+            final LockHashAlgorithm hashType,
+            final String secret,
+            final Address recipient) {
+        return new TransactionHelper(testContext)
+                .signAndAnnounceTransaction(
+                        account,
+                        () -> createSecretLockTransaction(mosaic, duration, hashType, secret, recipient));
+    }
+
+    /**
+     * Creates a secret lock transaction and announce it to the network and wait for confirmed status.
+     *
+     * @param account   User account.
+     * @param mosaic    Mosaic to lock.
+     * @param duration  Duration to lock.
+     * @param hashType  Hash type.
+     * @param secret    Secret string.
+     * @param recipient Recipient address.
+     * @return Secret lock transaction.
+     */
+    public SecretLockTransaction submitSecretLockTransactionAndWait(
+            final Account account,
+            final Mosaic mosaic,
+            final BigInteger duration,
+            final LockHashAlgorithm hashType,
+            final String secret,
+            final Address recipient) {
+        return new TransactionHelper(testContext)
+                .signAndAnnounceTransactionAndWait(
+                        account,
+                        () -> createSecretLockTransaction(mosaic, duration, hashType, secret, recipient));
+    }
+
+    public SecretLockInfo getSecretLock(final String hash) {
+        return testContext.getRepositoryFactory().createSecretLockRepository().getSecretLock(hash).blockingFirst();
+    }
+
+    public SecretLockInfo SearchSecretLock(final Address address, final String secret) {
+        return testContext.getRepositoryFactory().createSecretLockRepository().search(
+                new SecretLockSearchCriteria().secret(secret).address(address)).blockingFirst().getData().get(0);
+    }
 }

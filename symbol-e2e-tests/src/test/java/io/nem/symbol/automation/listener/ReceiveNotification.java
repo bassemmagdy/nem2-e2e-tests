@@ -124,7 +124,7 @@ public class ReceiveNotification extends BaseTest {
   @When("^(\\w+) waits for a next finalized block$")
   public void waitForNextFinalizedBlock(final String username) {
     final Listener listener = getListener();
-    final int timeout = 25 * 60;
+    final int timeout = 8 * 60;
     final FinalizedBlock finalizedBlock = getObservableValueWithTimeout(listener.finalizedBlock().take(1), timeout);
     getTestContext().getScenarioContext().setContext(BLOCK_INFO_NAME, finalizedBlock);
   }

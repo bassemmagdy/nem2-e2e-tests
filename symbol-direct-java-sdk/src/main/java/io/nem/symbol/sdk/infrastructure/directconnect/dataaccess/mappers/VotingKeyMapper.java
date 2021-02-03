@@ -35,7 +35,7 @@ public class VotingKeyMapper implements Function<JsonObject, AccountLinkVotingKe
    */
   public AccountLinkVotingKey apply(final JsonObject jsonObject) {
     return new AccountLinkVotingKey(
-        MapperUtils.toPublicKey(jsonObject, "publicKey"),
+        jsonObject.getString("publicKey"),
         jsonObject.getLong("startEpoch"),
         jsonObject.getLong("endEpoch"));
   }
