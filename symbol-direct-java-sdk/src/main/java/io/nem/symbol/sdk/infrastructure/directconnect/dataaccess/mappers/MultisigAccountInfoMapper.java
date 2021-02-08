@@ -22,9 +22,6 @@ package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers;
 
 import io.nem.symbol.sdk.model.account.Address;
 import io.nem.symbol.sdk.model.account.MultisigAccountInfo;
-import io.nem.symbol.sdk.model.account.PublicAccount;
-import io.nem.symbol.sdk.model.account.UnresolvedAddress;
-import io.nem.symbol.sdk.model.network.NetworkType;
 import io.vertx.core.json.JsonObject;
 
 import java.util.List;
@@ -40,10 +37,9 @@ public class MultisigAccountInfoMapper implements Function<JsonObject, MultisigA
    * @param keyName Key name.
    * @return Public account.
    */
-  private List<Address> getAddressList(
-      final JsonObject jsonObject, final String keyName) {
+  private List<Address> getAddressList(final JsonObject jsonObject, final String keyName) {
     return jsonObject.getJsonArray(keyName).stream()
-        .map(s -> Address.createFromEncoded((String)s))
+        .map(s -> Address.createFromEncoded((String) s))
         .collect(Collectors.toList());
   }
 
@@ -54,16 +50,21 @@ public class MultisigAccountInfoMapper implements Function<JsonObject, MultisigA
    * @return Multisig account info.
    */
   public MultisigAccountInfo apply(final JsonObject jsonObject) {
+    final String recordId = MapperUtils.toRecordId(jsonObject);
     final JsonObject multisigJsonObject = jsonObject.getJsonObject("multisig");
     final Address address =
         Address.createFromEncoded(multisigJsonObject.getString("accountAddress"));
     final byte minApproval = multisigJsonObject.getInteger("minApproval").byteValue();
     final byte minRemoval = multisigJsonObject.getInteger("minRemoval").byteValue();
-    final List<Address> cosignatories =
-        getAddressList(multisigJsonObject, "cosignatoryAddresses");
-    final List<Address> multisigAccounts =
-            getAddressList(multisigJsonObject, "multisigAddresses");
+    final List<Address> cosignatories = getAddressList(multisigJsonObject, "cosignatoryAddresses");
+    final List<Address> multisigAccounts = getAddressList(multisigJsonObject, "multisigAddresses");
     return new MultisigAccountInfo(
-        address, minApproval, minRemoval, cosignatories, multisigAccounts);
+        recordId,
+        MapperUtils.getStateVersion(multisigJsonObject),
+        address,
+        minApproval,
+        minRemoval,
+        cosignatories,
+        multisigAccounts);
   }
 }

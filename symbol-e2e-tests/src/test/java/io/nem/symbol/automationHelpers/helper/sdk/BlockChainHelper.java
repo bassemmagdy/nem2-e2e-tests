@@ -25,6 +25,7 @@ import io.nem.symbol.core.utils.ExceptionUtils;
 import io.nem.symbol.sdk.api.ResolutionStatementSearchCriteria;
 import io.nem.symbol.sdk.api.TransactionStatementSearchCriteria;
 import io.nem.symbol.sdk.model.blockchain.BlockInfo;
+import io.nem.symbol.sdk.model.blockchain.ChainInfo;
 import io.nem.symbol.sdk.model.receipt.AddressResolutionStatement;
 import io.nem.symbol.sdk.model.receipt.MosaicResolutionStatement;
 import io.nem.symbol.sdk.model.receipt.TransactionStatement;
@@ -61,6 +62,21 @@ public class BlockChainHelper {
                                 .getChainInfo()
                                 .blockingFirst()
                                 .getHeight());
+    }
+
+    /**
+     * Gets the block chain height.
+     *
+     * @return Block chain height.
+     */
+    public ChainInfo getBlockchainInfo() {
+        return ExceptionUtils.propagate(
+                () ->
+                        testContext
+                                .getRepositoryFactory()
+                                .createChainRepository()
+                                .getChainInfo()
+                                .blockingFirst());
     }
 
     /**

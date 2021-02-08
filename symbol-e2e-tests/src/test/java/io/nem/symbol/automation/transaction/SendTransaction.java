@@ -247,8 +247,7 @@ public class SendTransaction extends BaseTest {
 
   @When("^(\\w+) send transaction with invalid size")
   public void sendTransactionWithInvalidSize(final String sender) {
-    //TODO: getTestContext().getNetworkType().getAddressPrefix()
-    triesToTransferAssetsNoCheck(sender,  getTestContext().getNetworkType().getValue() + "invalid", new ArrayList<>(),
+    triesToTransferAssetsNoCheck(sender,  getTestContext().getNetworkType().getAddressPrefix() + "invalid", new ArrayList<>(),
             PlainMessage.create(
             ""));
   }

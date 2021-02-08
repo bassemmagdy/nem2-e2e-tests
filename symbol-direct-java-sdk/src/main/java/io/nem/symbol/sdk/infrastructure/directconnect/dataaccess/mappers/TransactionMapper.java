@@ -720,7 +720,7 @@ class VotingKeyLinkTransactionMapper extends TransactionMapperBase {
   @Override
   public VotingKeyLinkTransactionFactory create(final JsonObject jsonObject, final Deadline deadline) {
     extractCommonProperties(jsonObject);
-    final VotingKey votingKey = new VotingKey(transaction.getString("linkedPublicKey"));
+    final PublicKey votingKey = MapperUtils.toPublicKey(transaction,"linkedPublicKey");
     final long startEpoch = transaction.getInteger("startEpoch");
     final long endEpoch = transaction.getInteger("endEndEpoch");
     return VotingKeyLinkTransactionFactory.create(

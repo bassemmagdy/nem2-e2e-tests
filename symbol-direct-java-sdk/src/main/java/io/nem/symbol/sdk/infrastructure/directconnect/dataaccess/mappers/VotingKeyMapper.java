@@ -20,7 +20,6 @@
 
 package io.nem.symbol.sdk.infrastructure.directconnect.dataaccess.mappers;
 
-import io.nem.symbol.core.crypto.VotingKey;
 import io.nem.symbol.sdk.model.account.AccountLinkVotingKey;
 import io.vertx.core.json.JsonObject;
 

@@ -143,4 +143,9 @@ public final class MapperUtils {
   public static Long toUnsignedLong(final Integer value) {
     return Integer.toUnsignedLong(value);
   }
+
+  public static int getStateVersion(final JsonObject jsonObject) {
+    return jsonObject.getInteger("version");
+  }
+
 }

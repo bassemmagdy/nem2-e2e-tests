@@ -322,17 +322,19 @@ public class AssetRegistration extends BaseTest {
     verifyAccountBalance(accountInfoBefore, actualAmountChange.longValue());
   }
 
-  @When("^(\\w+) registers a non-expiring asset$")
-  public void registerAssetNonExpiring(final String userName) {
+  @When("^(\\w+) registers a non-expiring asset \"(\\w+)\"$")
+  public void registerAssetNonExpiring(final String userName, final String assetName) {
     final Account userAccount = getUser(userName);
     final MosaicFlags mosaicFlags =
         MosaicFlags.create(
             CommonHelper.getRandomNextBoolean(), CommonHelper.getRandomNextBoolean());
     createMosaicAndSaveAccount(
         userName,
-        () ->
-            mosaicHelper.submitMosaicDefinitionAndWait(
-                userAccount, mosaicFlags, CommonHelper.getRandomDivisibility()));
+        () -> {
+            final MosaicDefinitionTransaction mosaicDefinitionTransaction =  mosaicHelper.submitMosaicDefinitionAndWait(
+                userAccount, mosaicFlags, CommonHelper.getRandomDivisibility());
+            storeMosaicInfo(assetName, mosaicHelper.getMosaic(mosaicDefinitionTransaction.getMosaicId()));
+        });
   }
 
   @Then("^(\\w+) should become the owner of the new asset$")

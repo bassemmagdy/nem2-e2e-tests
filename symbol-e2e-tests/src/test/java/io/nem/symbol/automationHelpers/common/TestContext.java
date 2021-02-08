@@ -193,6 +193,7 @@ public class TestContext {
 
   /**
    * Get the default deadline.
+   *
    * @return Default deadline.
    */
   public Deadline getDefaultDeadline() {
@@ -205,7 +206,7 @@ public class TestContext {
    * @return Namespace id.
    */
   public Currency getNetworkCurrency() {
-     return repositoryFactory.getNetworkCurrency().blockingFirst();
+    return repositoryFactory.getNetworkCurrency().blockingFirst();
   }
 
   /**
@@ -223,7 +224,7 @@ public class TestContext {
             .createNetworkRepository()
             .getTransactionFees()
             .blockingFirst()
-            .getLowestFeeMultiplier();
+            .getMedianFeeMultiplier();
     final int minConfigValue = getConfigFileReader().getMinFeeMultiplier().intValue();
     return calculatedFee < minConfigValue ? minConfigValue : calculatedFee;
   }
@@ -254,8 +255,7 @@ public class TestContext {
     final List<Transaction> userTransactions =
         userFeeMap.getOrDefault(publicAccount.getPublicKey().toHex(), new LinkedList<>());
     final Long fee =
-        userTransactions
-            .parallelStream()
+        userTransactions.parallelStream()
             .map(
                 transaction -> {
                   final TransactionStatus status =
@@ -278,7 +278,9 @@ public class TestContext {
                   //        userFee = userFee.add(BigInteger.valueOf((coSigner * 96)*
                   // blockInfo.getFeeMultiplier()));
                   //      }
-                }).mapToLong(x -> (Long)x).sum();
+                })
+            .mapToLong(x -> (Long) x)
+            .sum();
     return BigInteger.valueOf(fee.intValue());
   }
 

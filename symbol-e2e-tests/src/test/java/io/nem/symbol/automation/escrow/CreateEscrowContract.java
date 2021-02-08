@@ -373,13 +373,13 @@ public class CreateEscrowContract extends BaseTest {
       final BigInteger amount,
       final String currency,
       final BigInteger duration) {
-    final AggregateHelper aggregateHelper = new AggregateHelper(getTestContext());
+    final HashLockHelper hashLockHelper = new HashLockHelper(getTestContext());
     final Account account = getUser(userName);
     final NamespaceId namespaceId = getNamespaceIdFromName(currency);
     final Mosaic mosaic =
         new MosaicHelper(getTestContext()).getMosaicFromNamespace(namespaceId, amount);
     final SignedTransaction signedTransaction = getTestContext().getSignedTransaction();
-    aggregateHelper.createLockFundsAndAnnounce(account, mosaic, duration, signedTransaction);
+    hashLockHelper.createLockFundsAndAnnounce(account, mosaic, duration, signedTransaction);
   }
 
   @When(
@@ -389,13 +389,13 @@ public class CreateEscrowContract extends BaseTest {
       final BigInteger amount,
       final String currency,
       final BigInteger duration) {
-    final AggregateHelper aggregateHelper = new AggregateHelper(getTestContext());
+    final HashLockHelper hashLockHelper = new HashLockHelper(getTestContext());
     final Account account = getUser(userName);
     final NamespaceId namespaceId = getNamespaceIdFromName(currency);
     final Mosaic mosaic =
         new MosaicHelper(getTestContext()).getMosaicFromNamespace(namespaceId, amount);
     final SignedTransaction signedTransaction = getTestContext().getSignedTransaction();
-    aggregateHelper.submitHashLockTransactionAndWait(account, mosaic, duration, signedTransaction);
+    hashLockHelper.submitHashLockTransactionAndWait(account, mosaic, duration, signedTransaction);
     getTestContext().setSignedTransaction(signedTransaction);
   }
 

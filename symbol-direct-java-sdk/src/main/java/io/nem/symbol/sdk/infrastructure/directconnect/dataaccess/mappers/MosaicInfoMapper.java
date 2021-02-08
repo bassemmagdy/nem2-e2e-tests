@@ -65,6 +65,7 @@ public class MosaicInfoMapper implements Function<JsonObject, MosaicInfo> {
     final Long duration = mosaicJsonObject.getLong("duration");
     return new MosaicInfo(
         recordId,
+        MapperUtils.getStateVersion(mosaicJsonObject),
         mosaicId,
         supply,
         height,

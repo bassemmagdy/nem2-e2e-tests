@@ -95,33 +95,9 @@ public abstract class BaseTest {
               testContext.getNetworkCurrency().createRelative(BigInteger.valueOf(1000000)));
       CORE_USER_ACCOUNTS.put(AUTOMATION_USER_BOB, accountBob);
       final NamespaceHelper namespaceHelper = new NamespaceHelper(testContext);
-      final String eurosRandomName = MOSAIC_EUROS_KEY;
-      final NamespaceId eurosNamespaceId = NamespaceId.createFromName(eurosRandomName);
-      final Optional<NamespaceInfo> namespaceInfoOptional =
-          namespaceHelper.getNamespaceInfoNoThrow(eurosNamespaceId);
-      if (!namespaceInfoOptional.isPresent()
-          || namespaceHelper.isNamespaceExpired(namespaceInfoOptional.get())) {
-        final int minNamespaceDuration =
-            testContext.getSymbolConfig().getMinNamespaceDuration()
-                + testContext.getSymbolConfig().getNamespaceGracePeriodInBlocks();
-        BigInteger blockDuration = BigInteger.valueOf(minNamespaceDuration + 2000);
-        namespaceHelper.createRootNamespaceAndWait(aliceAccount, eurosRandomName, blockDuration);
-      }
-      final NamespaceInfo namespaceInfo =
-          namespaceHelper.getNamespaceInfoWithRetry(eurosNamespaceId);
-      if (!namespaceInfo.getAlias().isEmpty()) {
-        final MosaicId mosaicId = (MosaicId) namespaceInfo.getAlias().getAliasValue();
-        namespaceHelper.submitUnlinkMosaicAliasAndWait(aliceAccount, eurosNamespaceId, mosaicId);
-      }
-      final MosaicInfo mosaicInfo =
-          new MosaicHelper(testContext)
-              .createMosaic(
-                  testContext.getDefaultSignerAccount(),
-                  MosaicFlags.create(true, true),
-                  0,
-                  BigInteger.valueOf(1000));
-      final MosaicId newMosaicId = mosaicInfo.getMosaicId();
-      namespaceHelper.submitLinkMosaicAliasAndWait(aliceAccount, eurosNamespaceId, newMosaicId);
+
+      final NamespaceId eurosNamespaceId = createNamespaceIfNeed(aliceAccount, MOSAIC_EUROS_KEY, testContext);
+      final MosaicId newMosaicId = createMosaicIdAndLink(aliceAccount, testContext, eurosNamespaceId);
       final Account accountSue =
           accountHelper.createAccountWithAsset(newMosaicId, BigInteger.valueOf(200));
       CORE_USER_ACCOUNTS.put(AUTOMATION_USER_SUE, accountSue);
@@ -129,10 +105,46 @@ public abstract class BaseTest {
       transferHelper.submitTransferAndWait(
           aliceAccount,
           accountBob.getAddress(),
-          Arrays.asList(new Mosaic(newMosaicId, BigInteger.valueOf(20))));
+          Arrays.asList(new Mosaic(newMosaicId, BigInteger.valueOf(200))));
       testContext.clearTransaction();
       initialized = true;
     }
+  }
+
+  private static NamespaceId createNamespaceIfNeed(Account aliceAccount, String eurosRandomName, final TestContext testContext) {
+    final NamespaceHelper namespaceHelper = new NamespaceHelper(testContext);
+    final NamespaceId eurosNamespaceId = NamespaceId.createFromName(eurosRandomName);
+    final Optional<NamespaceInfo> namespaceInfoOptional =
+            namespaceHelper.getNamespaceInfoNoThrow(eurosNamespaceId);
+    if (!namespaceInfoOptional.isPresent()
+            || namespaceHelper.isNamespaceExpired(namespaceInfoOptional.get())) {
+      final int minNamespaceDuration =
+              testContext.getSymbolConfig().getMinNamespaceDuration()
+                      + testContext.getSymbolConfig().getNamespaceGracePeriodInBlocks();
+      BigInteger blockDuration = BigInteger.valueOf(minNamespaceDuration + 2000);
+      namespaceHelper.createRootNamespaceAndWait(aliceAccount, eurosRandomName, blockDuration);
+    }
+    final NamespaceInfo namespaceInfo =
+            namespaceHelper.getNamespaceInfoWithRetry(eurosNamespaceId);
+    if (!namespaceInfo.getAlias().isEmpty()) {
+      final MosaicId mosaicId = (MosaicId) namespaceInfo.getAlias().getAliasValue();
+      namespaceHelper.submitUnlinkMosaicAliasAndWait(aliceAccount, eurosNamespaceId, mosaicId);
+    }
+    return eurosNamespaceId;
+  }
+
+  private static MosaicId createMosaicIdAndLink(Account aliceAccount, final TestContext testContext, final NamespaceId eurosNamespaceId) {
+    final NamespaceHelper namespaceHelper = new NamespaceHelper(testContext);
+    final MosaicInfo mosaicInfo =
+            new MosaicHelper(testContext)
+                    .createMosaic(
+                            testContext.getDefaultSignerAccount(),
+                            MosaicFlags.create(true, true),
+                            0,
+                            BigInteger.valueOf(1000000));
+    final MosaicId newMosaicId = mosaicInfo.getMosaicId();
+    namespaceHelper.submitLinkMosaicAliasAndWait(aliceAccount, eurosNamespaceId, newMosaicId);
+    return newMosaicId;
   }
 
   /**
@@ -171,9 +183,10 @@ public abstract class BaseTest {
           Optional.of(
               new AccountInfo(
                   "",
+                  1,
                   address,
                   BigInteger.ZERO,
-                  account.getPublicAccount().getPublicKey().toHex(),
+                  account.getPublicAccount().getPublicKey(),
                   BigInteger.ZERO,
                   BigInteger.ZERO,
                   BigInteger.ZERO,

@@ -34,6 +34,7 @@ import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.mosaic.Mosaic;
 import io.nem.symbol.sdk.model.namespace.NamespaceId;
 import io.nem.symbol.sdk.model.transaction.LockHashAlgorithm;
+import org.bouncycastle.crypto.prng.FixedSecureRandom;
 import org.bouncycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
@@ -58,7 +59,7 @@ public class ExchangeAssetsAcrossDifferentBlockchains extends BaseTest {
             ? getTestContext().getScenarioContext().getContext(SECRET_HASH_LENGTH)
             : CommonHelper.getRandomValueInRange(1, 1000);
     final byte[] randomBytes = new byte[NO_OF_RANDOM_BYTES];
-    ExceptionUtils.propagateVoid(() -> SecureRandom.getInstanceStrong().nextBytes(randomBytes));
+    ExceptionUtils.propagateVoid(() -> SecureRandom.getInstance("SHA1PRNG").nextBytes(randomBytes));
     final String proof = Hex.toHexString(randomBytes);
     getTestContext().getScenarioContext().setContext(SECRET_PROOF, proof);
     final byte[] secretHashBytes =
@@ -121,7 +122,7 @@ public class ExchangeAssetsAcrossDifferentBlockchains extends BaseTest {
 
   @And("^(\\w+) proved knowing the secret's seed on the network$")
   public void proveProofOfSecret(final String userName) {
-    final Account account = getUser(userName);
+    final Account account = getUserWithCurrency(userName);
     final String secretHash = getTestContext().getScenarioContext().getContext(SECRET_HASH);
     final LockHashAlgorithm hashType =
         getTestContext().getScenarioContext().getContext(SECRET_HASH_TYPE);
