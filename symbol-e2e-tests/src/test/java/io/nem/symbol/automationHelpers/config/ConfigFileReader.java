@@ -20,16 +20,17 @@
 
 package io.nem.symbol.automationHelpers.config;
 
-import io.nem.symbol.automationHelpers.common.RepositoryFactoryType;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Properties;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
+import io.nem.symbol.automationHelpers.common.RepositoryFactoryType;
 
 /** Config reader for the automation framework. */
 public class ConfigFileReader {
@@ -167,5 +168,59 @@ public class ConfigFileReader {
    */
   public RepositoryFactoryType getRepositoryFactoryType() {
     return RepositoryFactoryType.valueOf(config.getRepositoryFactoryType().toUpperCase());
+  }
+
+  /**
+   * Gets symbol config path.
+   *
+   * @return Symbol config path.
+   */
+  public String getSymbolConfigPath() {
+    return "symbolConfigPath";
+  }
+
+  /**
+   * Gets the harvester private key.
+   *
+   * @return Private key.
+   */
+  public String getHarvesterPrivateKey() {
+    return "remoteHarvesterPrivateKey";
+  }
+
+  /**
+   * Gets the harvester private key.
+   *
+   * @return Public key.
+   */
+  public String getNodePublicKey() {
+    return "nodePublicKey";
+  }
+
+  /**
+   * Gets the api server full certificate file.
+   *
+   * @return Api node certificate file.
+   */
+  public File getApiServerCertificateFile() {
+    return new File("apiServerCertificateFile".toUpperCase());
+  }
+
+  /**
+   * Gets the automation key file.
+   *
+   * @return Automation key file.
+   */
+  public File getAutomationKeyFile() {
+    return new File("automationKeyFile".toUpperCase());
+  }
+
+  /**
+   * Gets the automation certificate file.
+   *
+   * @return Automation certificate file.
+   */
+  public File getAutomationCertificateFile() {
+    return new File("automationCertificateFile".toUpperCase());
   }
 }
