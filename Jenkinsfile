@@ -4,6 +4,10 @@ pipeline {
   agent {
     label 'cat-server'
   }
+  options{
+    timestamps()
+    ansiColor('xterm')
+  }
   triggers {
     cron '''TZ=America/New_York
       # This job needs to be started once every day between midnight and 2AM US Eastern time
