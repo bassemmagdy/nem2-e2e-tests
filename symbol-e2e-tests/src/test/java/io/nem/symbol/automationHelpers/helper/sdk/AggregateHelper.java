@@ -40,20 +40,16 @@ public class AggregateHelper extends BaseHelper<AggregateHelper> {
     super(testContext);
   }
 
-  private HashLockTransaction createHashLockTransaction(
-      final Mosaic mosaic, final BigInteger duration, final SignedTransaction signedTransaction) {
-    final HashLockTransactionFactory hashLockTransactionFactory =
-        HashLockTransactionFactory.create(
-            testContext.getNetworkType(), transactionHelper.getDefaultDeadline(), mosaic, duration, signedTransaction);
-    return buildTransaction(hashLockTransactionFactory);
-  }
-
   private AggregateTransaction buildAggregateTransaction(
       final AggregateTransactionFactory aggregateTransactionFactory,
       final int numberOfCosignatures) {
-    return aggregateTransactionFactory
-        .calculateMaxFeeForAggregate(testContext.getMinFeeMultiplier(), numberOfCosignatures)
-        .build();
+    maxFee.ifPresent(fee -> aggregateTransactionFactory.maxFee(fee));
+    if (!maxFee.isPresent())
+    {
+      aggregateTransactionFactory
+              .calculateMaxFeeForAggregate(testContext.getMinFeeMultiplier(), numberOfCosignatures);
+    }
+    return aggregateTransactionFactory.build();
   }
 
   /**
@@ -101,44 +97,6 @@ public class AggregateHelper extends BaseHelper<AggregateHelper> {
   }
 
   /**
-   * Creates a lock fund transaction and announce it to the network and wait for confirmed status.
-   *
-   * @param account User account.
-   * @param mosaic Mosaic to lock.
-   * @param duration Duration to lock.
-   * @param signedTransaction Signed transaction.
-   * @return Signed transaction.
-   */
-  public SignedTransaction createLockFundsAndAnnounce(
-      final Account account,
-      final Mosaic mosaic,
-      final BigInteger duration,
-      final SignedTransaction signedTransaction) {
-    return new TransactionHelper(testContext)
-        .signAndAnnounceTransaction(
-            account, () -> createHashLockTransaction(mosaic, duration, signedTransaction));
-  }
-
-  /**
-   * Creates a lock fund transaction and announce it to the network and wait for confirmed status.
-   *
-   * @param account User account.
-   * @param mosaic Mosaic to lock.
-   * @param duration Duration to lock.
-   * @param signedTransaction Signed transaction.
-   * @return Lock funds transaction.
-   */
-  public HashLockTransaction submitHashLockTransactionAndWait(
-      final Account account,
-      final Mosaic mosaic,
-      final BigInteger duration,
-      final SignedTransaction signedTransaction) {
-    return new TransactionHelper(testContext)
-        .signAndAnnounceTransactionAndWait(
-            account, () -> createHashLockTransaction(mosaic, duration, signedTransaction));
-  }
-
-  /**
    * Creates an aggregate complete transaction and announce it to the network.
    *
    * @param account User account.
@@ -165,7 +123,7 @@ public class AggregateHelper extends BaseHelper<AggregateHelper> {
       final Account account, final SignedTransaction signedTransaction, final BigInteger duration) {
     final Mosaic mosaicToLock =
         testContext.getNetworkCurrency().createRelative(BigInteger.valueOf(10));
-    return submitHashLockTransactionAndWait(account, mosaicToLock, duration, signedTransaction);
+    return new HashLockHelper(testContext).submitHashLockTransactionAndWait(account, mosaicToLock, duration, signedTransaction);
   }
 
   /**

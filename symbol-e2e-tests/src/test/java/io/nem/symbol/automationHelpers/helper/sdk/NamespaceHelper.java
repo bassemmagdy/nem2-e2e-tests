@@ -59,7 +59,7 @@ public class NamespaceHelper extends BaseHelper<NamespaceHelper> {
     return buildTransaction(namespaceRegistrationTransactionFactory);
   }
 
-  private AddressAliasTransaction createAddressAliasTransaction(
+  public AddressAliasTransaction createAddressAliasTransaction(
       final AliasAction aliasAction, final NamespaceId namespaceId, final Address address) {
     final AddressAliasTransactionFactory addressAliasTransactionFactory =
         AddressAliasTransactionFactory.create(

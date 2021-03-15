@@ -44,6 +44,20 @@ Feature: Apply global restrictions on mosaics
     Then Carol should receive 1 of asset "MyCompanySharesPrivate"
 
   @bvt
+  Scenario: An account(owner) that passes the restriction should be able to transact with the mosaic
+    Given Alex creates the following restriction
+      | Mosaic                 | Restriction Key | Restriction value | Restriction Type |
+      | MyCompanySharesPrivate | can_hold        | 1                 | EQ               |
+    And Alex gives Alex the following restriction keys
+      | Mosaic                 | restriction key | restriction value |
+      | MyCompanySharesPrivate | can_hold        | 1                 |
+    And Alex gives Carol the following restriction keys
+      | Mosaic                 | restriction key | restriction value |
+      | MyCompanySharesPrivate | can_hold        | 1                 |
+    When Alex sends 1 asset of "MyCompanySharesPrivate" to Carol
+    Then Carol should receive 1 of asset "MyCompanySharesPrivate"
+
+  @bvt
   Scenario: Make a modification to a mosaic restriction
     Given Alex creates the following restrictions
       | Mosaic                 | Restriction Key | Restriction value | Restriction Type |

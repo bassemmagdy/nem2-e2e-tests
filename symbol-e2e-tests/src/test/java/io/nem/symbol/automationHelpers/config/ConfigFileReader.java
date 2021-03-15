@@ -98,7 +98,7 @@ public class ConfigFileReader {
    * @return Api node certificate file.
    */
   public File getApiServerCertificateFile() {
-    return new File(getPropertyValue("apiServerCertificateFile").toUpperCase());
+    return new File(getPropertyValue("apiServerCertificateFile"));
   }
 
   /**
@@ -107,7 +107,7 @@ public class ConfigFileReader {
    * @return Automation key file.
    */
   public File getAutomationKeyFile() {
-    return new File(getPropertyValue("automationKeyFile").toUpperCase());
+    return new File(getPropertyValue("automationKeyFile"));
   }
 
   /**
@@ -116,7 +116,7 @@ public class ConfigFileReader {
    * @return Automation certificate file.
    */
   public File getAutomationCertificateFile() {
-    return new File(getPropertyValue("automationCertificateFile").toUpperCase());
+    return new File(getPropertyValue("automationCertificateFile"));
   }
 
   /**

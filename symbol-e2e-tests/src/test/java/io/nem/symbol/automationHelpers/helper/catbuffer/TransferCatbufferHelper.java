@@ -24,14 +24,12 @@ import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.catapult.builders.*;
 import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.message.Message;
-import io.nem.symbol.sdk.model.mosaic.Mosaic;
 import io.nem.symbol.sdk.model.mosaic.MosaicId;
 import io.nem.symbol.sdk.model.transaction.SignedTransaction;
 import io.nem.symbol.sdk.model.transaction.TransactionType;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,7 +51,7 @@ public class TransferCatbufferHelper extends BaseHelper {
     }
 
     private ByteBuffer getMessageBuffer(Message message) {
-        return  message == null ? ByteBuffer.allocate(0) : message.getPayloadByteBuffer();
+        return message == null ? ByteBuffer.allocate(0) : message.getPayloadByteBuffer();
     }
 
     /**

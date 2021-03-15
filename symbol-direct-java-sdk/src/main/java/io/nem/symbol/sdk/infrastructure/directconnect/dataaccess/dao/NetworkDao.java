@@ -84,7 +84,7 @@ public class NetworkDao implements NetworkRepository {
               feeMultipliers.stream().mapToLong(x -> x).summaryStatistics();
           final Long medianFeeMultiplier = feeMultipliers.get(feeMultipliers.size() / 2);
           return new TransactionFees(
-              Math.round(stats.getAverage()), medianFeeMultiplier, stats.getMin(), stats.getMax());
+              Math.round(stats.getAverage()), medianFeeMultiplier, stats.getMin(), stats.getMax(), 100L);
         });
   }
 

@@ -13,7 +13,7 @@ public abstract class BaseHelper<U extends BaseHelper> {
 
   protected final TestContext testContext;
   private Supplier<Deadline> deadlineSupplier;
-  private Optional<BigInteger> maxFee;
+  protected Optional<BigInteger> maxFee;
   protected final TransactionHelper transactionHelper;
 
   /**

@@ -32,15 +32,22 @@ Feature: Receive a notification
     Then Alice should receive a transaction notification
 
   @bvt
-  Scenario: Alice use alias address in transaction and get notification when in confirmed state.
-    Given Alice registered the namespace "sue"
+  Scenario: Use alias address in transaction to get notification in unconfirmed state.
+    Given Alice registered the namespace "bob"
+    And Alice links the namespace "bob" to the address of Bob
+    And Bob register alias "bob" to receive unconfirmed transaction notification
     And Alice registered the asset "X"
-    And Alice links the namespace "sue" to the address of Sue
-#    And Alice register to receive confirmed transaction notification
-    And Sue register alias "sue" to receive confirmed transaction notification
-    When Alice can send asset "X" to the namespace "sue" instead of the address of Sue
-    Then Sue should receive a transaction notification
-#    And Alice should receive a transaction notification
+    When Alice can send asset "X" to the namespace "bob" instead of the address of Bob
+    Then Bob should receive a transaction notification
+
+  @bvt
+  Scenario: Use alias address in transaction and get notification when in confirmed state.
+    Given Alice registered the namespace "bob"
+    And Alice links the namespace "bob" to the address of Bob
+    And Bob register alias "bob" to receive confirmed transaction notification
+    And Alice registered the asset "X"
+    When Alice can send asset "X" to the namespace "bob" instead of the address of Bob
+    Then Bob should receive a transaction notification
 
   @bvt
   Scenario: Alice gets notification when invalid transaction failed
@@ -55,26 +62,6 @@ Feature: Receive a notification
     Then Alice should receive an error notification
 
   @bvt
-  Scenario: Alice registers for confirmed notification when transaction failed
-    Given Alice register to receive confirmed transaction notification
-    And Alice defined the following bonded escrow contract:
-      | type          | sender | recipient | data               |
-      | send-an-asset | Alice  | Bob       | 1 network currency |
-      | send-an-asset | Bob    | Sue       | 2 network currency |
-    When she publishes no funds bonded contract
-    Then Alice should receive a transaction notification
-
-  @bvt
-  Scenario: Alice registers for confirmed notification when transaction failed
-    Given Alice register to receive confirmed transaction notification
-    And Alice defined the following bonded escrow contract:
-      | type          | sender | recipient | data               |
-      | send-an-asset | Alice  | Bob       | 1 network currency |
-      | send-an-asset | Bob    | Sue       | 2 network currency |
-    When she publishes no funds bonded contract
-    Then Alice should receive a transaction notification
-
-  @bvt
   Scenario: Alice gets notification when aggregate bonded transaction requires signing.
     Given Alice register to receive a notification when a bonded transaction requires signing
     And Bob register to receive a notification when a bonded transaction requires signing
@@ -85,8 +72,8 @@ Feature: Receive a notification
       | send-an-asset | Sue    | Alice     | 2 euros             |
     When Alice published the bonded contract
     Then Alice should receive a transaction notification
-    And Bob should receive a transaction notification
     And Sue should receive a transaction notification
+    And Bob should receive a transaction notification
 
   @bvt
   Scenario: Alice gets notification when aggregate bonded transaction is completely signed.

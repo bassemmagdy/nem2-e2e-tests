@@ -64,7 +64,7 @@ public class MosaicHelper extends BaseHelper<MosaicHelper> {
     return buildTransaction(mosaicDefinitionTransactionFactory);
   }
 
-  private MosaicDefinitionTransaction createMosaicDefinitionTransaction(
+  public MosaicDefinitionTransaction createMosaicDefinitionTransaction(
       final Account account,
       final MosaicFlags mosaicFlags,
       final int divisibility,
@@ -80,7 +80,7 @@ public class MosaicHelper extends BaseHelper<MosaicHelper> {
     return createMosaicDefinitionTransaction(account, mosaicFlags, divisibility, BigInteger.ZERO);
   }
 
-  private MosaicSupplyChangeTransaction createMosaicSupplyChangeTransaction(
+  public MosaicSupplyChangeTransaction createMosaicSupplyChangeTransaction(
       final MosaicId mosaicId,
       final MosaicSupplyChangeActionType mosaicSupplyChangeActionType,
       final BigInteger delta) {

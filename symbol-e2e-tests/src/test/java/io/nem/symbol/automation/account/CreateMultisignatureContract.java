@@ -240,11 +240,12 @@ public class CreateMultisignatureContract extends BaseTest {
   public void publishBondedTransaction(final String userName) {
     final Account account = getUser(userName);
     final SignedTransaction signedTransaction = getTestContext().getSignedTransaction();
-    final BigInteger duration = BigInteger.valueOf(10);
+    final BigInteger duration = BigInteger.valueOf(200);
     final AggregateHelper aggregateHelper = new AggregateHelper(getTestContext());
     aggregateHelper.submitLockFundForBondedTransaction(account, signedTransaction, duration);
     final TransactionHelper transactionHelper = new TransactionHelper(getTestContext());
     transactionHelper.announceAggregateBonded(signedTransaction);
+    getTestContext().getLogger().LogError("Submitted transaction hash: " + signedTransaction.getHash());
     getTestContext().setSignedTransaction(signedTransaction);
   }
 
@@ -262,15 +263,15 @@ public class CreateMultisignatureContract extends BaseTest {
         getTestContext().getScenarioContext().getContext(COSIGNATORIES_LIST);
     final SignedTransaction signedTransaction = getTestContext().getSignedTransaction();
     final AccountHelper accountHelper = new AccountHelper(getTestContext());
-    final AggregateTransaction aggregateTransaction =
-        accountHelper.getAggregateBondedTransaction(signedTransaction);
+//    final AggregateTransaction aggregateTransaction =
+//        accountHelper.getAggregateBondedTransaction(signedTransaction);
     final AggregateHelper aggregateHelper = new AggregateHelper(getTestContext());
     cosignatories.stream()
         .forEach(
             (final Account account) -> {
-              List<AggregateTransaction> transactions =
-                  accountHelper.getAggregateBondedTransactions(account.getAddress());
-              aggregateHelper.cosignAggregateBonded(account, aggregateTransaction);
+              AggregateTransaction transaction =
+                  accountHelper.getAggregateBondedTransaction(account.getPublicAccount(), signedTransaction);
+              aggregateHelper.cosignAggregateBonded(account, transaction);
             });
   }
 

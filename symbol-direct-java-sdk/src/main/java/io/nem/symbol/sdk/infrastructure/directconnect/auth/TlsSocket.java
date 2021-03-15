@@ -33,7 +33,7 @@ import java.security.Security;
 //import org.openjsse;
 
 public class TlsSocket {
-  private static final String[] protocols = new String[] {"TLSv1.2"};
+  private static final String[] protocols = new String[] {"TLSv1.3"};
 
   private final File clientKeyFile;
   private final File clientCertificateFile;

@@ -124,7 +124,7 @@ public class ReceiveNotification extends BaseTest {
   @When("^(\\w+) waits for a next finalized block$")
   public void waitForNextFinalizedBlock(final String username) {
     final Listener listener = getListener();
-    final int timeout = 25 * 60;
+    final int timeout = 9 * 60;
     final FinalizedBlock finalizedBlock = getObservableValueWithTimeout(listener.finalizedBlock().take(1), timeout);
     getTestContext().getScenarioContext().setContext(BLOCK_INFO_NAME, finalizedBlock);
   }
@@ -210,10 +210,14 @@ public class ReceiveNotification extends BaseTest {
 
   @Given("^(\\w+) register alias \"(\\w+)\" to receive confirmed transaction notification$")
   public void registerConfirmedListener(final String username, final String alias) {
-    final NamespaceId namespaceId = resolveNamespaceIdFromName(alias);
-    final String encoded = namespaceId.encoded(getTestContext().getNetworkType());
-    final Address addressEncoded = Address.createFromEncoded(encoded);
-    setTransactionObservable(username, (address, listener) -> listener.confirmed(addressEncoded));
+    final NamespaceId unresolvedAddress = resolveNamespaceIdFromName(alias);
+    setTransactionObservable(username, (address, listener) -> listener.confirmed(unresolvedAddress));
+  }
+
+  @Given("^(\\w+) register alias \"(\\w+)\" to receive unconfirmed transaction notification$")
+  public void registerAliasUnconfirmedListener(final String username, final String alias) {
+    final NamespaceId unresolvedAddress = resolveNamespaceIdFromName(alias);
+    setTransactionObservable(username, (address, listener) -> listener.unconfirmedAdded(unresolvedAddress));
   }
 
   @Given("^(\\w+) register to receive confirmed transaction notification$")

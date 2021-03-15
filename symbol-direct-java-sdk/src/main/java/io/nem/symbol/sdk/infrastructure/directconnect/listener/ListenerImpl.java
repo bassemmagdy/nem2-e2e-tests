@@ -34,6 +34,7 @@ import io.nem.symbol.sdk.model.network.NetworkType;
 import io.nem.symbol.sdk.model.transaction.CosignatureSignedTransaction;
 import io.nem.symbol.sdk.model.transaction.Transaction;
 import io.nem.symbol.sdk.model.transaction.TransactionGroup;
+import io.reactivex.Observable;
 import io.vertx.core.json.Json;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,7 +64,7 @@ public class ListenerImpl extends ListenerBase {
   private ZMQ.Socket subscriber;
 
   public ListenerImpl(final BrokerNodeContext context, final NetworkType networkType) {
-    super(new JsonHelperJackson2(JsonHelperJackson2.configureMapper(Json.mapper)), null, null);
+    super(new JsonHelperJackson2(JsonHelperJackson2.configureMapper(Json.mapper)), null, null, Observable.just(networkType));
 
     this.hostName = context.getHostName();
     this.port = context.getServerPort();
@@ -95,8 +96,8 @@ public class ListenerImpl extends ListenerBase {
    * @param channelParams the topic param.
    * @param messageObject the message object.
    */
-  private void onNext(ListenerChannel channel, String channelParams, Object messageObject) {
-    this.getMessageSubject().onNext(new ListenerMessage(channel, channelParams, messageObject));
+  private <T> void onNext(ListenerChannel channel, String channelParams, T messageObject) {
+    this.getMessageSubject().onNext(new ListenerMessage<>("", channel, channelParams, messageObject, null));
   }
 
   @Override
@@ -143,9 +144,9 @@ public class ListenerImpl extends ListenerBase {
               + messageMarker.getChannelName()
               + " Object type: "
               + objectMessage.toString());
-      onNext(ListenerChannel.rawValueOf(messageMarker.getChannelName()), rawAddress, objectMessage);
+      onNext(ListenerChannel.rawValueOf(messageMarker.getChannelName()), rawAddress, messageMarker.getMessageHandler().handleMessage(subscriber, networkType));
     } catch (final Exception ex) {
-      logger.error(ex.getMessage());
+      logger.error("Handler error:" + ex.getMessage());
     }
   }
 
@@ -228,14 +229,15 @@ public class ListenerImpl extends ListenerBase {
   /** @return a {@link CompletableFuture} that resolves when the websocket connection is opened */
   @Override
   public CompletableFuture<Void> open() {
-    if (context != null) {
-      throw new IllegalStateException("Listener is already opened.");
-    }
+//    if (context != null) {
+//      throw new IllegalStateException("Listener is already opened.");
+//    }
     context = new ZContext();
     //  Socket to talk to server
     subscriber = context.createSocket(SocketType.SUB);
-    subscriber.connect("tcp://" + hostName + ":" + port);
+    boolean status = subscriber.connect("tcp://" + hostName + ":" + port);
     setUid("DirectConnectId " + Thread.currentThread().getId());
+    logger.error("Connected to " + "tcp://" + hostName + ":" + port + " status:" + status);
     return CompletableFuture.completedFuture(null);
   }
 
