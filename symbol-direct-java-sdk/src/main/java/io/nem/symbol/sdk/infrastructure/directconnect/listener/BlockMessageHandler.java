@@ -30,6 +30,8 @@ import io.nem.symbol.sdk.model.account.PublicAccount;
 import io.nem.symbol.sdk.model.blockchain.BlockInfo;
 import io.nem.symbol.sdk.model.blockchain.BlockType;
 import io.nem.symbol.sdk.model.network.NetworkType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.zeromq.ZMQ.Socket;
 
 import java.math.BigInteger;
@@ -47,8 +49,12 @@ public class BlockMessageHandler extends MessageBaseHandler {
   public BlockInfo handleMessage(final Socket subscriber, final NetworkType networkType) {
     final BlockHeaderBuilder blockHeaderBuilder =
         BlockHeaderBuilder.loadFromBinary(toInputStream(subscriber.recv()));
+    Logger logger = LogManager.getLogger("listener");
+    logger.error("Actual message: ");
     final Hash256Dto entityHash = Hash256Dto.loadFromBinary(toInputStream(subscriber.recv()));
+    logger.error("Actual message1: ");
     final Hash256Dto generationHash = Hash256Dto.loadFromBinary(toInputStream(subscriber.recv()));
+    logger.error("Actual message2: ");
     failIfMoreMessageAvailable(subscriber, "Block message is not correct.");
 
     final String entityHashHex = ConvertUtils.toHex(entityHash.getHash256().array());

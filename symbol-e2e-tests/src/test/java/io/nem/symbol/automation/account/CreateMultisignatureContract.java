@@ -245,6 +245,7 @@ public class CreateMultisignatureContract extends BaseTest {
     aggregateHelper.submitLockFundForBondedTransaction(account, signedTransaction, duration);
     final TransactionHelper transactionHelper = new TransactionHelper(getTestContext());
     transactionHelper.announceAggregateBonded(signedTransaction);
+    getTestContext().getLogger().LogError("Submitted transaction hash: " + signedTransaction.getHash());
     getTestContext().setSignedTransaction(signedTransaction);
   }
 

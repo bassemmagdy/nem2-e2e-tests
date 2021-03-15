@@ -1,7 +1,6 @@
 package io.nem.symbol.automation.state_proof;
 
 import static org.junit.Assert.assertTrue;
-
 import io.cucumber.java.en.Then;
 import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.automationHelpers.helper.sdk.AccountHelper;
