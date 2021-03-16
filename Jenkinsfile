@@ -24,9 +24,9 @@ pipeline {
     choice(name: 'ENVIRONMENT', choices: ['bootstrap', 'testnet'], description: '''Environment to run the tests against.
 testnet: The tests will be executed against the given testnet environment specified by the TESTNET_API_URL param.
 bootstrap: The tests will be executed against a clean bootstrap environment brought up locally using symbol-bootstrap tool version specified by BOOTSTRAP_VERSION param.''')
-    string(name: 'TESTNET_API_URL', defaultValue: 'http://api-01.us-west-2.testnet.symboldev.network:3000', description: 'The URL of the testnet API.')
+    string(name: 'TESTNET_API_URL', defaultValue: 'http://54.176.80.148:3000', description: 'The URL of the testnet API.')
     string(name: 'BOOTSTRAP_VERSION', defaultValue: 'latest', description: 'symbol-bootstrap tool version to install and start bootstrap with.')
-    string(name: 'E2E_TEST_USER_PRIVATE_KEY', defaultValue: 'C6FF81EF0C53A911163E61570FF62AE1B0FAD2230E972316732D3FEC1FC33997', description: 'Automation user private key.')
+    string(name: 'E2E_TEST_USER_PRIVATE_KEY', defaultValue: '4294AD641E2A04C312D44D1F3ECF2A70629184FCCACC366ABA02AC79D80FB237', description: 'Automation user private key.')
   }
   environment {
     IS_BOOTSTRAP_RUN  = "${params.ENVIRONMENT == 'bootstrap' ? 'true' : 'false'}"
