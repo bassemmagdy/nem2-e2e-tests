@@ -8,7 +8,7 @@ mongodbPort: 27017
 socketTimeoutInMilliseconds: 10000
 databaseQueryTimeoutInSeconds: 120
 minFeeMultiplier: 100
-restGatewayUrl: http://54.176.80.148:3000
+restGatewayUrl: http://3.85.2.195:3000
 repositoryFactoryType: Vertx
 
 #bootstrap
