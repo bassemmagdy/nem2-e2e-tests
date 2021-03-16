@@ -15,7 +15,7 @@ Feature: Mosaic restriction state proof
       | MyCompanySharesPublic  | false        |
     And Bobby has at least 10 MyCompanySharesPrivate balance
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account that doesn't pass the restriction cannot transact with the mosaic
     Given Alex creates the following restriction
       | Mosaic                 | Restriction Key | Restriction value | Restriction Type |
@@ -30,7 +30,7 @@ Feature: Mosaic restriction state proof
     And Carol verify mosaic address restriction state for "MyCompanySharesPrivate" in the blockchain
     And Bobby verify mosaic address restriction state for "MyCompanySharesPrivate" in the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account that passes the restriction should be able to transact with the mosaic
     Given Alex creates the following restriction
       | Mosaic                 | Restriction Key | Restriction value | Restriction Type |
@@ -45,7 +45,7 @@ Feature: Mosaic restriction state proof
     And Carol verify mosaic address restriction state for "MyCompanySharesPrivate" in the blockchain
     And Bobby verify mosaic address restriction state for "MyCompanySharesPrivate" in the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: Make a modification to a mosaic restriction
     Given Alex creates the following restrictions
       | Mosaic                 | Restriction Key | Restriction value | Restriction Type |
@@ -63,7 +63,7 @@ Feature: Mosaic restriction state proof
     And Carol verify mosaic address restriction state for "MyCompanySharesPrivate" in the blockchain
     And Bobby verify mosaic address restriction state for "MyCompanySharesPrivate" in the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account that passes multiple restrictions can interact with the mosaic
     Given Alex creates the following restrictions
       | Mosaic                 | Restriction Key | Restriction value | Restriction Type |

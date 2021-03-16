@@ -13,7 +13,7 @@ Feature: Prevent receiving transactions containing a specific asset
       | ticket  |
       | voucher |
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account blocks receiving transactions containing a specific asset
     Given Bobby blocks receiving transactions containing the following assets:
       | ticket  |
@@ -23,7 +23,7 @@ Feature: Prevent receiving transactions containing a specific asset
     And Bobby balance should remain intact
     And Alex balance should remain intact
 
-  @bvt
+  @bvt @bvt_group1
   Scenario Outline: An account allows receiving transactions containing a specific asset
     Given Bobby allows receiving transactions containing the following assets:
       | <asset> |
@@ -36,7 +36,7 @@ Feature: Prevent receiving transactions containing a specific asset
       | 1      | network currency |
       | 1      | ticket           |
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account unblocks an asset but tries to transfer a blocked asset
     Given Bobby blocks receiving transactions containing the following assets:
       | ticket  |
@@ -47,7 +47,7 @@ Feature: Prevent receiving transactions containing a specific asset
       # This can be confirmed when Alex receives below error when he tries send a voucher asset to Bobby.
     Then Alex should receive the error "FAILURE_RESTRICTIONACCOUNT_MOSAIC_TRANSFER_PROHIBITED"
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An unblocked asset should be transferable
     Given Bobby blocks receiving transactions containing the following assets:
       | ticket  |
@@ -56,7 +56,7 @@ Feature: Prevent receiving transactions containing a specific asset
     When Alex sends 1 asset of "ticket" to Bobby
     Then Bobby should receive 1 of asset "ticket"
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account removes an asset from the allowed assets
     Given Bobby has only allowed receiving the following assets:
       | ticket  |

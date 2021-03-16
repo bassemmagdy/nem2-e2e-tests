@@ -9,7 +9,7 @@ Feature: Associate metadata with an account
   Background:
     Given Sarah has 30 units of the network currency
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: Sarah wants to add a notarized certificate to her account
     Given Sarah request Bob to notarized her "college certificate"
     And Bob published the bonded contract
@@ -29,7 +29,7 @@ Feature: Associate metadata with an account
       |  0         |
       | 10         |
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: Sarah wants to add multiple notarized certificate to her account
     Given Sarah added "college certificate" notarized by Bob to account
     And Sarah request Tom to notarized her "college certificate"
@@ -37,7 +37,7 @@ Feature: Associate metadata with an account
     When "Sarah" accepts the transaction
     Then Sarah should have her "college certificate" attached to the account by Tom
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: Sarah wants to add information to her account
     Given Sarah adds a document "account info" to her account
     When Sarah published the contract
@@ -54,7 +54,7 @@ Feature: Associate metadata with an account
       | 0          |
       | 8          |
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: Sarah wants to add account information to her account using an alias
     Given Sarah registered the namespace "sarah"
     And Sarah links the namespace "sarah" to the address of Sarah

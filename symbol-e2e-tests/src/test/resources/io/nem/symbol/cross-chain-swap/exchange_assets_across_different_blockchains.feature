@@ -17,7 +17,7 @@ Feature: Exchange assets across different blockchains
     And "Bob" owns 999999 bob:token units in "MAIN_NET"
     And "Bob" owns an account in "MIJIN"
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account locks assets
     Given Alice derived the secret from the seed using "SHA3_256"
     And Alice locked 10 "network currency" for Tom on the network for 5 blocks
@@ -32,7 +32,7 @@ Feature: Exchange assets across different blockchains
     Then Alice "network currency" balance should decrease by 10 units
     And Tom should receive 10 of asset "network currency"
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An exchange of assets across different blockchain concludes
     Given Alice derived the secret from the seed using "HASH_256"
     And Alice locked 10 "network currency" for Tom on the network for 10 blocks
@@ -42,7 +42,7 @@ Feature: Exchange assets across different blockchains
     Then Alice should receive 10 of asset "euros"
     And Tom should receive 10 of asset "network currency"
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An exchange of assets doesn't conclude because the participant decides not locking the assets
     Given Alice derived the secret from the seed using "SHA3_256"
     And Alice locked 10 "network currency" for Bob on the network for 1 block

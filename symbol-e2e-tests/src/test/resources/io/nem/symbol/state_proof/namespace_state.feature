@@ -2,7 +2,7 @@ Feature: Namepsace state proof
   I want to verify the state of
   my namespace on the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario Outline: Verify namespace on the blockchain
     When Alice registers a namespace named "<name>" for <duration> block
     Then Alice wants to verify namespace "<name>" state on the blockchain
@@ -12,7 +12,7 @@ Feature: Namepsace state proof
       | test1 | 5        |
       | test2 | 100      |
 
-  @bvt
+  @bvt @bvt_group3
   Scenario Outline: Verify namespace after registration extension
     Given Alice registered the namespace "token"
     When Alice extends the registration of the namespace named "token" for <duration> blocks
@@ -23,14 +23,14 @@ Feature: Namepsace state proof
       | 10       |
       | 20       |
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: Verify namespace with address alias
     Given Alice registered the namespace "token"
     And Alice registered the asset "X"
     When Alice links the namespace "token" to the address of Sue
     Then Alice wants to verify namespace "token" state on the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: Verify namespace with asset alias
     Given Alice registered the namespace "token"
     And Alice registered the asset "X"

@@ -8,7 +8,7 @@ Feature: Get balance changes
     And an escrow contract requires to lock at least 10 "network currency" to guarantee that the it will conclude
 
   # Core
-  @bvt
+  @bvt @bvt_group3
   Scenario: Tom wants to see her resulting fees after harvesting a block
     Given Tom is running a node
     And Tom account has harvested a block
@@ -24,7 +24,7 @@ Feature: Get balance changes
     Then Alice should be able to see the resulting fees
 
   # HashLock
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account wants to check if some funds were locked
     Given Alice defined the following bonded escrow contract:
       | type           | sender   | recipient | data                 |
@@ -34,7 +34,7 @@ Feature: Get balance changes
     When she checks if the locked mosaics for the previous transaction have been locked
     Then Alice should have 10 "network currency" sent from her account
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account wants to check if the escrow contract completed
     Given Alice created a 1 of 2 multisignature contract called "deposit" with 1 required for removal with cosignatories:
       | cosignatory |
@@ -43,7 +43,7 @@ Feature: Get balance changes
     When she checks if the contract has concluded
     Then Alice should get 10 "network currency" returned to her account
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account wants to check if the lock expired
     Given Alice defined the following bonded escrow contract:
       | type           | sender   | recipient | data                 |
@@ -56,14 +56,14 @@ Feature: Get balance changes
     And Alice "network currency" balance should decrease by 10 units
 
   # SecretLock
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account wants to check if assets are locked
     Given Alice derived the secret from the seed using "SHA3_256"
     And Alice locked 10 "network currency" for Tom on the network for 5 blocks
     When she checks if the locked mosaics for the previous secret transaction have been locked
     Then Alice should have 10 "network currency" in the secret lock
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account wants to check if a lock was proved
     Given Alice derived the secret from the seed using "SHA3_256"
     And Alice locked 10 "network currency" for Tom on the network for 5 blocks
@@ -71,7 +71,7 @@ Feature: Get balance changes
     When Alice checks if the previous transaction has been proved
     Then Alice can verify that Tom receive 10 "network currency"
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account wants to check if a lock expired
     Given Alice derived the secret from the seed using "SHA3_256"
     And Alice locked 10 "network currency" for Tom on the network for 1 block

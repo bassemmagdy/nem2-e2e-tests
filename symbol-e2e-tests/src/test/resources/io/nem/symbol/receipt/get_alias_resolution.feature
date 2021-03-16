@@ -10,13 +10,13 @@ Background: Create assets and link to namespaces
         And Alice links the namespace "token" to the asset "X"
 
   # Core
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account gets the address of an aliased recipient in a given transaction
     Given "Alice" sent 1 "token" to "ticket_vendor"
     When "Alice" wants to get the recipient address for the previous transaction
     Then "Alice" should get address of "ticket_vendor" as Bob
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: Alice wants to get the identifier of the aliased asset used in a given transaction
     Given "Alice" sent 1 "token" to "ticket_vendor"
     When "Alice" wants to get asset identifier for the previous transaction

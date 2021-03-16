@@ -7,12 +7,12 @@ Feature: Announce a transaction
     And the maximum transaction lifetime is 1 day
     And the native currency asset is "network currency"
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account announced a valid transaction (max_fee)
     When Alice announce valid transaction
     Then Alice balance should decrease by transaction fee
 
-  @bvt
+  @bvt @bvt_group1
   Scenario Outline: An account tries to announce a transaction with an invalid deadline
     When Alice tries to announces the transaction with a deadline of <deadline> hours
     Then she should receive the error "<error>"

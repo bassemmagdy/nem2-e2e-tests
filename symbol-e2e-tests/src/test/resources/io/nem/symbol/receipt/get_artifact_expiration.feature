@@ -3,7 +3,7 @@ Feature: Get artifact expiration
   I want to know when a namespace or asset expired
 
   # Mosaic
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account wants to know when the asset expired
     Given Alice has registered expiring asset "T" for 2 blocks
     And the asset is now expired
@@ -11,7 +11,7 @@ Feature: Get artifact expiration
     Then she should get an estimated time reference
 
   # Namespace
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account tries to get if a namespace expired
     Given Alice registers a namespace named "token" for 6 blocks
     And the namespace is now under grace period

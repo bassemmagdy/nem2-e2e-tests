@@ -12,7 +12,7 @@ Feature: Prevent receiving transactions from undesired addresses
       | Bobby   |
       | Carol   |
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account blocks receiving transactions from a set of addresses
     Given Bobby blocked receiving transactions from:
       | Alex   |
@@ -20,14 +20,14 @@ Feature: Prevent receiving transactions from undesired addresses
     When Alex tries to send 1 asset of "network currency" to Bobby
     Then Alex should receive the error "FAILURE_RESTRICTIONACCOUNT_ADDRESS_INTERACTION_PROHIBITED"
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account only allows receiving transactions from a set of addresses
     Given Bobby only allowed receiving transactions from:
       | Alex   |
     When Carol tries to send 1 asset of "network currency" to Bobby
     Then Carol should receive the error "FAILURE_RESTRICTIONACCOUNT_ADDRESS_INTERACTION_PROHIBITED"
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account only allows receiving transactions from a set of addresses
     Given Bobby only allowed receiving transactions from:
       | Alex   |
@@ -35,7 +35,7 @@ Feature: Prevent receiving transactions from undesired addresses
     Then Bobby should receive 1 of asset "network currency"
     And Alex "network currency" balance should decrease by 1 unit
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account unblocks an address
     Given Bobby blocked receiving transactions from:
       | Alex  |
@@ -45,7 +45,7 @@ Feature: Prevent receiving transactions from undesired addresses
     Then Bobby should receive 1 of asset "network currency"
     And Alex "network currency" balance should decrease by 1 unit
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account unblocks an address
     Given Bobby blocked receiving transactions from:
       | Alex  |
@@ -54,7 +54,7 @@ Feature: Prevent receiving transactions from undesired addresses
     When Carol tries to send 1 asset of "network currency" to Bobby
     Then Carol should receive the error "FAILURE_RESTRICTIONACCOUNT_ADDRESS_INTERACTION_PROHIBITED"
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account removes an address from the allowed addresses
     Given Bobby only allowed receiving transactions from:
       | Alex  |
@@ -64,7 +64,7 @@ Feature: Prevent receiving transactions from undesired addresses
     Then Bobby should receive 1 of asset "network currency"
     And Carol "network currency" balance should decrease by 1 unit
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account removes an address from the allowed addresses
     Given Bobby only allowed receiving transactions from:
       | Alex  |

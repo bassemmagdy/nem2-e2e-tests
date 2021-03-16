@@ -6,7 +6,7 @@ Feature: Create a multisignature contract
 #  Given the maximum number of cosignatories per multisignature contract is 10
 #  And the maximum number of multisignature contracts an account can be cosignatory of is 5
 
-  @bvt
+  @bvt @bvt_group1
   Scenario Outline: An account creates an M-of-N contract
     Given Alice defined a <minimumApproval> of 3 multisignature contract called "tom" with <minimumRemoval> required for removal with cosignatories:
       | cosignatory |
@@ -23,7 +23,7 @@ Feature: Create a multisignature contract
       | 2               | 1              |
       | 3               | 3              |
 
-  @bvt
+  @bvt @bvt_group1
  Scenario Outline: An account tries to create a multisignature contract, setting an invalid values
     Given Alice defined a <minimumApproval> of 2 multisignature contract called "tom" with <minimumRemoval> required for removal with cosignatories:
       | cosignatory |
@@ -106,7 +106,7 @@ Feature: Create a multisignature contract
     When Dan tries to send 1 asset of "network currency" to phone
     Then dan should receive the error "FAILURE_MULTISIG_OPERATION_PROHIBITED_BY_ACCOUNT"
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account creates a multi-level multisignature contract
     Given Alice created a 1 of 2 multisignature contract called "level" with 1 required for removal with cosignatories:
       | cosignatory |

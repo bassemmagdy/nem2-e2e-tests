@@ -682,12 +682,12 @@ public class ExampleSteps {
         Account account121 = Account.createFromPrivateKey("89CAD3975AFF230BF9326A415644778A872F98706966FFAA92DCCF7BF381E9F1", NetworkType.MAIN_NET);
         account121.getAddress();
 //        testTransferExact(testContext.getDefaultSignerAccount());
-        generateNewSubscribtions();
+        //generateNewSubscribtions();
 
 
 //        transferFunds(signerAccount, 15000000, Address.createFromRawAddress("TC2ZMZK47C2TNAKH3BAFFFM3DOQAIZKA36YYZYA"));
 //        transferFunds(signerAccount, 5000000, Address.createFromRawAddress("TAEI2BQUYDNRIR5V77HHRMNCYDNVJBNQOCRSPDY"));
-//        createHarvestingAccount();
+        createHarvestingAccount();
 
 //        breakAggregate1TransactionFee(signerAccount);
 //        breakAggregateTransactionFee(signerAccount);

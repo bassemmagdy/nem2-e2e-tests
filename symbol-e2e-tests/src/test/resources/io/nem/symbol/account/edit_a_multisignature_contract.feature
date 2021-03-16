@@ -7,7 +7,7 @@ Feature: Edit a multisignature contract
     And the maximum number of multisignature contracts an account can be cosignatory of is 5
     And  multisignature contracts created have set the minimum number of cosignatures to remove a cosignatory to 1
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: A cosignatory adds another cosignatory to the multisignature contract
     Given Alice created a 1 of 2 multisignature contract called "tom" with 1 required for removal with cosignatories:
       | cosignatory |
@@ -20,7 +20,7 @@ Feature: Edit a multisignature contract
     When "tablet" accepts the transaction
     Then tom multisignature contract should be updated
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: A cosignatory remove cosignatory to the multisignature contract
     Given Alice created a 1 of 2 multisignature contract called "tom" with 1 required for removal with cosignatories:
       | cosignatory |
@@ -32,7 +32,7 @@ Feature: Edit a multisignature contract
     When computer publishes the contract
     Then tom multisignature contract should be updated
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: A cosignatory adds and removes cosignatories from the multisignature contract
     Given Alice created a 1 of 2 multisignature contract called "tom" with 1 required for removal with cosignatories:
       | cosignatory |
@@ -46,7 +46,7 @@ Feature: Edit a multisignature contract
     When "tablet" accepts the transaction
     Then tom multisignature contract should be updated
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: A cosignatory accepts the addition of another cosignatory to the multisignature contract
     Given Alice created a 2 of 2 multisignature contract called "tom" with 1 required for removal with cosignatories:
       | cosignatory |
@@ -61,7 +61,7 @@ Feature: Edit a multisignature contract
     When "tablet" accepts the transaction
     Then tom multisignature contract should be updated
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: A cosignatory account removes itself from the multisignature contract
     Given Alice created a 1 of 2 multisignature contract called "tom" with 1 required for removal with cosignatories:
       | cosignatory |
@@ -73,7 +73,7 @@ Feature: Edit a multisignature contract
     When computer publishes the contract
     Then tom multisignature contract should be updated
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: All cosignatories are removed from the multisignature contract
     Given Alice created a 1 of 1 multisignature contract called "tom" with 1 required for removal with cosignatories:
       | cosignatory |
@@ -85,7 +85,7 @@ Feature: Edit a multisignature contract
     Then tom become a regular account
     And tom sends "hello" to "computer"
 
- @bvt
+ @bvt @bvt_group2
  Scenario Outline: A cosignatory updates the minimum approval and removal requirements for a multisignature account
     Given Alice created a 2 of 4 multisignature contract called "tom" with 2 required for removal with cosignatories:
       | cosignatory |

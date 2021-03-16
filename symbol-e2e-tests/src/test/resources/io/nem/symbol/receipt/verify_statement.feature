@@ -8,17 +8,17 @@ Feature: Verify the statements in block
     And Alice registered the asset "X"
     And Alice links the namespace "token" to the asset "X"
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: Alice wants verify that an address resolution was included in the block
     Given "Alice" sent 1 "token" to "ticket_vendor"
     Then "Alice" can verify that "ticket_vendor" was resolved as Bob for the previous transaction
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: Alice wants verify that a mosaic resolution was included in the block
     Given "Alice" sent 1 "token" to "ticket_vendor"
     Then "Alice" can verify that "token" was resolved as asset "X" for the previous transaction
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: Alice wants verify that her transaction was included in the block
     Given "Alice" sent 1 "token" to "ticket_vendor"
     Then "Alice" can verify that her transaction was included in the block

@@ -15,7 +15,7 @@ Feature: Apply global restrictions on mosaics
       | MyCompanySharesPublic  | false        |
     And Bobby has at least 10 MyCompanySharesPrivate balance
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account that doesn't pass the restriction cannot transact with the mosaic
     Given Alex creates the following restriction
       | Mosaic                 | Restriction Key | Restriction value | Restriction Type |
@@ -29,7 +29,7 @@ Feature: Apply global restrictions on mosaics
     When Bobby tries to send 1 asset of "MyCompanySharesPrivate" to Carol
     Then Bobby should receive the error "Failure_RestrictionMosaic_Account_Unauthorized"
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account that passes the restriction should be able to transact with the mosaic
     Given Alex creates the following restriction
       | Mosaic                 | Restriction Key | Restriction value | Restriction Type |
@@ -43,7 +43,7 @@ Feature: Apply global restrictions on mosaics
     When Bobby sends 1 asset of "MyCompanySharesPrivate" to Carol
     Then Carol should receive 1 of asset "MyCompanySharesPrivate"
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account(owner) that passes the restriction should be able to transact with the mosaic
     Given Alex creates the following restriction
       | Mosaic                 | Restriction Key | Restriction value | Restriction Type |
@@ -57,7 +57,7 @@ Feature: Apply global restrictions on mosaics
     When Alex sends 1 asset of "MyCompanySharesPrivate" to Carol
     Then Carol should receive 1 of asset "MyCompanySharesPrivate"
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: Make a modification to a mosaic restriction
     Given Alex creates the following restrictions
       | Mosaic                 | Restriction Key | Restriction value | Restriction Type |
@@ -74,7 +74,7 @@ Feature: Apply global restrictions on mosaics
     And Bobby sends 1 asset of "MyCompanySharesPrivate" to Carol
     Then Carol should receive 1 of asset "MyCompanySharesPrivate"
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account that passes multiple restrictions can interact with the mosaic
     Given Alex creates the following restrictions
       | Mosaic                 | Restriction Key | Restriction value | Restriction Type |

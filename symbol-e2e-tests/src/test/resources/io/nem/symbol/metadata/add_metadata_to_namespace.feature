@@ -10,7 +10,7 @@ Feature: Associate metadata with a namespace
     Given Sarah has 30 units of the network currency
     And Sarah registered the namespace "sto_token"
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: Bob wants to add a name to Sarah's namespace
     Given Bob request Sarah to add a document "name" to namespace "sto_token"
     And Bob published the bonded contract
@@ -30,7 +30,7 @@ Feature: Associate metadata with a namespace
       |  0         |
       | 11         |
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: Sarah wants to add multiple documents to her namespace
     Given Sarah added a document "name" to namespace "sto_token"
     And Bob request Sarah to add a document "name" to namespace "sto_token"
@@ -38,7 +38,7 @@ Feature: Associate metadata with a namespace
     When "Sarah" accepts the transaction
     Then Sarah namespace "sto_token" should have document "name" attached by Bob
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: Sarah wants to add information to her namespace
     Given Sarah adds a document "name" to namespace "sto_token"
     When Sarah published the contract
@@ -55,7 +55,7 @@ Feature: Associate metadata with a namespace
       | 0          |
       | 8          |
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: Sarah wants to add a document to namespace using an alias
     Given Sarah registered the namespace "sarah"
     And Sarah links the namespace "sarah" to the address of Sarah

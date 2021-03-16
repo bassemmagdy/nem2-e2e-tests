@@ -44,7 +44,7 @@ Feature: Metadata state proof
       | -7         |
       | 11         |
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: Bob wants to add a name to Sarah's namespace
     Given Sarah registered the namespace "sto_token"
     And Bob request Sarah to add a document "name" to namespace "sto_token"
