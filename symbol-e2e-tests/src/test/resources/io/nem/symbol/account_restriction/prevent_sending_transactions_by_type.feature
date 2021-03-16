@@ -17,7 +17,7 @@ Feature: Prevent sending transactions by type
     # We are using three transaction types for better comprehension.
     # To get all the available transaction types, see the NEM Developer Center/Protocol/Transaction.
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account blocks sending transfer transactions
     Given Alex blocks sending transactions of type:
       | TRANSFER               |
@@ -27,7 +27,7 @@ Feature: Prevent sending transactions by type
     And Alex balance should remain intact
     And Bobby balance should remain intact
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account blocks sending namespace registration transaction
     Given Alex blocks sending transactions of type:
       | TRANSFER               |
@@ -39,7 +39,7 @@ Feature: Prevent sending transactions by type
  #   We must try some other transaction type like REGISTER_MOSAIC etc. here and expect a pass
  #   And sending transactions with the stated transaction types should be blocked
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account only allows transfer and other transaction types
     Given Alex only allows sending transactions of type:
       | ACCOUNT_OPERATION_RESTRICTION |
@@ -49,7 +49,7 @@ Feature: Prevent sending transactions by type
     Then Bobby should receive 1 of asset "network currency"
     And Alex "network currency" balance should decrease by 1 units
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account only allows namespace registration transaction type
     Given Alex only allows sending transactions of type:
       | ACCOUNT_OPERATION_RESTRICTION |

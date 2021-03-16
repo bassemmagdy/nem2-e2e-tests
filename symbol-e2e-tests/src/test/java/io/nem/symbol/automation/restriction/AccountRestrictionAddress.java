@@ -55,7 +55,7 @@ public class AccountRestrictionAddress extends BaseTest {
 
   @Given("^the following accounts exist:$")
   public void theFollowingAccountsExists(final List<String> usernames) {
-    usernames.parallelStream().forEach(username -> getUserWithCurrency(username, 10000));
+    usernames.parallelStream().forEach(username -> getUserWithCurrency(username, 1000000));
     //    usernames.parallelStream().forEach(username -> transferAssets(username, username, new
     // ArrayList<>(), null));
     // usernames.forEach(username ->

@@ -6,7 +6,7 @@ Feature: Send a message
     Given the mean block generation time is 15 seconds
     And the maximum message length is 1024
 
-  @bvt
+  @bvt @bvt_group1
   Scenario Outline: An account sends a message to another account
     When Alice sends "<message>" to "<recipient>"
     Then the "<recipient>" should receive the message "<message>"

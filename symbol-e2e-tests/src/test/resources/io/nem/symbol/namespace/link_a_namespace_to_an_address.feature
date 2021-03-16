@@ -4,14 +4,14 @@ Feature: Link a namespace to an address
   I want to link a namespace to an address,
   So that it is memorable and easily recognizable
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account links a namespace to an address
     Given Alice registered the namespace "sue"
     And Alice registered the asset "X"
     When Alice links the namespace "sue" to the address of Sue
     Then Alice can send asset "X" to the namespace "sue" instead of the address of Sue
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account unlink a namespace to an address
     Given Alice registered the namespace "sue"
     And Alice registered the asset "X"
@@ -20,7 +20,7 @@ Feature: Link a namespace to an address
     And Alice tries to send asset "X" to the namespace "sue" instead of the address of Sue
     Then she should receive the error "FAILURE_CORE_INVALID_ADDRESS"
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account links a subnamespace to an address
     Given Alice registered the namespace "accounts"
     And Alice registered the subnamespace "accounts.sue"

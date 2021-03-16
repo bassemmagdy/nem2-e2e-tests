@@ -21,7 +21,7 @@ Feature: Create an escrow contract
     And "Sue" accepts the transaction
     Then every sender participant should receive a notification to accept the contract
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account creates an escrow contract signed by all the participants
     Given Alice defined the following escrow contract:
       | type           | sender | recipient | data               |
@@ -39,7 +39,7 @@ Feature: Create an escrow contract
     When Alice publishes the contract
     Then the swap of assets should conclude
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account tries to create an escrow already signed by the participants (multisig cosignatory)
     Given Alice created a 2 of 2 multisignature contract called "Tom" with 1 required for removal with cosignatories:
       | cosignatory |
@@ -54,7 +54,7 @@ Feature: Create an escrow contract
     When Alice publishes the contract
     Then the swap of assets should conclude
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account tries to create an escrow already signed by the participants (mlma cosignatory)
     Given Alice created a 1 of 2 multisignature contract called "Computer" with 1 required for removal with cosignatories:
       | cosignatory |

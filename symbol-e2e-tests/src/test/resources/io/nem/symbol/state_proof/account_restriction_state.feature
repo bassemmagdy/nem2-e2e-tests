@@ -12,14 +12,14 @@ Feature: Account restriction state proof
       | ticket  |
       | voucher |
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account blocks receiving transactions containing a specific asset
     When Bobby blocks receiving transactions containing the following assets:
       | ticket  |
       | voucher |
     Then Bobby verify account restriction state in the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario Outline: An account allows receiving transactions containing a specific asset
     When Bobby allows receiving transactions containing the following assets:
       | <asset> |
@@ -30,7 +30,7 @@ Feature: Account restriction state proof
       | network currency |
       | ticket           |
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account unblocks an asset but tries to transfer a blocked asset
     Given Bobby blocks receiving transactions containing the following assets:
       | ticket  |
@@ -38,7 +38,7 @@ Feature: Account restriction state proof
     When Bobby removes ticket from blocked assets
     Then Bobby verify account restriction state in the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account removes an asset from the allowed assets
     Given Bobby has only allowed receiving the following assets:
       | ticket  |
@@ -52,20 +52,20 @@ Feature: Account restriction state proof
       | Carol  |
     Then Bobby verify account restriction state in the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account only allows receiving transactions from a set of addresses
     Given Bobby only allowed receiving transactions from:
       | Alex   |
     Then Bobby verify account restriction state in the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account only allows receiving transactions from a set of addresses
     Given Bobby only allowed receiving transactions from:
       | Alex   |
       | Carol  |
     Then Bobby verify account restriction state in the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account unblocks an address
     Given Bobby blocked receiving transactions from:
       | Alex  |
@@ -73,7 +73,7 @@ Feature: Account restriction state proof
     And Bobby removes Alex from blocked addresses
     Then Bobby verify account restriction state in the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account removes an address from the allowed addresses
     Given Bobby only allowed receiving transactions from:
       | Alex  |
@@ -81,14 +81,14 @@ Feature: Account restriction state proof
     When Bobby removes Alex from allowed addresses
     Then Bobby verify account restriction state in the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account blocks sending transfer transactions
     Given Alex blocks sending transactions of type:
       | TRANSFER               |
       | NAMESPACE_REGISTRATION |
     Then Alex verify account restriction state in the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account only allows transfer and other transaction types
     Given Alex only allows sending transactions of type:
       | ACCOUNT_OPERATION_RESTRICTION |

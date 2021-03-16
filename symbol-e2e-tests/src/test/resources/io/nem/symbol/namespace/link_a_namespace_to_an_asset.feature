@@ -5,14 +5,14 @@ Feature: Link a namespace to an asset
   I want to link a namespace to an asset,
   So that it is memorable and easily recognizable
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account is able to send an asset using a namespace alias
     Given Alice registered the namespace "token"
     And Alice registered the asset "X"
     When Alice links the namespace "token" to the asset "X"
     Then Alice can send "token" instead of asset "X" to Bob
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account tries to send an asset using namespace alias to an asset after unlinking it
     Given Alice registered the namespace "asset"
     And Alice registered the asset "T"
@@ -21,7 +21,7 @@ Feature: Link a namespace to an asset
     And Alice tries to send "token" instead of asset "X" to Bob
     Then she should receive the error "FAILURE_CORE_INSUFFICIENT_BALANCE"
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account unlink an asset from a namespace after the asset expired
     Given Alice registered the namespace "assetexpire"
     And Alice has registered expiring asset "T" for 6 blocks
@@ -31,7 +31,7 @@ Feature: Link a namespace to an asset
     And Alice tries to send "assetexpire" instead of asset "T" to Bob
     Then she should receive the error "FAILURE_CORE_INSUFFICIENT_BALANCE"
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account is able to send an asset using a subnamespace alias
     Given Alice registered the namespace "alice"
     And Alice registered the subnamespace "alice.token"
@@ -39,7 +39,7 @@ Feature: Link a namespace to an asset
     When Alice links the namespace "alice.token" to the asset "X"
     Then Alice can send "alice.token" instead of asset "X" to Bob
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account tries to send an asset using namespace alias to an asset after unlinking it
     Given Alice registered the namespace "alice"
     And Alice registered the subnamespace "alice.asset"
@@ -49,7 +49,7 @@ Feature: Link a namespace to an asset
     And Alice tries to send "alice.asset" instead of asset "T" to Bob
     Then she should receive the error "FAILURE_CORE_INSUFFICIENT_BALANCE"
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: An account tries to send an asset using invalid namespace alias
     Given Alice registered the namespace "unknownasset"
     When Alice tries to send "unknownasset" instead of asset "T" to Bob

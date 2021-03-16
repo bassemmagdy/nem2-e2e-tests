@@ -7,7 +7,7 @@ Feature: Alter an asset supply
     And the maximum asset supply is 9000000000
     And Alice has 10000000 "network currency" in her account
 
-  @bvt
+  @bvt @bvt_group1
   Scenario Outline: An account alters an asset supply
     Given Alice has registered a supply <supply-mutability> asset with an initial supply of 20 units
     When Alice decides to <direction> the asset supply in <amount> units

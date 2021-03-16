@@ -10,7 +10,7 @@
     And Alice has 10000000 "network currency" in her account
     And the grace period of a namespace is 1 day
 
-  @bvt
+  @bvt @bvt_group2
   Scenario Outline: An account extends a namespace registration period
     Given Alice registered the namespace "alice"
     When Alice extends the registration of the namespace named "alice" for <duration> blocks
@@ -22,7 +22,7 @@
       | 10       | 10   |
       | 20       | 20   |
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account tries to extend a namespace registration period and this is under grace period
     Given Alice registered the namespace "aliceexp"
     And the namespace is now under grace period
@@ -30,7 +30,7 @@
     Then Alice extended the namespace registration period for at least 6 blocks
     And Alice pays rental fee in 6 units
 
-    @bvt
+    @bvt @bvt_group2
     Scenario: An account is able to send an asset using a namespace alias after namespace extension
       Given Alice registered the namespace named "token" for 20 blocks
       And Alice registered the asset "X"
@@ -39,7 +39,7 @@
       When Alice extends the registration of the namespace named "token" for 6 blocks
       Then Alice can send "token" instead of asset "X" to Bob
 
-    @bvt
+    @bvt @bvt_group2
     Scenario: An account is able to send an asset to a namespace alias after the namespace is extended
       Given Alice registered the namespace named "sue" for 20 blocks
       And Alice registered the asset "X"
@@ -48,7 +48,7 @@
       When Alice extends the registration of the namespace named "sue" for 6 blocks
       Then Alice can send asset "X" to the namespace "sue" instead of the address of Sue
 
-    @bvt
+    @bvt @bvt_group2
     Scenario: An account is able to send an asset to a namespace alias after the namespace is extended in grace period
       Given Alice registered the namespace named "sue" for 10 blocks
       And Alice registered the asset "X"
@@ -58,7 +58,7 @@
       When Alice extends the registration of the namespace named "sue" for 6 blocks
       Then Alice can send asset "X" to the namespace "sue" instead of the address of Sue
 
-    @bvt
+    @bvt @bvt_group2
     Scenario: An account is able to send an asset using a subnamespace alias after the root namespace renewal
       Given Alice registered the namespace named "alice" for 10 blocks
       And Alice registered the subnamespace "alice.token"

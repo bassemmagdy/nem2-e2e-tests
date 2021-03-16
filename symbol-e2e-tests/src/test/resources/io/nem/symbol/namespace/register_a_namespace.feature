@@ -22,7 +22,7 @@ Feature: Register a namespace
       | info |
     And Alice has 10000000 "network currency" in her account
 
-  @bvt
+  @bvt @bvt_group3
   Scenario Outline: An account registers a namespace
     When Alice registers a namespace named "<name>" for <duration> block
     Then Alice should become the owner of the new namespace <name> for least <duration> block

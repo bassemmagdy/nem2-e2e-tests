@@ -11,7 +11,7 @@ Feature: Create a subnamespace
     And the subnamespace name can have up to 64 characters
     And Alice has 10000000 "network currency" in her account
 
-  @bvt
+  @bvt @bvt_group2
   Scenario: An account creates a subnamespace
     Given Alice registered the namespace "one"
     When Alice registered the subnamespace "one.two"

@@ -2,12 +2,12 @@ Feature: Mosaic state proof
   I want to verify the state of
   my mosaic on the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: Alice create a non mosaic on the block chain and want to verify its state
     When  Alice registers a non-expiring asset "token"
     Then Alice wants to verify "token" state on the blockchain
 
-  @bvt
+  @bvt @bvt_group3
   Scenario Outline: An account registers an expiring asset with valid properties with divisibility
     When Alice registers an asset named "token" with <transferability>, supply <supply-mutability> with divisibility <divisibility> for <duration> blocks
     Then Alice wants to verify "token" state on the blockchain
@@ -31,7 +31,7 @@ Feature: Mosaic state proof
       | 3        | transferable       | mutable           | 2            |
       | 0        | nontransferable    | immutable         | 6            |
 
-  @bvt
+  @bvt @bvt_group3
   Scenario: Verify high value account
     Given Alice sends 1 asset of "network currency" to Tom
     Then Alice wants to verify "network currency" state on the blockchain

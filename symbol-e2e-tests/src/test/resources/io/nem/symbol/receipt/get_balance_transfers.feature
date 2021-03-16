@@ -12,14 +12,14 @@ Feature: Get balance transfers
     And Alice has 10000000 "network currency" in her account
 
   # Mosaic
-  @bvt
+  @bvt @bvt_group3
   Scenario: Alice wants to get the cost of registering an asset
     Given Alice registered the asset "alice_token"
     When Alice checks how much cost registering the asset
     Then Alice should get that registering the asset "alice_token" cost "500" network currency
 
   # Namespace
-  @bvt
+  @bvt @bvt_group3
   Scenario Outline: Alice wants to get the cost of registering a namespace
     Given Alice registers a namespace named "<name>" for <duration> block
     When she checks how much cost registering the namespace

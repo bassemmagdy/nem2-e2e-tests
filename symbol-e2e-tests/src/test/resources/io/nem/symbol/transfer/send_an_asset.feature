@@ -7,7 +7,7 @@ Background: Create assets for transfer.
     Given Alice registered the asset "X"
     And Alice registered the asset "Y"
 
-  @bvt
+  @bvt @bvt_group1
   Scenario Outline: An account sends an asset to another account
     When Alice sends <amount> asset of "<asset>" to Bob
     Then Bob should receive <amount> of asset "<asset>"
@@ -22,7 +22,7 @@ Background: Create assets for transfer.
     When Alice sends 1 asset of "X" to Alice
     Then Alice balance should decrease by transaction fee
 
-  @bvt
+  @bvt @bvt_group1
   Scenario Outline: An account tries to send an asset to an invalid account
     When Alice tries to send 1 asset of "Y" to <recipient>
     Then she should receive the error "<error>"
@@ -32,7 +32,7 @@ Background: Create assets for transfer.
       | NAIBV5-BKEVGJ-IZQ4RP-224TYE-J3ZIUL-WDHUTI-X3Q | Failure_Core_Invalid_Address |
       | MAIBV5-BKEVGJ-IZQ4RP-224TYE-J3ZIUL-WDHUTI-X3Y | Failure_Core_Invalid_Address |
 
-  @bvt
+  @bvt @bvt_group1
   Scenario Outline: An account tries to send assets that does not have
     When Alice tries to send <amount> asset of "<asset>" to Sue
     Then she should receive the error "<error>"
@@ -45,7 +45,7 @@ Background: Create assets for transfer.
       | 1      | unknown | Failure_Core_Insufficient_Balance |
       | 105    | Y       | Failure_Core_Insufficient_Balance |
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account sends multiple assets to another account
     When Alice sends multiple assets to "Bob": 1 asset "X", 2 asset "Y"
     Then Bob should receive 1 of asset "X"
@@ -64,25 +64,25 @@ Background: Create assets for transfer.
       | 1      | U      | Failure_Core_Insufficient_Balance     |
       | 1      | Y      | Failure_Transfer_Out_Of_Order_Mosaics |
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account sends a non-transferable asset to the account that registered the asset
     Given Alice registers a non transferable asset which she transfer 10 asset to Bob
     When Bob transfer 1 asset to Alice
     Then 1 asset transferred successfully
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account tries to send a non-transferable asset to another account
     Given Alice registers a non transferable asset which she transfer 10 asset to Bob
     When Bob transfer 1 asset to Sue
     Then she should receive the error "Failure_Mosaic_Non_Transferable"
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account transfer a transferable asset to another account
     Given Alice registers a transferable asset which she transfer asset to Bob
     When Bob transfer 10 asset to Sue
     Then 10 asset transferred successfully
 
-  @bvt
+  @bvt @bvt_group1
   Scenario: An account tries to send an expired asset
   Given Alice has registered expiring asset "A" for 2 blocks
   And the asset is now expired
