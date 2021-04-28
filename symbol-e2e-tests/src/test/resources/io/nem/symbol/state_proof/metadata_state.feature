@@ -3,7 +3,7 @@ Feature: Metadata state proof
   my metadata on the blockchain
 
   Background:
-    Given Sarah has 30 units of the network currency
+    Given Sarah has 70 units of the network currency
 
   Scenario: Sarah wants to add a notarized certificate to her account
     Given Sarah request Bob to notarized her "college certificate"

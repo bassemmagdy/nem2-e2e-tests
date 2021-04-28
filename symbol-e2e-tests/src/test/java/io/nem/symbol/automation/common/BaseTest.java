@@ -92,7 +92,7 @@ public abstract class BaseTest {
       final AccountHelper accountHelper = new AccountHelper(testContext);
       final Account accountBob =
           accountHelper.createAccountWithAsset(
-              testContext.getNetworkCurrency().createRelative(BigInteger.valueOf(1000000)));
+              testContext.getNetworkCurrency().createRelative(BigInteger.valueOf(1000)));
       CORE_USER_ACCOUNTS.put(AUTOMATION_USER_BOB, accountBob);
       final NamespaceHelper namespaceHelper = new NamespaceHelper(testContext);
 
