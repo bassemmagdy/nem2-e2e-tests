@@ -27,23 +27,23 @@ repositories {
 }
 
 dependencies {
-    compile project(':symbol-direct-java-sdk')
-    implementation 'io.nem:symbol-sdk-vertx-client:0.23.2-SNAPSHOT'
-    implementation 'org.rocksdb:rocksdbjni:6.5.3'
-    implementation 'org.apache.logging.log4j:log4j-api:2.13.0'
-    implementation 'org.apache.logging.log4j:log4j-core:2.13.0'
-    implementation 'org.apache.logging.log4j:log4j-jul:2.13.0'
+    implementation project(':symbol-direct-java-sdk')
+    implementation 'io.nem:symbol-sdk-vertx-client:1.0.0'
+    implementation 'org.rocksdb:rocksdbjni:6.16.4'
+    implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
+    implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
+    implementation 'org.apache.logging.log4j:log4j-jul:2.14.1'
     testImplementation 'io.cucumber:cucumber-java:2.3.1'
     testImplementation 'io.cucumber:cucumber-junit:2.3.1'
     testImplementation 'io.cucumber:cucumber-picocontainer:2.3.1'
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.hamcrest:hamcrest:2.2'
     compileOnly 'info.cukes:gherkin:2.12.2'
 }
 
 group = 'io.nem'
 archivesBaseName = 'symbol-e2e-tests'
-version = '0.9.6.4'
+version = '1.0.0.0'
 sourceCompatibility = '1.8'
 
 tasks.withType(JavaCompile) {
