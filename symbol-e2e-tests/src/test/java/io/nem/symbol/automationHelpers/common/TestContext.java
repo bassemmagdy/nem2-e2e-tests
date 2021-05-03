@@ -62,6 +62,7 @@ public class TestContext {
     } catch (FileNotFoundException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
+      throw e;
     }
     scenarioContext = new ScenarioContext();
     repositoryFactory = new RepositoryFactoryImpl(configFileReader).create();
