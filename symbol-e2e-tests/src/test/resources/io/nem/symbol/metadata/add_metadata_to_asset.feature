@@ -1,4 +1,4 @@
-Feature: Associate metadata with an account
+Feature: Associate metadata with an asset
   As Alice, I want to be able attach documents my account that it
   will be public available to other who need it.
 
@@ -7,7 +7,7 @@ Feature: Associate metadata with an account
   He notarize a document, then tags the customer’s account with the digitized document as metadata.
 
   Background:
-    Given Sarah has 30 units of the network currency
+    Given Sarah has 70 units of the network currency
     And Sarah registered the asset "sto_token"
 
   @bvt @bvt_group2

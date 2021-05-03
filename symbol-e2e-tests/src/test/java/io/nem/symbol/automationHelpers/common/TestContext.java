@@ -234,7 +234,7 @@ public class TestContext {
             .createNetworkRepository()
             .getTransactionFees()
             .blockingFirst()
-            .getMedianFeeMultiplier();
+            .getMinFeeMultiplier();
     final int minConfigValue = getConfigFileReader().getMinFeeMultiplier().intValue();
     return calculatedFee < minConfigValue ? minConfigValue : calculatedFee;
   }
