@@ -20,7 +20,7 @@
 
 package io.nem.symbol.automation.receipt;
 
-import cucumber.api.java.en.Then;
+import io.cucumber.java.en.Then;
 import io.nem.symbol.automation.common.BaseTest;
 import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.automationHelpers.helper.sdk.BlockChainHelper;

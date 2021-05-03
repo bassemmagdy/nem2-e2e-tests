@@ -27,15 +27,16 @@ repositories {
 }
 
 dependencies {
-    implementation project(':symbol-direct-java-sdk')
+    compile project(':symbol-direct-java-sdk')
     implementation 'io.nem:symbol-sdk-vertx-client:1.0.0'
     implementation 'org.rocksdb:rocksdbjni:6.16.4'
     implementation 'org.apache.logging.log4j:log4j-api:2.14.1'
     implementation 'org.apache.logging.log4j:log4j-core:2.14.1'
     implementation 'org.apache.logging.log4j:log4j-jul:2.14.1'
-    testImplementation 'io.cucumber:cucumber-java:2.3.1'
-    testImplementation 'io.cucumber:cucumber-junit:2.3.1'
-    testImplementation 'io.cucumber:cucumber-picocontainer:2.3.1'
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.12.1'
+    testImplementation 'io.cucumber:cucumber-java:6.9.0'
+    testImplementation 'io.cucumber:cucumber-junit:6.9.0'
+    testImplementation 'io.cucumber:cucumber-picocontainer:6.9.0'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.hamcrest:hamcrest:2.2'
     compileOnly 'info.cukes:gherkin:2.12.2'

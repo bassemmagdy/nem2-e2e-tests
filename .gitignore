@@ -48,3 +48,5 @@ hs_err_pid*
 
 # Ignore Gradle build output directory
 build
+symbol-e2e-tests/cucumber-report.html
+symbol-e2e-tests/cucumber-report.json

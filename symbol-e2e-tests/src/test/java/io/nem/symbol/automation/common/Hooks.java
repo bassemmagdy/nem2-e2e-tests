@@ -20,17 +20,15 @@
 
 package io.nem.symbol.automation.common;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.runtime.ScenarioImpl;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.nem.symbol.automationHelpers.common.Log;
 import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.automationHelpers.helper.sdk.CommonHelper;
 import io.nem.symbol.sdk.api.Listener;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
-
 import static io.nem.symbol.automation.common.BaseTest.CORE_USER_ACCOUNTS;
 
 /** Hooks for all tests */
@@ -74,8 +72,9 @@ public class Hooks {
     final Log logger = Log.getLogger(scenarioName);
     logger.scenarioEnd(scenarioName, scenario.getStatus().ordinal());
     if (scenario.isFailed()) {
-      ScenarioImpl impl = (ScenarioImpl) scenario;
-      logger.LogException(impl.getError());
+      // ScenarioImpl impl = (ScenarioImpl) scenario;
+      // logger.LogException(impl.getError());
+      logger.LogError(String.format("{} failed", scenarioName));
     }
     final Listener listener = testContext.getScenarioContext().getContext("listener");
     if (listener != null) {

@@ -32,6 +32,7 @@ import io.nem.symbol.sdk.model.mosaic.UnresolvedMosaicId;
 import io.nem.symbol.sdk.model.network.NetworkType;
 import io.nem.symbol.sdk.model.transaction.*;
 
+import java.io.FileNotFoundException;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,7 +40,7 @@ import java.util.stream.Collectors;
 
 /** Test context */
 public class TestContext {
-  private final ConfigFileReader configFileReader;
+  private ConfigFileReader configFileReader;
   private final Account defaultSignerAccount;
   private final ScenarioContext scenarioContext;
   private final List<Transaction> transactions;
@@ -50,9 +51,19 @@ public class TestContext {
   private SignedTransaction signedTransaction;
   private Log logger;
 
-  /** Constructor. */
+  /**
+   * Constructor.
+   * 
+   * 
+   */
   public TestContext() {
-    configFileReader = new ConfigFileReader();
+    try {
+      configFileReader = new ConfigFileReader();
+    } catch (FileNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      throw e;
+    }
     scenarioContext = new ScenarioContext();
     repositoryFactory = new RepositoryFactoryImpl(configFileReader).create();
     this.getLogger().LogError("Connecting to Network: " + getNetworkType());

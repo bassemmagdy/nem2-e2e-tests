@@ -1,7 +1,15 @@
 package io.nem.symbol.automation.finalization;
 
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.When;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.When;
+import io.nem.symbol.automation.common.BaseTest;
+import io.nem.symbol.automationHelpers.common.TestContext;
+import io.nem.symbol.automationHelpers.helper.sdk.BlockChainHelper;
 import io.nem.symbol.automation.common.BaseTest;
 import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.automationHelpers.helper.sdk.BlockChainHelper;
@@ -11,11 +19,6 @@ import io.nem.symbol.sdk.api.AccountSearchCriteria;
 import io.nem.symbol.sdk.model.account.AccountInfo;
 import io.nem.symbol.sdk.model.blockchain.ChainInfo;
 import io.nem.symbol.sdk.model.finalization.FinalizationProof;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.junit.Assert.assertTrue;
 
 public class FinalizationVotingProof extends BaseTest {
 

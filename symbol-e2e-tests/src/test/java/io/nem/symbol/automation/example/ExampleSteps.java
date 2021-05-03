@@ -11,9 +11,9 @@
  */
 package io.nem.symbol.automation.example;
 
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.When;
+import io.cucumber.java.en.Then;
 import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.automationHelpers.helper.sdk.*;
 import io.nem.symbol.catapult.builders.GeneratorUtils;

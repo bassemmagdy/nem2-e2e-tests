@@ -1,0 +1,16 @@
+---
+apiHost: localhost
+apiPort: 7900
+brokerHost: localhost
+brokerPort: 7902
+mongodbHost: localhost
+mongodbPort: 27017
+socketTimeoutInMilliseconds: 10000
+databaseQueryTimeoutInSeconds: 120
+minFeeMultiplier: 100
+restGatewayUrl: http://34.220.165.163:3000
+repositoryFactoryType: Vertx
+
+#bootstrap
+userPrivateKey: 4294AD641E2A04C312D44D1F3ECF2A70629184FCCACC366ABA02AC79D80FB237
+harvesterPublicKey: 4F9159250895C3AFE65CBF0F4D01FF9E59A3B3FB32A3D18AC58BEEBCAC419F37
