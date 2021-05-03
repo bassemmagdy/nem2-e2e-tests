@@ -126,9 +126,6 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
             echo "config-default.yaml after update: ${props}"
             echo "apiHost value: ${props.apiHost}"
 
-            // assert props.repositoryFactoryType == 'Vertx'
-            // assert props.restGatewayUrl == 'http://api-01.us-west-2.testnet.symboldev.network:3000'
-
             writeYaml file: 'src/test/resources/configs/config-default.yaml', data: props, overwrite: true
 
             def propsAfterUpdate = readYaml file: 'src/test/resources/configs/config-default.yaml'
@@ -144,17 +141,11 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
           echo "Automation user private key: ${AUTOMATION_TEST_USER_PRIVATE_KEY}"
           echo "Symbol API URL: ${env.SYMBOL_API_URL}"
           try {
-            // if (params.ENVIRONMENT == 'testnet') {
               runGradle('--project-dir symbol-e2e-tests/ test')
-            // }
-            // else {
-            //   runGradle("--project-dir symbol-e2e-tests/ test")
-            // }
           }
           finally {
             dir ('symbol-e2e-tests') {
               sh 'ls -altr'
-              // sh 'tree .'
               stash includes: 'cucumber-report.json,cucumber-report.html', name: 'cucumber-reports'
             }
           }
@@ -219,34 +210,3 @@ def runGradle(String command) {
     bat "gradlew.bat ${command}"
   }
 }
-
-// class PropertyReader {
-
-//     String filePath
-//     File workingDir
-
-//     PropertyReader(String filePath) {
-//         this.filePath = filePath
-//         this.workingDir = new File(".")
-//     }
-
-//     def propertyMissing(String name) {
-//         Properties props = new Properties()
-//         Path path = FileSystems.getDefault().getPath("/home/ubuntu/jenkins/workspace/server/test-symbol-server-e2e/symbol-e2e-tests/src/test/resources/configs", "config-default.properties")
-//         File propsFile = new File(path)
-//         propsFile.withInputStream {
-//             props.load it
-//         }
-//         props."$name"
-//     }
-
-//     def methodMissing(String name, args) {
-//         Properties props = new Properties()
-//         File propsFile = new File(filePath)
-
-//         props.load propsFile.newDataInputStream()
-//         props.setProperty name, args.toString() - '[' - ']'
-//         props.store propsFile.newWriter(), null
-//     }
-
-// }
