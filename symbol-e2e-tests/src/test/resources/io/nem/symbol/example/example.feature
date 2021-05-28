@@ -1,3 +1,4 @@
+@manual
 Feature: Can Bob transfer 1 assets to Jill?
   Bob owes Jill some money and wanted to know if he can
   send her 10 XEM on nem to pay his debt

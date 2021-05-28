@@ -57,7 +57,7 @@ public class MosaicMetadata extends MetadataBase<UnresolvedMosaicId> {
       final String documentName,
       final String assetName) {
     final int numOfCosigners = 1;
-    final MosaicId mosaicId = resolveMosaicId(assetName);
+    final MosaicId mosaicId = resolveMosaicId(targetName, assetName);
     createDocument(targetName, sourceName, documentName, mosaicId, numOfCosigners);
   }
 
@@ -67,7 +67,7 @@ public class MosaicMetadata extends MetadataBase<UnresolvedMosaicId> {
       final String assetName,
       final String documentName,
       final String sourceName) {
-    final MosaicId targetId = resolveMosaicId(assetName);
+    final MosaicId targetId = resolveMosaicId(targetName, assetName);
     verifyDocument(targetName, documentName, sourceName, targetId);
   }
 
@@ -92,7 +92,7 @@ public class MosaicMetadata extends MetadataBase<UnresolvedMosaicId> {
       final String assetName,
       final int delta) {
     final int numOfCosigner = 1;
-    final MosaicId targetId = resolveMosaicId(assetName);
+    final MosaicId targetId = resolveMosaicId(targetName, assetName);
     modifyDigitalDocument(targetName, sourceName, documentName, delta, numOfCosigner, targetId);
   }
 
@@ -100,14 +100,14 @@ public class MosaicMetadata extends MetadataBase<UnresolvedMosaicId> {
   public void createSelfDocument(
       final String userName, final String documentName, final String assetName) {
     final int numOfCosigners = 0;
-    final MosaicId targetId = resolveMosaicId(assetName);
+    final MosaicId targetId = resolveMosaicId(userName, assetName);
     createDocument(userName, userName, documentName, targetId, numOfCosigners);
   }
 
   @Then("^(\\w+) should have document \"(.+?)\" attached to asset \"(\\w+)\"$")
   public void verifySelfDocument(
       final String targetName, final String documentName, final String assetName) {
-    final MosaicId targetId = resolveMosaicId(assetName);
+    final MosaicId targetId = resolveMosaicId(targetName, assetName);
     verifyDocument(targetName, documentName, targetName, targetId);
   }
 
@@ -124,7 +124,7 @@ public class MosaicMetadata extends MetadataBase<UnresolvedMosaicId> {
   public void updateSelfDocument(
       final String userName, final String documentName, final String assetName, final int delta) {
     final int numOfCosigner = 0;
-    final MosaicId targetId = resolveMosaicId(assetName);
+    final MosaicId targetId = resolveMosaicId(userName, assetName);
     modifyDigitalDocument(userName, userName, documentName, delta, numOfCosigner, targetId);
     new CreateMultisignatureContract(getTestContext()).publishTransaction(userName);
     waitForLastTransactionToComplete();
@@ -148,7 +148,7 @@ public class MosaicMetadata extends MetadataBase<UnresolvedMosaicId> {
       final String assetName,
       final String targetName,
       final String alias) {
-    final MosaicId targetId = resolveMosaicId(assetName);
+    final MosaicId targetId = resolveMosaicId(targetName, assetName);
     final int numOfCosigner = 1;
     createDocumentWithAlias(alias, sourceName, documentName, targetId, numOfCosigner);
     new CreateMultisignatureContract(getTestContext()).publishBondedTransaction(sourceName);
@@ -161,7 +161,7 @@ public class MosaicMetadata extends MetadataBase<UnresolvedMosaicId> {
     final Account sourceAccount = getUserWithCurrency(userName);
     final short documentLength = 0;
     final int numOfCosigners = 0;
-    final MosaicId targetId = resolveMosaicId(assetName);
+    final MosaicId targetId = resolveMosaicId(userName, assetName);
     createDocument(
         sourceAccount.getAddress(),
         sourceAccount,
@@ -179,7 +179,7 @@ public class MosaicMetadata extends MetadataBase<UnresolvedMosaicId> {
     final Account userAccount = getUserWithCurrency(userName);
     final BigInteger documentKey = createRandomDocumentKey();
     final String document = CommonHelper.getRandonStringWithMaxLength(512);
-    final MosaicId targetId = resolveMosaicId(assetName);
+    final MosaicId targetId = resolveMosaicId(userName, assetName);
     new MosaicMetadataHelper(getTestContext())
         .createAccountMetadataAndAnnounce(
             userAccount,
@@ -195,7 +195,7 @@ public class MosaicMetadata extends MetadataBase<UnresolvedMosaicId> {
       final String userName, final String documentName, final String assetName) {
     final Pair<BigInteger, String> documentInfoKey = getDocumentInfo(documentName);
     final Account sourceAccount = getUserWithCurrency(userName);
-    final MosaicId targetid = resolveMosaicId(assetName);
+    final MosaicId targetid = resolveMosaicId(userName, assetName);
     final short documentLength = 10;
     final int numOfCosigners = 0;
     createDocument(

@@ -22,6 +22,12 @@ Feature: Register a namespace
       | info |
     And Alice has 10000000 "network currency" in her account
 
+  Background:
+    Given the following accounts exist with Network Currency:
+      | Alice  | 100 |
+      | Bob    | 100 |
+      | Sue    | 1   |
+
   @bvt @bvt_group3
   Scenario Outline: An account registers a namespace
     When Alice registers a namespace named "<name>" for <duration> block
@@ -61,13 +67,15 @@ Feature: Register a namespace
     And Alice balance should remain intact
 
   Scenario: An account tries to register a namespace which is already registered by another account
-    Given Bob registered the namespace "bob_name"
+    Given Bob has 10 units of the network currency
+    And Bob registered the namespace "bob_name"
     When Alice tries to registers a namespace named "bob_name" for 6 block
     Then she should receive the error "FAILURE_NAMESPACE_OWNER_CONFLICT"
     And Alice balance should remain intact
 
   Scenario: An account tries to register a namespace which is already registered by another account during the grace period
-    Given Bob registered the namespace "bob_expired"
+    Given Bob has 10 units of the network currency
+    And Bob registered the namespace "bob_expired"
     And the namespace is now under grace period
     When Alice tries to registers a namespace named "bob_expired" for 6 block
     Then she should receive the error "FAILURE_NAMESPACE_OWNER_CONFLICT"
@@ -85,6 +93,7 @@ Feature: Register a namespace
 
   Scenario: An account register a namespace which was just deleted
     Given Alice registers a namespace named "token" for 6 blocks
+    And Bob has 10 units of the network currency
     And the namespace is now deleted
     When Bob registers a namespace named "token" for 10 block
     Then Bob should become the owner of the new namespace token for least 10 block

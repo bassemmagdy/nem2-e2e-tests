@@ -7,7 +7,9 @@ Feature: Associate metadata with an account
   He notarize a document, then tags the customer’s account with the digitized document as metadata.
 
   Background:
-    Given Sarah has 30 units of the network currency
+    Given the following accounts exist with Network Currency:
+      | Sarah  | 30 |
+      | Bob    | 30 |
 
   @bvt @bvt_group2
   Scenario: Sarah wants to add a notarized certificate to her account

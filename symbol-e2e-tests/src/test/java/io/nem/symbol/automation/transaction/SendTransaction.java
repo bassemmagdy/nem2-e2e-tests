@@ -87,7 +87,7 @@ public class SendTransaction extends BaseTest {
       final Deadline deadline,
       final BigInteger maxFee,
       final NetworkType networkType) {
-    final Account sender = getUser(senderName);
+    final Account sender = getUserWithCurrency(senderName);
     final TransferTransaction transferTransaction =
         createTransaction(deadline, maxFee, networkType);
     transactionHelper.signAndAnnounceTransaction(transferTransaction, sender);
@@ -107,7 +107,7 @@ public class SendTransaction extends BaseTest {
   @When("^(\\w+) announce valid transaction$")
   public void announcesTransactionUnconfirmed(final String userName) {
     final BigInteger blockHeight = new BlockChainHelper(getTestContext()).getBlockchainHeight();
-    final Account sender = getUser(userName);
+    final Account sender = getUserWithCurrency(userName);
     final TransferTransaction transferTransaction =
         createTransaction(
             getTestContext().getDefaultDeadline(),
@@ -120,7 +120,7 @@ public class SendTransaction extends BaseTest {
 
   @When("^(\\w+) creates a valid transaction with deadline in (\\d+) seconds$")
   public void createTransaction(final String userName, final int timeoutInSeconds) {
-    final Account sender = getUser(userName);
+    final Account sender = getUserWithCurrency(userName);
     final Deadline deadline =
         Deadline.create(
             getTestContext().getRepositoryFactory().getEpochAdjustment().blockingFirst(),
@@ -148,7 +148,7 @@ public class SendTransaction extends BaseTest {
 
   @When("^(\\w+) announces the transaction with invalid signature$")
   public void announcesTransactionInvalidSignature(final String userName) {
-    final Account sender = getUser(userName);
+    final Account sender = getUserWithCurrency(userName);
     final TransferTransaction transferTransaction =
         createTransaction(
             getTestContext().getDefaultDeadline(),
@@ -218,7 +218,7 @@ public class SendTransaction extends BaseTest {
 
   @Given("^(\\w+) announced a valid transaction with max fee set below the in require fee$")
   public void announcedValidTransactionWithLowMaxFee(final String userName) {
-    final Account userAccount = getUser(userName);
+    final Account userAccount = getUserWithCurrency(userName);
     final TransferTransaction transferTransaction =
         createTransaction(
             getTestContext().getDefaultDeadline(),

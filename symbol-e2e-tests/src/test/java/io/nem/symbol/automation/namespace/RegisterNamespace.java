@@ -67,7 +67,7 @@ public class RegisterNamespace extends BaseTest {
         resolvedName.equalsIgnoreCase(namespaceName)
             ? createRandomNamespace(namespaceName, getTestContext())
             : resolvedName;
-    final Account account = getUser(userName);
+    final Account account = getUserWithCurrency(userName);
     final NamespaceRegistrationTransaction namespaceRegistrationTransaction =
         namespaceHelper.createRootNamespaceAndWait(account, randomName, duration);
     final NamespaceInfo namespaceInfo =

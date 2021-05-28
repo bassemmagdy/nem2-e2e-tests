@@ -2,6 +2,9 @@ Feature: Secret lock state proof
   I want to verify the state of
   my secret lock on the blockchain
 
+  Background:
+    Given Alice has 100 units of the network currency
+
   @bvt @bvt_group1
   Scenario: An account locks assets
     Given Alice derived the secret from the seed using "SHA3_256"

@@ -7,7 +7,9 @@ Feature: Associate metadata with an asset
   He notarize a document, then tags the customer’s account with the digitized document as metadata.
 
   Background:
-    Given Sarah has 70 units of the network currency
+    Given the following accounts exist with Network Currency:
+      | Sarah  | 70 |
+      | Bob    | 30 |
     And Sarah registered the asset "sto_token"
 
   @bvt @bvt_group2

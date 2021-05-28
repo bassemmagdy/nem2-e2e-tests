@@ -12,6 +12,15 @@ Feature: Create an escrow contract
     And the mean block generation time is 15 seconds
     And Alice has at least 10 "network currency" in her account
 
+  Background:
+    Given the following accounts exist with Network Currency:
+      | Alice  | 100 |
+      | Bob    | 100 |
+      | Sue    | 100 |
+    And Sue registered the namespace "euros"
+    And Sue registered the asset "X"
+    And Sue links the namespace "euros" to the asset "X"
+
   Scenario: An account creates an escrow contract
     Given Alice defined the following bonded escrow contract:
       | type           | sender   | recipient | data                 |

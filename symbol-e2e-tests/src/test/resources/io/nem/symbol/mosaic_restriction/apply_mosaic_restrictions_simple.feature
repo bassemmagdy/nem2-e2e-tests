@@ -4,11 +4,11 @@ Feature: Apply global restrictions on mosaics
 
   Background:
     # This step registers every user with network currency
-    Given the following accounts exist:
-      | Alex                |
-      | Bobby               |
-      | Carol               |
-      | EligibilityProvider |
+    Given the following accounts exist with Network Currency:
+      | Alex                | 200 |
+      | Bobby               | 200 |
+      | Carol               | 200 |
+      | EligibilityProvider | 200 |
     And Alex has the following mosaics registered
       | Mosaic                 | Restrictable |
       | MyCompanySharesPrivate | true         |

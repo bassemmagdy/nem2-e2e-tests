@@ -108,7 +108,7 @@ public class AssetRegistration extends BaseTest {
     final ResolvedMosaic mosaicBefore = getMosaic(initialAccountInfo, mosaicId).get();
     final ResolvedMosaic mosaicAfter = getMosaic(newAccountInfo, mosaicId).get();
     assertEquals(mosaicBefore.getId(), mosaicAfter.getId());
-    final BigInteger fee = getUserFee(initialAccountInfo.getPublicAccount());
+    final BigInteger fee = getUserFee(newAccountInfo.getPublicAccount());
     final long exceptedFee = amountChange == 0 ? 0 : fee.longValue();
     assertEquals(
         "Change did not match. Before value: "
@@ -146,7 +146,7 @@ public class AssetRegistration extends BaseTest {
       final AssetSupplyType assetSupplyType,
       final int divisibility,
       final int duration) {
-    final Account userAccount = getUser(userName);
+    final Account userAccount = getUserWithCurrency(userName);
     final boolean supplyMutable = assetSupplyType == AssetSupplyType.MUTABLE;
     final boolean transferable = assetTransferableType == AssetTransferableType.TRANSFERABLE;
     final MosaicFlags mosaicFlags = MosaicFlags.create(supplyMutable, transferable);
@@ -261,7 +261,7 @@ public class AssetRegistration extends BaseTest {
     verifyAsset(mosaicDefinitionTransactionUpdated, BigInteger.valueOf(duration));
   }
 
-  @And("(\\w+) pays mosaic rental fee")
+  @And("^(\\w+) pays mosaic rental fee$")
   public void verifyMosaicRentalFee(final String userName) {
     final AccountInfo accountInfoBefore = getAccountInfoFromContext(userName);
     final BigInteger actualAmountChange =
@@ -281,7 +281,7 @@ public class AssetRegistration extends BaseTest {
     verifyAccountBalance(accountInfoBefore, actualAmountChange.longValue());
   }
 
-  @And("(\\w+) pays child namespace fee")
+  @And("^(\\w+) pays child namespace fee$")
   public void verifyChildNamespaceFee(final String userName) {
     final AccountInfo accountInfoBefore = getAccountInfoFromContext(userName);
     final BigInteger actualAmountChange =
@@ -301,7 +301,7 @@ public class AssetRegistration extends BaseTest {
     verifyAccountBalance(accountInfoBefore, actualAmountChange.longValue());
   }
 
-  @And("(\\w+) pays rental fee in (\\d+) units")
+  @And("^(\\w+) pays rental fee in (\\d+) units$")
   public void verifyAccountBalanceDueToRentalFee(final String userName, final BigInteger change) {
     final AccountInfo accountInfoBefore = getAccountInfoFromContext(userName);
     final BigInteger rootNamespaceRentalFee =
@@ -392,6 +392,7 @@ public class AssetRegistration extends BaseTest {
     final MosaicInfo mosaicInfo =
         new MosaicHelper(getTestContext())
             .createMosaic(account, mosaicFlags, divisibility, initialSupply);
+    getTestContext().getLogger().LogError("User: " + account.getAddress().pretty() + " created mosaicId: " + mosaicInfo.getMosaicId().getIdAsHex());
     storeMosaicInfo(MOSAIC_INFO_KEY, mosaicInfo);
   }
 
@@ -421,7 +422,7 @@ public class AssetRegistration extends BaseTest {
 
   @Given("^(\\w+) has registered an asset with an initial supply of (\\w+) units$")
   public void registerNonSupplyMutableAsset(final String userName, final int amount) {
-    final Account account = getUser(userName);
+    final Account account = getUserWithCurrency(userName);
     final boolean transferable = new Random(System.currentTimeMillis()).nextBoolean();
     final boolean supplyMutable = new Random(System.currentTimeMillis()).nextBoolean();
     final int divisibility = CommonHelper.getRandomDivisibility();
@@ -451,6 +452,7 @@ public class AssetRegistration extends BaseTest {
   @And("^she transfer (\\d+) units to another account$")
   public void transferSupplyImmutable(final BigInteger amount) {
     final MosaicInfo mosaicInfo = getMosaicInfo(MOSAIC_INFO_KEY);
+    getTestContext().getLogger().LogError("MosaicId = " + mosaicInfo.getMosaicId().getIdAsHex());
     final Account account =
         new AccountHelper(getTestContext())
             .createAccountWithAsset(mosaicInfo.getMosaicId(), amount);

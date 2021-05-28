@@ -20,6 +20,7 @@
 
 package io.nem.symbol.automationHelpers.common;
 
+import io.nem.symbol.automation.common.BaseTest;
 import io.nem.symbol.automationHelpers.config.ConfigFileReader;
 import io.nem.symbol.automationHelpers.helper.sdk.TransactionHelper;
 import io.nem.symbol.core.utils.ExceptionUtils;
@@ -50,6 +51,7 @@ public class TestContext {
   private final SymbolConfig symbolConfig;
   private SignedTransaction signedTransaction;
   private Log logger;
+  private final UserAccounts userAccounts;
 
   /**
    * Constructor.
@@ -57,13 +59,7 @@ public class TestContext {
    * 
    */
   public TestContext() {
-    try {
-      configFileReader = new ConfigFileReader();
-    } catch (FileNotFoundException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      throw e;
-    }
+    configFileReader = ExceptionUtils.propagate(() -> new ConfigFileReader());
     scenarioContext = new ScenarioContext();
     repositoryFactory = new RepositoryFactoryImpl(configFileReader).create();
     this.getLogger().LogError("Connecting to Network: " + getNetworkType());
@@ -76,6 +72,7 @@ public class TestContext {
     symbolConfig =
         new SymbolConfig(
             repositoryFactory.createNetworkRepository().getNetworkProperties().blockingFirst());
+    userAccounts = new UserAccounts();
   }
 
   /**
@@ -94,6 +91,15 @@ public class TestContext {
    */
   public Account getDefaultSignerAccount() {
     return defaultSignerAccount;
+  }
+
+  /**
+   * Gets user accounts.
+   *
+   * @return User accounts.
+   */
+  public UserAccounts getUserAccount() {
+    return userAccounts;
   }
 
   /**

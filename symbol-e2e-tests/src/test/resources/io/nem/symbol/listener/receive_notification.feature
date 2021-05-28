@@ -2,6 +2,9 @@ Feature: Receive a notification
   As Alice, I want to get notify when events happened on the blockchain
   such as when transaction is complete or gets cosigned
 
+  Background:
+    Given Alice has 100 units of the network currency
+
   @bvt @bvt_group1
   Scenario: Alice gets notify when a next block is created on the chain.
     Given Alice is register to receive notification from the blockchain

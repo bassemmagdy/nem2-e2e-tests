@@ -2,6 +2,9 @@ Feature: Lock hash state proof
   I want to verify the state of
   my lock hash on the blockchain
 
+  Background:
+    Given Alice has 50 units of the network currency
+
   Scenario: An account verify a lock hash which is unused
     Given Alice defined the following bonded escrow contract:
       | type                             | sender | data                      |

@@ -7,6 +7,13 @@ Feature: Edit a multisignature contract
     And the maximum number of multisignature contracts an account can be cosignatory of is 5
     And  multisignature contracts created have set the minimum number of cosignatures to remove a cosignatory to 1
 
+  Background:
+    Given the following accounts exist with Network Currency:
+      | Alice    | 100 |
+      | computer | 100 |
+      | phone    | 100 |
+      | tablet   | 100 |
+
   @bvt @bvt_group2
   Scenario: A cosignatory adds another cosignatory to the multisignature contract
     Given Alice created a 1 of 2 multisignature contract called "tom" with 1 required for removal with cosignatories:

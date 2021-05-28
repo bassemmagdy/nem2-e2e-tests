@@ -19,7 +19,7 @@ public class MosaicStateProof extends StateProofBaseTest<MosaicInfo> {
 
     @Then("^(\\w+) wants to verify \"(.*)\" state on the blockchain$")
     public void VerifyMosaicState(final String username, final String assetName) {
-        final MosaicId mosaicId = resolveMosaicId(assetName);
+        final MosaicId mosaicId = resolveMosaicId(username, assetName);
         final MosaicInfo mosaicInfo = new MosaicHelper(getTestContext()).getMosaic(mosaicId);
         final StateMerkleProof<MosaicInfo> stateMerkleProof =
                 new StateProofServiceImpl(getTestContext().getRepositoryFactory())

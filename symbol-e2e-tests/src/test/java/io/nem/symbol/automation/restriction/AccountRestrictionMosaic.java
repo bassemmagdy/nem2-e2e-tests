@@ -77,7 +77,7 @@ public class AccountRestrictionMosaic extends BaseTest {
     final List<UnresolvedMosaicId> additions =
         allowedAssets
             .parallelStream()
-            .map(asset -> resolveMosaicId(asset))
+            .map(asset -> resolveMosaicId(username, asset))
             .collect(Collectors.toList());
     accountRestrictionHelper.createAccountMosaicRestrictionTransactionAndWait(
         signerAccount, AccountMosaicRestrictionFlags.ALLOW_INCOMING_MOSAIC, additions, new ArrayList<>());
@@ -90,7 +90,7 @@ public class AccountRestrictionMosaic extends BaseTest {
     final List<UnresolvedMosaicId> additions =
         blockedAssets
             .parallelStream()
-            .map(asset -> resolveMosaicId(asset))
+            .map(asset -> resolveMosaicId(username, asset))
             .collect(Collectors.toList());
     accountRestrictionHelper.createAccountMosaicRestrictionTransactionAndWait(
         signerAccount, AccountMosaicRestrictionFlags.BLOCK_MOSAIC, additions, new ArrayList<>());
@@ -103,7 +103,7 @@ public class AccountRestrictionMosaic extends BaseTest {
     final List<UnresolvedMosaicId> deletions =
         allowedAssets
             .parallelStream()
-            .map(asset -> resolveMosaicId(asset))
+            .map(asset -> resolveMosaicId(username, asset))
             .collect(Collectors.toList());
     accountRestrictionHelper.createAccountMosaicRestrictionTransactionAndWait(
         signerAccount, AccountMosaicRestrictionFlags.ALLOW_INCOMING_MOSAIC, new ArrayList<>(), deletions);
@@ -116,7 +116,7 @@ public class AccountRestrictionMosaic extends BaseTest {
     final List<UnresolvedMosaicId> deletions =
         blockedAssets
             .parallelStream()
-            .map(asset -> resolveMosaicId(asset))
+            .map(asset -> resolveMosaicId(username, asset))
             .collect(Collectors.toList());
     accountRestrictionHelper.createAccountMosaicRestrictionTransactionAndWait(
         signerAccount, AccountMosaicRestrictionFlags.BLOCK_MOSAIC, new ArrayList<>(), deletions);
@@ -157,7 +157,7 @@ public class AccountRestrictionMosaic extends BaseTest {
     final Account signerAccount = getUser(username);
     List<UnresolvedMosaicId> additions = new ArrayList<>();
     List<UnresolvedMosaicId> deletions = new ArrayList<>();
-    deletions.add(resolveMosaicId(asset));
+    deletions.add(resolveMosaicId(username, asset));
     accountRestrictionHelper.createAccountMosaicRestrictionTransactionAndAnnounce(
         signerAccount, AccountMosaicRestrictionFlags.BLOCK_MOSAIC, additions, deletions);
   }
@@ -167,7 +167,7 @@ public class AccountRestrictionMosaic extends BaseTest {
     final Account signerAccount = getUser(username);
     final List<UnresolvedMosaicId> additions = new ArrayList<>();
     final List<UnresolvedMosaicId> deletions = new ArrayList<>();
-    additions.add(resolveMosaicId(asset));
+    additions.add(resolveMosaicId(username, asset));
     accountRestrictionHelper.createAccountMosaicRestrictionTransactionAndAnnounce(
         signerAccount, AccountMosaicRestrictionFlags.BLOCK_MOSAIC, additions, deletions);
   }
@@ -177,7 +177,7 @@ public class AccountRestrictionMosaic extends BaseTest {
     final Account signerAccount = getUser(username);
     final List<UnresolvedMosaicId> additions = new ArrayList<>();
     final List<UnresolvedMosaicId> deletions = new ArrayList<>();
-    additions.add(resolveMosaicId(asset));
+    additions.add(resolveMosaicId(username, asset));
     accountRestrictionHelper.createAccountMosaicRestrictionTransactionAndAnnounce(
         signerAccount, AccountMosaicRestrictionFlags.ALLOW_INCOMING_MOSAIC, additions, deletions);
   }
@@ -187,7 +187,7 @@ public class AccountRestrictionMosaic extends BaseTest {
     final Account signerAccount = getUser(username);
     final List<UnresolvedMosaicId> additions = new ArrayList<>();
     final List<UnresolvedMosaicId> deletions = new ArrayList<>();
-    deletions.add(resolveMosaicId(asset));
+    deletions.add(resolveMosaicId(username, asset));
     accountRestrictionHelper.createAccountMosaicRestrictionTransactionAndAnnounce(
         signerAccount, AccountMosaicRestrictionFlags.ALLOW_INCOMING_MOSAIC, additions, deletions);
   }
@@ -221,7 +221,7 @@ public class AccountRestrictionMosaic extends BaseTest {
     // TODO: assuming that at least count + 1 assets are registered. May be better to check and
     // throw if not.
     List<UnresolvedMosaicId> modifications =
-        assets.parallelStream().map(asset -> resolveMosaicId(asset)).collect(Collectors.toList());
+        assets.parallelStream().map(asset -> resolveMosaicId(username, asset)).collect(Collectors.toList());
 
 //    for (int i = 0; i < ; i += 256) {
 //      List<UnresolvedMosaicId> subList = modifications.subList(i, i + 256);

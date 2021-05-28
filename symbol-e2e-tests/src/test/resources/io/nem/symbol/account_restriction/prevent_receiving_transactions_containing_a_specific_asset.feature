@@ -5,10 +5,10 @@ Feature: Prevent receiving transactions containing a specific asset
 
   Background:
     # This step registers every user with network currency
-    Given the following accounts exist:
-      | Alex  |
-      | Bobby |
-      | Carol |
+    Given the following accounts exist with Network Currency:
+      | Alex  | 200 |
+      | Bobby | 200 |
+      | Carol | 200 |
     And Alex has the following assets registered and active:
       | ticket  |
       | voucher |

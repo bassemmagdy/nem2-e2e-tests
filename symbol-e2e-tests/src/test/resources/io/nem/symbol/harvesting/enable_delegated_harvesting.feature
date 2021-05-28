@@ -1,3 +1,4 @@
+@manual
 Feature: Enable delegated harvesting
   As Alice
   I want to enable delegated harvesting

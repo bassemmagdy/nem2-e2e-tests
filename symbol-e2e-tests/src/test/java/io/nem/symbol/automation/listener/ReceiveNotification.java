@@ -63,7 +63,7 @@ public class ReceiveNotification extends BaseTest {
 
   private <T> void setObservable(
       final String userName, final BiFunction<Address, Listener, Observable<T>> supplier) {
-    final Account account = getUser(userName);
+    final Account account = getUserWithCurrency(userName);
     final Listener listener = openListener();
     setObservable(userName, supplier.apply(account.getAddress(), listener));
   }

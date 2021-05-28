@@ -2,7 +2,7 @@ import java.nio.file.Paths
 
 pipeline {
   agent {
-    label 'cat-server'
+    label 'ubuntu-20.04-8cores-16Gig'
   }
   options{
     timestamps()
@@ -16,7 +16,7 @@ pipeline {
   }
   parameters {
     gitParameter(
-      name: 'TESTS_VERSION', defaultValue: 'origin/feature/tests-pipeline',
+      name: 'TESTS_VERSION', defaultValue: 'origin/main',
       description: 'Name of the branch or tag from Symbol e2e tests repo to checkout and run tests from.',
       listSize: '10', quickFilterEnabled: false, selectedValue: 'DEFAULT', sortMode: 'ASCENDING_SMART',
       tagFilter: '*', type: 'PT_BRANCH_TAG'
@@ -80,7 +80,20 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
         dir ('symbol-bootstrap') {
           deleteDir()
           echo 'Starting symbol bootstrap...'
-          runScript('symbol-bootstrap start -p bootstrap --detached', 'Start Symbol bootstrap')
+          script {
+            def customPreset = ["logLevel": "Debug",
+                                "dockerComposeDebugMode": true,
+                                "fileDatabaseBatchSize": 100,
+                                "importanceGrouping": 45,
+                                "votingSetGrouping": 180,
+                                "blockGenerationTargetTime": "10s",
+                                "throttlingBurst": 950,
+                                "throttlingRate": 900
+                              ]
+
+            writeYaml file: 'customPreset.yaml', data: customPreset
+          }
+          runScript('export COMPOSE_HTTP_TIMEOUT=200;symbol-bootstrap start -p bootstrap --detached  --noPassword -c customPreset.yaml', 'Start Symbol bootstrap')
         }
       }
     }
@@ -89,7 +102,9 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
         script {
           echo 'Checking whether symbol is running at the given URL...'
           if (IS_BOOTSTRAP_RUN.toLowerCase() == 'true') {
-            runScript("symbol-bootstrap healthCheck", 'bootstrap health check')
+            dir ('symbol-bootstrap') {
+              runScript("sleep 60;symbol-bootstrap healthCheck", 'bootstrap health check')
+            }
           }
           def curlCmd = 'curl --silent --show-error'
           def nodeInfo = runScript("${curlCmd} ${SYMBOL_API_URL}/node/info", 'get node info', true)
@@ -141,7 +156,7 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
           echo "Automation user private key: ${AUTOMATION_TEST_USER_PRIVATE_KEY}"
           echo "Symbol API URL: ${env.SYMBOL_API_URL}"
           try {
-              runGradle('--project-dir symbol-e2e-tests/ test')
+              runGradle('--project-dir symbol-e2e-tests/ tests')
           }
           finally {
             dir ('symbol-e2e-tests') {

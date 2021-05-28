@@ -78,7 +78,7 @@ public class MetadataStateProof extends StateProofBaseTest<AccountInfo> {
         waitForLastTransactionToComplete();
         final Account sourceAccount = getUser(sourceName);
         final Account targetAccount = getUser(targetName);
-        final MosaicId targetId = resolveMosaicId(mosaicName);
+        final MosaicId targetId = resolveMosaicId(targetName, mosaicName);
         final AccountInfo accountInfo =
                 new AccountHelper(getTestContext()).getAccountInfo(sourceAccount.getAddress());
         final Pair<BigInteger, String> documentInfoKey = getDocumentInfo(documentName);

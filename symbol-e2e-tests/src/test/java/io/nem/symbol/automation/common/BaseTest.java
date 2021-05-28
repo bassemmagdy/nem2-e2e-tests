@@ -89,24 +89,6 @@ public abstract class BaseTest {
     if (!initialized) {
       final Account aliceAccount = testContext.getDefaultSignerAccount();
       CORE_USER_ACCOUNTS.put(BaseTest.AUTOMATION_USER_ALICE, aliceAccount);
-      final AccountHelper accountHelper = new AccountHelper(testContext);
-      final Account accountBob =
-          accountHelper.createAccountWithAsset(
-              testContext.getNetworkCurrency().createRelative(BigInteger.valueOf(1000)));
-      CORE_USER_ACCOUNTS.put(AUTOMATION_USER_BOB, accountBob);
-      final NamespaceHelper namespaceHelper = new NamespaceHelper(testContext);
-
-      final NamespaceId eurosNamespaceId = createNamespaceIfNeed(aliceAccount, MOSAIC_EUROS_KEY, testContext);
-      final MosaicId newMosaicId = createMosaicIdAndLink(aliceAccount, testContext, eurosNamespaceId);
-      final Account accountSue =
-          accountHelper.createAccountWithAsset(newMosaicId, BigInteger.valueOf(200));
-      CORE_USER_ACCOUNTS.put(AUTOMATION_USER_SUE, accountSue);
-      final TransferHelper transferHelper = new TransferHelper(testContext);
-      transferHelper.submitTransferAndWait(
-          aliceAccount,
-          accountBob.getAddress(),
-          Arrays.asList(new Mosaic(newMosaicId, BigInteger.valueOf(200))));
-      testContext.clearTransaction();
       initialized = true;
     }
   }
@@ -148,27 +130,13 @@ public abstract class BaseTest {
   }
 
   /**
-   * Save the initial accountinfo for all core users.
-   *
-   * @param testContext Test context.
-   */
-  public static void saveInitialAccountInfo(final TestContext testContext) {
-    CORE_USER_ACCOUNTS.entrySet().parallelStream()
-        .forEach(
-            nameAccount -> {
-              storeUserInfoInContext(
-                  nameAccount.getKey(), nameAccount.getValue().getAddress(), testContext);
-            });
-  }
-
-  /**
    * Save user info.
    *
    * @param name Name of the user.
    * @param address Address of the user.
    * @param testContext Test context.
    */
-  protected static void storeUserInfoInContext(
+  protected void storeUserInfoInContext(
       final String name, final Address address, final TestContext testContext) {
     final AccountHelper accountHelper = new AccountHelper(testContext);
     Optional<AccountInfo> accountInfo = accountHelper.getAccountInfoNoThrow(address);
@@ -200,8 +168,8 @@ public abstract class BaseTest {
     testContext.getScenarioContext().setContext(name, accountInfo.get());
   }
 
-  private static Account getUserAccount(final String username, final TestContext testContext) {
-    return CommonHelper.getAccount(username, testContext.getNetworkType());
+  private Account getUserAccount(final String username, final TestContext testContext) {
+    return getTestContext().getUserAccount().getAccount(username, testContext.getNetworkType());
   }
 
   /**
@@ -338,13 +306,14 @@ public abstract class BaseTest {
    * @return Account
    */
   protected Account getUserWithCurrency(final String username, final Integer amount) {
-    if (CommonHelper.accountExist(username)) {
-      return CommonHelper.getAccount(username, getTestContext().getNetworkType());
+    if (!getTestContext().getUserAccount().accountExist(username)) {
+      final Mosaic mosaic =
+              testContext.getNetworkCurrency().createRelative(BigInteger.valueOf(amount));
+      final Account account = new AccountHelper(testContext).createAccountWithAsset(mosaic);
+      addUser(username, account);
     }
-    final Mosaic mosaic =
-        testContext.getNetworkCurrency().createRelative(BigInteger.valueOf(amount));
-    final Account account = new AccountHelper(testContext).createAccountWithAsset(mosaic);
-    addUser(username, account);
+
+    final Account account = getTestContext().getUserAccount().getAccount(username, getTestContext().getNetworkType());
     storeUserAccountInContext(account);
     storeUserInfoInContext(username);
     return account;
@@ -357,16 +326,17 @@ public abstract class BaseTest {
    * @param account Account to add.
    */
   protected void addUser(final String username, final Account account) {
-    CommonHelper.addUser(username, account);
+    getTestContext().getUserAccount().addUser(username, account);
   }
 
   /**
    * Gets the mosaicid using the name from the cache if already registered. Otherwise a new id.
    *
+   * @param userName User name
    * @param assetName Asset name.
    * @return Mosaic id.
    */
-  protected MosaicId resolveMosaicId(final String assetName) {
+  protected MosaicId resolveMosaicId(final String userName, final String assetName) {
     if (assetName.equalsIgnoreCase(NETWORK_CURRENCY)) {
       return getTestContext().getSymbolConfig().getCurrencyMosaicId();
     }
@@ -380,8 +350,9 @@ public abstract class BaseTest {
     if (optionalMosaicId.isPresent()) {
       return optionalMosaicId.get();
     }
+    final Account account = getUser(userName);
     return MosaicId.createFromNonce(
-        MosaicNonce.createRandom(), getTestContext().getDefaultSignerAccount().getPublicAccount());
+        MosaicNonce.createRandom(), account.getPublicAccount());
   }
 
   /**
@@ -428,11 +399,11 @@ public abstract class BaseTest {
       final String recipient,
       final List<MosaicNoCheck> mosaics,
       final Message message) {
-    final Account senderAccount = getUser(sender);
+    final Account senderAccount = getUserWithCurrency(sender);
     storeUserInfoInContext(sender);
     final AddressNoCheck recipientAddress =
         AddressNoCheck.createFromRawAddress(
-            CommonHelper.accountExist(recipient)
+                getTestContext().getUserAccount().accountExist(recipient)
                 ? resolveRecipientAddress(recipient).plain()
                 : recipient,
             getTestContext().getNetworkType());
@@ -468,7 +439,7 @@ public abstract class BaseTest {
       triesToTransferAssetsNoCheck(sender, recipient, mosaicNoChecks, message);
       return;
     }
-    final Account senderAccount = getUser(sender);
+    final Account senderAccount = getUserWithCurrency(sender);
     final Address recipientAddress = resolveRecipientAddress(recipient);
     storeUserInfoInContext(sender);
     storeUserInfoInContext(recipient, recipientAddress, getTestContext());
@@ -489,7 +460,7 @@ public abstract class BaseTest {
       final String recipient,
       final List<Mosaic> mosaics,
       final Message message) {
-    final Account senderAccount = getUser(sender);
+    final Account senderAccount = getUserWithCurrency(sender);
     final Address recipientAddress = resolveRecipientAddress(recipient);
     storeUserInfoInContext(sender);
     storeUserInfoInContext(recipient, recipientAddress, getTestContext());

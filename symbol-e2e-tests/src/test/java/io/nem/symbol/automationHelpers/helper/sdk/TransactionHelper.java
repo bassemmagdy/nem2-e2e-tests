@@ -169,7 +169,7 @@ public class TransactionHelper {
   public TransactionStatus getTransactionStatusWithRetry(final String hash, final int maxTries) {
     final int waitTimeInMilliseconds = 1000;
     try {
-      return new RetryCommand<TransactionStatus>(maxTries, waitTimeInMilliseconds, Optional.empty())
+      return new RetryCommand<TransactionStatus>(maxTries, waitTimeInMilliseconds, Optional.of((final String message) -> testContext.getLogger().LogError(message)))
           .run(
               (final RetryCommand<TransactionStatus> retryCommand) -> {
                 return getTransactionStatus(hash);
@@ -259,17 +259,17 @@ public class TransactionHelper {
    */
   public <T extends Transaction> T waitForTransaction(
       final SignedTransaction signedTransaction, final Function<String, T> getTransaction) {
-    final int retries = 2;
+    final int retries = 3;
     final int waitTimeInMilliseconds = 1000;
     testContext
         .getLogger()
         .LogInfo("Start waiting for tx hash: ", CommonHelper.toString(signedTransaction));
-    return new RetryCommand<T>(retries, waitTimeInMilliseconds, Optional.empty())
+    return new RetryCommand<T>(retries, waitTimeInMilliseconds, Optional.of((final String message) -> testContext.getLogger().LogError(message)))
         .run(
             (final RetryCommand<T> retryCommand) -> {
               try {
                 return getTransaction.apply(signedTransaction.getHash());
-              } catch (final IllegalArgumentException e) {
+              } catch (final /*IllegalArgumentException*/ Exception e) {
                 testContext.getLogger().LogException(e);
                 final Optional<TransactionStatus> transactionStatusOptional =
                     getTransactionStatusNoThrow(signedTransaction.getHash());
@@ -287,7 +287,7 @@ public class TransactionHelper {
                     (transactionStatusOptional.isPresent()
                             ? CommonHelper.toString(transactionStatusOptional.get())
                             : "Status: unknown")
-                        + " "
+                        + " - "
                         + CommonHelper.toString(signedTransaction),
                     e);
               }

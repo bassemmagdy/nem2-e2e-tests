@@ -330,7 +330,7 @@ public class ExampleSteps {
         final TransferHelper transferHelper = new TransferHelper(testContext);
         final Account B = Account.generateNewAccount(testContext.getNetworkType());
         final Account C = Account.generateNewAccount(testContext.getNetworkType());
-        final Account bob = CommonHelper.getAccount("Bob", testContext.getNetworkType());
+//        final Account bob = CommonHelper.getAccount("Bob", testContext.getNetworkType());
 //    transferHelper.submitTransferAndWait(
 //            sender,
 //            B.getAddress(),

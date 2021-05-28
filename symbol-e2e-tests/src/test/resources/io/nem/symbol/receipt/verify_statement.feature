@@ -2,7 +2,9 @@ Feature: Verify the statements in block
   As Alice I want to verify that my receipts or transaction was included in the block.
 
   Background: Create assets and link to namespaces
-    Given Alice registered the namespace "ticket_vendor"
+    Given Alice has 100 units of the network currency
+    And Bob has 1 units of the network currency
+    And Alice registered the namespace "ticket_vendor"
     And Alice links the namespace "ticket_vendor" to the address of Bob
     And Alice registered the namespace "token"
     And Alice registered the asset "X"

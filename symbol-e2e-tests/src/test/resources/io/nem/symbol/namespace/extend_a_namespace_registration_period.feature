@@ -10,6 +10,12 @@
     And Alice has 10000000 "network currency" in her account
     And the grace period of a namespace is 1 day
 
+    Background:
+      Given the following accounts exist with Network Currency:
+        | Alice  | 100 |
+        | Bob    | 1   |
+        | Sue    | 1   |
+
   @bvt @bvt_group2
   Scenario Outline: An account extends a namespace registration period
     Given Alice registered the namespace "alice"

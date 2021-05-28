@@ -5,6 +5,13 @@ Feature: Link a namespace to an asset
   I want to link a namespace to an asset,
   So that it is memorable and easily recognizable
 
+  Background:
+  Background:
+    Given the following accounts exist with Network Currency:
+      | Alice  | 200 |
+      | Bob    | 1   |
+      | Sue    | 1   |
+
   @bvt @bvt_group3
   Scenario: An account is able to send an asset using a namespace alias
     Given Alice registered the namespace "token"

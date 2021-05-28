@@ -4,7 +4,11 @@ Feature: Send an asset
   So that he can attend the event.
 
 Background: Create assets for transfer.
-    Given Alice registered the asset "X"
+  Given the following accounts exist with Network Currency:
+    | Alice | 200 |
+    | Bob   | 100 |
+    | Sue   | 100 |
+    And Alice registered the asset "X"
     And Alice registered the asset "Y"
 
   @bvt @bvt_group1

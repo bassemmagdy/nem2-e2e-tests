@@ -55,13 +55,14 @@ public class LinkAssetToNamespace extends BaseTest {
     namespaceHelper = new NamespaceHelper(testContext);
   }
 
-  private MosaicId resolveMosaicIdFromName(final String name) {
-    final MosaicInfo mosaicInfo = getTestContext().getScenarioContext().getContext(name);
-    return mosaicInfo != null
-        ? mosaicInfo.getMosaicId()
-        : MosaicId.createFromNonce(
-            MosaicNonce.createRandom(),
-            getTestContext().getDefaultSignerAccount().getPublicAccount());
+  private MosaicId resolveMosaicIdFromName(final String userName, final String assetName) {
+    final MosaicInfo mosaicInfo = getTestContext().getScenarioContext().getContext(assetName);
+    if (mosaicInfo != null) {
+        return mosaicInfo.getMosaicId();
+    }
+    final Account account = getUser(userName);
+    return MosaicId.createFromNonce(
+            MosaicNonce.createRandom(), account.getPublicAccount());
   }
 
   @When("^(\\w+) links the namespace \"(.*)\" to the asset \"(\\w+)\"$")
@@ -69,7 +70,7 @@ public class LinkAssetToNamespace extends BaseTest {
       final String username, final String namespaceName, final String assetName) {
     final Account userAccount = getUser(username);
     final NamespaceId namespaceId = resolveNamespaceIdFromName(namespaceName);
-    final MosaicId mosaicId = resolveMosaicIdFromName(assetName);
+    final MosaicId mosaicId = resolveMosaicIdFromName(username, assetName);
     final MosaicAliasTransaction mosaicAliasTransaction =
         namespaceHelper.submitLinkMosaicAliasAndWait(userAccount, namespaceId, mosaicId);
   }
@@ -79,7 +80,7 @@ public class LinkAssetToNamespace extends BaseTest {
       final String username, final String namespaceName, final String assetName) {
     final Account userAccount = getUser(username);
     final NamespaceId namespaceId = resolveNamespaceIdFromName(namespaceName);
-    final MosaicId mosaicId = resolveMosaicIdFromName(assetName);
+    final MosaicId mosaicId = resolveMosaicIdFromName(username, assetName);
     namespaceHelper.createLinkMosaicAliasAndAnnonce(userAccount, namespaceId, mosaicId);
   }
 
@@ -88,7 +89,7 @@ public class LinkAssetToNamespace extends BaseTest {
       final String username, final String namespaceName, final String assetName) {
     final Account userAccount = getUser(username);
     final NamespaceId namespaceId = resolveNamespaceIdFromName(namespaceName);
-    final MosaicId mosaicId = resolveMosaicIdFromName(assetName);
+    final MosaicId mosaicId = resolveMosaicIdFromName(username, assetName);
     namespaceHelper.submitUnlinkMosaicAliasAndWait(userAccount, namespaceId, mosaicId);
   }
 
@@ -97,7 +98,7 @@ public class LinkAssetToNamespace extends BaseTest {
       final String username, final String namespaceName, final String assetName) {
     final Account userAccount = getUser(username);
     final NamespaceId namespaceId = resolveNamespaceIdFromName(namespaceName);
-    final MosaicId mosaicId = resolveMosaicIdFromName(assetName);
+    final MosaicId mosaicId = resolveMosaicIdFromName(username, assetName);
     namespaceHelper.createUnlinkMosaicAliasAndAnnonce(userAccount, namespaceId, mosaicId);
   }
 

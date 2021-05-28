@@ -2,6 +2,9 @@ Feature: Namepsace state proof
   I want to verify the state of
   my namespace on the blockchain
 
+  Background:
+    Given Alice has 100 units of the network currency
+
   @bvt @bvt_group3
   Scenario Outline: Verify namespace on the blockchain
     When Alice registers a namespace named "<name>" for <duration> block

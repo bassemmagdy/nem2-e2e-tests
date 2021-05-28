@@ -7,10 +7,10 @@ Feature: Prevent receiving transactions from undesired addresses
 #  ALLOW_INCOMING_ADDRESS - done, ALLOW_OUTGOING_ADDRESS - not done!
 
   Background:
-    Given the following accounts exist:
-      | Alex    |
-      | Bobby   |
-      | Carol   |
+    Given the following accounts exist with Network Currency:
+      | Alex  | 200 |
+      | Bobby | 200 |
+      | Carol | 200 |
 
   @bvt @bvt_group2
   Scenario: An account blocks receiving transactions from a set of addresses

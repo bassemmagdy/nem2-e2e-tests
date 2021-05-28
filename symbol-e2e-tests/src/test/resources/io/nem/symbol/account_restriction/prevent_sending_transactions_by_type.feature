@@ -5,10 +5,10 @@ Feature: Prevent sending transactions by type
   For allowed restriction transaction ACCOUNT_OPERATION_RESTRICTION needs to be the first or else operation fails.
 
   Background:
-    Given the following accounts exist:
-      | Alex  |
-      | Bobby |
-      | Carol |
+    Given the following accounts exist with Network Currency:
+      | Alex  | 200 |
+      | Bobby | 200 |
+      | Carol | 200 |
     And the following transaction types are available:
       | TRANSFER                       |
       | NAMESPACE_REGISTRATION         |

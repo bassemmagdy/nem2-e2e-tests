@@ -41,15 +41,6 @@ import static org.junit.Assert.assertEquals;
 
 /** Common helper. */
 public class CommonHelper {
-  private static final Map<String, Account> USER_ACCOUNTS = new HashMap();
-  private static final TestContext testContext;
-
-  /** Static initialize. */
-  static {
-    /* Alice is the main user with all currency. */
-    testContext = new TestContext();
-    USER_ACCOUNTS.put(BaseTest.AUTOMATION_USER_ALICE, testContext.getDefaultSignerAccount());
-  }
 
   /**
    * Gets a random boolean value.
@@ -81,55 +72,6 @@ public class CommonHelper {
    */
   public static int getRandomDivisibility() {
     return CommonHelper.getRandomValueInRange(0, 6);
-  }
-
-  /**
-   * Adds a user to the test user list.
-   *
-   * @param name Name of the user.
-   * @param account Account.
-   */
-  public static void addUser(final String name, final Account account) {
-    if (!accountExist(name)) {
-      USER_ACCOUNTS.put(name, account);
-    }
-  }
-
-  /**
-   * Gets an account.
-   *
-   * @param name Name of the account.
-   * @param networkType Network type.
-   * @return User account.
-   */
-  public static Account getAccount(final String name, final NetworkType networkType) {
-    if (!accountExist(name)) {
-      addUser(name, Account.generateNewAccount(networkType));
-    }
-    return USER_ACCOUNTS.get(name);
-  }
-
-  /**
-   * Adds a user to the test user list.
-   *
-   * @param users Map of user names and accounts.
-   */
-  public static void addAllUser(final Map<String, Account> users) {
-    USER_ACCOUNTS.putAll(users);
-  }
-
-  /** Clear test user list. */
-  public static void clearUsers() {
-    USER_ACCOUNTS.clear();
-  }
-
-  /**
-   * Account exist.
-   *
-   * @param name Name of the user.
-   */
-  public static boolean accountExist(final String name) {
-    return USER_ACCOUNTS.containsKey(name);
   }
 
   /**
@@ -287,7 +229,7 @@ public class CommonHelper {
         + " Deadline: "
         + transactionStatus
             .getDeadline()
-            .getInstant(testContext.getRepositoryFactory().getEpochAdjustment().blockingFirst())
+            .getInstant(new TestContext().getRepositoryFactory().getEpochAdjustment().blockingFirst())
         + " group: "
         + transactionStatus.getGroup().toString()
         + " height: "

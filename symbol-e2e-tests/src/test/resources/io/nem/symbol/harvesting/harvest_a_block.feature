@@ -1,3 +1,4 @@
+@manual
 Feature: Harvest a block
   As Tom
   I want to harvest a block

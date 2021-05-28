@@ -3,7 +3,10 @@ Feature: Get the alias resolution for a given transaction
   I want to get the real identifier of the account or asset used in a transaction
 
 Background: Create assets and link to namespaces
-        Given Alice registered the namespace "ticket_vendor"
+        Given the following accounts exist with Network Currency:
+          | Alice | 100 |
+          | Bob   | 10  |
+        And Alice registered the namespace "ticket_vendor"
         And Alice links the namespace "ticket_vendor" to the address of Bob
         And Alice registered the namespace "token"
         And Alice registered the asset "X"

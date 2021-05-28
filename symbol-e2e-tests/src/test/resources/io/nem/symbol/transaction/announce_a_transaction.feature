@@ -7,6 +7,10 @@ Feature: Announce a transaction
     And the maximum transaction lifetime is 1 day
     And the native currency asset is "network currency"
 
+  Given the following accounts exist with Network Currency:
+  | Alice | 100 |
+  | Bob   | 1   |
+
   @bvt @bvt_group1
   Scenario: An account announced a valid transaction (max_fee)
     When Alice announce valid transaction

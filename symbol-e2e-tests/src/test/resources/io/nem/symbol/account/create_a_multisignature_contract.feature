@@ -5,6 +5,12 @@ Feature: Create a multisignature contract
 
 #  Given the maximum number of cosignatories per multisignature contract is 10
 #  And the maximum number of multisignature contracts an account can be cosignatory of is 5
+  Background:
+    Given the following accounts exist with Network Currency:
+      | Alice    | 100 |
+      | computer | 100 |
+      | phone    | 100 |
+      | tablet   | 100 |
 
   @bvt @bvt_group1
   Scenario Outline: An account creates an M-of-N contract
@@ -12,7 +18,7 @@ Feature: Create a multisignature contract
       | cosignatory |
       | phone       |
       | computer    |
-      | car         |
+      | tablet      |
     And Alice published the bonded contract
     When all the required cosignatories sign the transaction
     Then tom account is convert to multisig
@@ -57,10 +63,10 @@ Feature: Create a multisignature contract
     Then she should receive the error "FAILURE_MULTISIG_MAX_COSIGNATORIES"
 
   Scenario: An account tries to add as a cosignatory an account which is already at max cosignatory for multisignature contracts
-    Given Dan is a cosignatory on the max multisig contracts
-    And Alice defined a 1 of 2 multisignature contract called "tom5" with 1 required for removal with cosignatories:
+    Given computer is a cosignatory on the max multisig contracts
+    And Alice defined a 1 of 2 multisignature contract called "tom" with 1 required for removal with cosignatories:
       | cosignatory |
-      | Dan         |
+      | computer    |
       | phone       |
     And Alice published the bonded contract
     When all the required cosignatories sign the transaction

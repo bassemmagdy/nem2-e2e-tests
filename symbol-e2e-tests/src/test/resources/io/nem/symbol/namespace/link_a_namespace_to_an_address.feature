@@ -4,6 +4,12 @@ Feature: Link a namespace to an address
   I want to link a namespace to an address,
   So that it is memorable and easily recognizable
 
+  Background:
+    Given the following accounts exist with Network Currency:
+      | Alice  | 100 |
+      | Bob    | 1   |
+      | Sue    | 1   |
+
   @bvt @bvt_group2
   Scenario: An account links a namespace to an address
     Given Alice registered the namespace "sue"

@@ -11,6 +11,9 @@ Feature: Create a subnamespace
     And the subnamespace name can have up to 64 characters
     And Alice has 10000000 "network currency" in her account
 
+  Background:
+    Given Alice has 100 units of the network currency
+
   @bvt @bvt_group2
   Scenario: An account creates a subnamespace
     Given Alice registered the namespace "one"
@@ -30,7 +33,8 @@ Feature: Create a subnamespace
       | alice.this_is_a_really_long_subnamespace_name_this_is_a_really_long_subnamespace_name |
 
   Scenario: An account tries to create a subnamespace with a parent namespace registered by another account
-    Given Alice registered the namespace "alicetoo"
+    Given Bob has 5 units of the network currency
+    And Alice registered the namespace "alicetoo"
     When Bob tries to creates a subnamespace named "alicetoo.subnamespace"
     Then she should receive the error "FAILURE_NAMESPACE_OWNER_CONFLICT"
     And Bob balance should remain intact

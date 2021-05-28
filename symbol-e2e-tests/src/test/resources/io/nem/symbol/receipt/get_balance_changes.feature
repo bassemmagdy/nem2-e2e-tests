@@ -7,6 +7,9 @@ Feature: Get balance changes
     Given the native currency asset is "network currency"
     And an escrow contract requires to lock at least 10 "network currency" to guarantee that the it will conclude
 
+  Background:
+    Given Alice has 100 units of the network currency
+
   # Core
   @bvt @bvt_group3
   Scenario: Tom wants to see her resulting fees after harvesting a block

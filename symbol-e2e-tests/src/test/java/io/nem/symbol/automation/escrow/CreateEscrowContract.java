@@ -129,7 +129,7 @@ public class CreateEscrowContract extends BaseTest {
       final Transaction transaction =
           transactionFunctionMap.get(transactionType).apply(transactionInfo);
       final String senderName = transactionInfo.get(TRANSACTION_SENDER_HEADER);
-      final Account senderAccount = getUser(senderName);
+      final Account senderAccount = getUserWithCurrency(senderName);
       transactions.add(transaction.toAggregate(senderAccount.getPublicAccount()));
       senders.add(senderAccount);
       storeUserInfoInContext(senderName);

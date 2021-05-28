@@ -2,6 +2,9 @@ Feature: Multisig state proof
   I want to verify the state of
   my multisig account on the blockchain
 
+  Background:
+    Given Alice has 100 units of the network currency
+
   @bvt @bvt_group3
   Scenario Outline: An account creates an M-of-N contract
     Given Alice defined a <minimumApproval> of 3 multisignature contract called "tom" with <minimumRemoval> required for removal with cosignatories:

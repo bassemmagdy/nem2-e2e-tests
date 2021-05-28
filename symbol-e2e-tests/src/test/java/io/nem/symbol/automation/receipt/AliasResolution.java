@@ -60,7 +60,7 @@ public class AliasResolution extends BaseTest {
       final BigInteger amount,
       final String assetAlias,
       final String recipientAlias) {
-    final Account senderAccount = getUser(username);
+    final Account senderAccount = getUserWithCurrency(username);
     final NamespaceId recipientAddress = resolveNamespaceIdFromName(recipientAlias);
     final List<Mosaic> mosaics =
         Arrays.asList(new Mosaic(resolveNamespaceIdFromName(assetAlias), amount));

@@ -1,6 +1,5 @@
 package io.nem.symbol.automation.state_proof;
 
-import static org.junit.Assert.assertTrue;
 import io.cucumber.java.en.Then;
 import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.automationHelpers.helper.sdk.AccountHelper;
@@ -9,6 +8,9 @@ import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.account.AccountInfo;
 import io.nem.symbol.sdk.model.account.AccountRestrictions;
 import io.nem.symbol.sdk.model.state.StateMerkleProof;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AccountRestrictionStateProof extends StateProofBaseTest<AccountInfo> {
 

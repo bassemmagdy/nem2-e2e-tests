@@ -26,16 +26,21 @@ import io.cucumber.java.en.When;
 import io.nem.symbol.automation.common.BaseTest;
 import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.automationHelpers.helper.sdk.AccountRestrictionHelper;
+import io.nem.symbol.automationHelpers.helper.sdk.AggregateHelper;
 import io.nem.symbol.automationHelpers.helper.sdk.CommonHelper;
+import io.nem.symbol.automationHelpers.helper.sdk.TransferHelper;
 import io.nem.symbol.sdk.model.account.Account;
 import io.nem.symbol.sdk.model.account.Address;
 import io.nem.symbol.sdk.model.account.UnresolvedAddress;
 import io.nem.symbol.sdk.model.transaction.AccountAddressRestrictionFlags;
+import io.nem.symbol.sdk.model.transaction.Transaction;
+import io.nem.symbol.sdk.model.transaction.TransferTransaction;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AccountRestrictionAddress extends BaseTest {
@@ -55,11 +60,18 @@ public class AccountRestrictionAddress extends BaseTest {
 
   @Given("^the following accounts exist:$")
   public void theFollowingAccountsExists(final List<String> usernames) {
-    usernames.parallelStream().forEach(username -> getUserWithCurrency(username, 200));
-    //    usernames.parallelStream().forEach(username -> transferAssets(username, username, new
-    // ArrayList<>(), null));
-    // usernames.forEach(username ->
-    // getTestContext().getLogger().LogInfo(getAccountInfoFromContext(username).toString()));
+    usernames.parallelStream().forEach(u -> getUserWithCurrency(u, 200));
+  }
+
+  @Given("^the following accounts exist with Network Currency:$")
+  public void theFollowingAccountsExistsWithSpecificCurrency(final Map<String, Integer> users) {
+    final TransferHelper transferHelper = new TransferHelper(getTestContext());
+    final List<Transaction> innerTransaction = users.entrySet().stream().map(s ->
+       transferHelper.createTransferTransaction(getUser(s.getKey()).getAddress(),
+              Arrays.asList(getTestContext().getNetworkCurrency().createRelative(s.getValue()))).toAggregate(getTestContext().getDefaultSignerAccount().getPublicAccount())
+    ).collect(Collectors.toList());
+    users.keySet().parallelStream().forEach(s -> storeUserInfoInContext(s));
+    new AggregateHelper(getTestContext()).submitAggregateCompleteAndWait(getTestContext().getDefaultSignerAccount(), innerTransaction);
   }
 
   @When("^(\\w+) blocked receiving transactions from:$")

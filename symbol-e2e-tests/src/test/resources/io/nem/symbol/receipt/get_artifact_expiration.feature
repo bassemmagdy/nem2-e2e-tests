@@ -2,6 +2,9 @@ Feature: Get artifact expiration
   As Alice
   I want to know when a namespace or asset expired
 
+  Background:
+    Given Alice has 100 units of the network currency
+
   # Mosaic
   @bvt @bvt_group3
   Scenario: An account wants to know when the asset expired

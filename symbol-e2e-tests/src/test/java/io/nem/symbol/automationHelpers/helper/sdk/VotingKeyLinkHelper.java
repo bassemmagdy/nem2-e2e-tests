@@ -40,7 +40,7 @@ public class VotingKeyLinkHelper extends BaseHelper<VotingKeyLinkHelper> {
     super(testContext);
   }
 
-  private VotingKeyLinkTransaction createVotingKeyLinkTransaction(
+  public VotingKeyLinkTransaction createVotingKeyLinkTransaction(
       final PublicKey linkedPublicKey,
       final long startEpoch,
       final long endEpoch,

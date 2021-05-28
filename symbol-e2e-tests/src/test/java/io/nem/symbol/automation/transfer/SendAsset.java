@@ -64,7 +64,7 @@ public class SendAsset extends BaseTest {
       final BigInteger amount,
       final String assetName,
       final String recipient) {
-    final MosaicId mosaicId = resolveMosaicId(assetName);
+    final MosaicId mosaicId = resolveMosaicId(sender, assetName);
     //		getTestContext().getLogger().LogInfo(String.format("transferAsset: sender = %s; " +
     //				"recipient: %s; mosaicId: %d; amount: %d", sender, recipient, mosaicId.getId(), amount));
     final BigInteger actualAmount =
@@ -82,8 +82,8 @@ public class SendAsset extends BaseTest {
       final String firstAssetName,
       final BigInteger secondAmount,
       final String secondAssetName) {
-    final MosaicId firstMosaicId = resolveMosaicId(firstAssetName);
-    final MosaicId secondMosaicId = resolveMosaicId(secondAssetName);
+    final MosaicId firstMosaicId = resolveMosaicId(sender, firstAssetName);
+    final MosaicId secondMosaicId = resolveMosaicId(sender, secondAssetName);
     transferAssets(
         sender,
         recipient,
@@ -96,7 +96,7 @@ public class SendAsset extends BaseTest {
       final String recipient, final BigInteger amount, final String assetName) {
     final AccountInfo recipientAccountInfo =
         getTestContext().getScenarioContext().getContext(recipient);
-    final MosaicId mosaicId = resolveMosaicId(assetName);
+    final MosaicId mosaicId = resolveMosaicId(recipient, assetName);
     final Optional<ResolvedMosaic> initialMosaic = getMosaic(recipientAccountInfo, mosaicId);
     final long initialAmount =
         initialMosaic.isPresent() ? initialMosaic.get().getAmount().longValue() : 0;
@@ -133,7 +133,7 @@ public class SendAsset extends BaseTest {
   public void verifySenderAsset(
       final String sender, final String assetName, final BigInteger amount) {
     final AccountInfo senderAccountInfo = getAccountInfoFromContext(sender);
-    final MosaicId mosaicId = resolveMosaicId(assetName);
+    final MosaicId mosaicId = resolveMosaicId(sender, assetName);
     final ResolvedMosaic initialMosaic = getMosaic(senderAccountInfo, mosaicId).get();
     final AccountInfo recipientAccountInfoAfter =
         new AccountHelper(getTestContext()).getAccountInfo(senderAccountInfo.getAddress());
@@ -189,7 +189,7 @@ public class SendAsset extends BaseTest {
       final BigInteger amount,
       final String assetName,
       final String recipient) {
-    final MosaicId mosaicId = resolveMosaicId(assetName);
+    final MosaicId mosaicId = resolveMosaicId(sender, assetName);
     triesToTransferAssets(
         sender, recipient, Arrays.asList(new MosaicNoCheck(mosaicId, amount)), null);
   }
@@ -203,8 +203,8 @@ public class SendAsset extends BaseTest {
       final String firstAssetName,
       final BigInteger secondAmount,
       final String secondAssetName) {
-    final MosaicId firstMosaicId = resolveMosaicId(firstAssetName);
-    final MosaicId secondMosaicId = resolveMosaicId(secondAssetName);
+    final MosaicId firstMosaicId = resolveMosaicId(sender, firstAssetName);
+    final MosaicId secondMosaicId = resolveMosaicId(sender, secondAssetName);
     triesToTransferAssets(
         sender,
         recipient,
@@ -216,7 +216,7 @@ public class SendAsset extends BaseTest {
   @Given("^(\\w+) registers a non transferable asset which she transfer (\\d+) asset to (\\w+)$")
   public void createNonTransferableAsset(
       final String sender, final int amount, final String recipient) {
-    final Account senderAccount = getUser(sender);
+    final Account senderAccount = getUserWithCurrency(sender);
     final Account recipientAccount = getUser(recipient);
     final boolean supplyMutable = CommonHelper.getRandomNextBoolean();
     final boolean transferable = false;
@@ -238,7 +238,7 @@ public class SendAsset extends BaseTest {
 
   @When("^(\\w+) transfer (\\d+) asset to (\\w+)$")
   public void transferAsset(final String sender, final int amount, final String recipient) {
-    final Account senderAccount = getUser(sender);
+    final Account senderAccount = getUserWithCurrency(sender);
     final Account recipientAccount = getUser(recipient);
     final MosaicInfo mosaicInfo = getTestContext().getScenarioContext().getContext(MOSAIC_INFO_KEY);
     final SignedTransaction signedTransaction =
@@ -252,7 +252,7 @@ public class SendAsset extends BaseTest {
 
   @Given("^(\\w+) registers a transferable asset which she transfer asset to (\\w+)$")
   public void createTransferableAsset(final String sender, final String recipient) {
-    final Account senderAccount = getUser(sender);
+    final Account senderAccount = getUserWithCurrency(sender);
     final Account recipientAccount = getUser(recipient);
     final boolean supplyMutable = CommonHelper.getRandomNextBoolean();
     final boolean transferable = true;
@@ -262,7 +262,7 @@ public class SendAsset extends BaseTest {
     final MosaicInfo mosaicInfo =
         new MosaicHelper(getTestContext())
             .createMosaic(
-                getTestContext().getDefaultSignerAccount(),
+                senderAccount,
                 mosaicFlags,
                 divisibility,
                 initialSupply);

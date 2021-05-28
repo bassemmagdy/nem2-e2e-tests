@@ -5,9 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import io.cucumber.java.en.Then;
 import io.nem.symbol.automationHelpers.common.TestContext;
-import io.nem.symbol.automationHelpers.helper.sdk.NamespaceHelper;
-import io.nem.symbol.sdk.infrastructure.StateProofServiceImpl;
-import io.nem.symbol.automationHelpers.common.TestContext;
 import io.nem.symbol.automationHelpers.helper.sdk.MosaicHelper;
 import io.nem.symbol.automationHelpers.helper.sdk.NamespaceHelper;
 import io.nem.symbol.sdk.infrastructure.StateProofServiceImpl;

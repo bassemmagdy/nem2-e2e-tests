@@ -17,6 +17,11 @@ Feature: Exchange assets across different blockchains
     And "Bob" owns 999999 bob:token units in "MAIN_NET"
     And "Bob" owns an account in "MIJIN"
 
+  Background:
+    Given the following accounts exist with Network Currency:
+      | Alice  | 100 |
+      | Bob    | 100 |
+
   @bvt @bvt_group1
   Scenario: An account locks assets
     Given Alice derived the secret from the seed using "SHA3_256"
@@ -62,7 +67,7 @@ Feature: Exchange assets across different blockchains
     Then Dan should receive the error "FAILURE_CORE_INSUFFICIENT_BALANCE"
 
   Scenario Outline: An account tries to lock assets but the duration set is invalid
-    Given Sue derived the secret from the seed using "SHA3_256"
+    Given Alice derived the secret from the seed using "SHA3_256"
     When Alice tries to lock 10 "network currency" for Bob on the network for <numberOfBlocks> blocks
     Then she should receive the error "FAILURE_LOCKSECRET_INVALID_DURATION"
 
@@ -103,7 +108,7 @@ Feature: Exchange assets across different blockchains
     Examples:
       | length |
       | 0      |
-      | 1001   |
+      | 1025   |
 
   Scenario: An account tries to unlock assets using a different algorithm
     Given Alice derived the secret from the seed using "SHA3_256"

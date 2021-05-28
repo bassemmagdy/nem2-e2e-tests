@@ -24,7 +24,7 @@ public class MosaicRestrictionStateProof extends StateProofBaseTest<AccountInfo>
     public void VerifyMosaicRestrictionState(final String username, final String assetName) {
         waitForLastTransactionToComplete();
         final Account account = getUser(username);
-        final MosaicId mosaicId = resolveMosaicId(assetName);
+        final MosaicId mosaicId = resolveMosaicId(username, assetName);
         final MosaicRestriction<?> restriction = new MosaicGlobalRestrictionHelper(getTestContext()).getMosaicRestriction(mosaicId);
         final StateMerkleProof<MosaicRestriction<?>> stateMerkleProof =
                 new StateProofServiceImpl(getTestContext().getRepositoryFactory())
@@ -44,7 +44,7 @@ public class MosaicRestrictionStateProof extends StateProofBaseTest<AccountInfo>
     public void VerifyMosaicAddressRestrictionState(final String username, final String assetName) {
         waitForLastTransactionToComplete();
         final Account account = getUser(username);
-        final MosaicId mosaicId = resolveMosaicId(assetName);
+        final MosaicId mosaicId = resolveMosaicId(username, assetName);
         final MosaicRestriction<?> restriction = new MosaicAddressRestrictionHelper(getTestContext()).getMosaicRestriction(mosaicId, account.getAddress());
         final StateMerkleProof<MosaicRestriction<?>> stateMerkleProof =
                 new StateProofServiceImpl(getTestContext().getRepositoryFactory())

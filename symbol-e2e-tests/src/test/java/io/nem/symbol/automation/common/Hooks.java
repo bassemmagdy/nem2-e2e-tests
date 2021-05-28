@@ -53,12 +53,6 @@ public class Hooks {
     scenarioNameMap.addScenario(scenarioName);
     final Log logger = Log.getLogger(scenarioName);
     logger.scenarioStart(scenarioName);
-
-    BaseTest.initialized(testContext);
-    BaseTest.saveInitialAccountInfo(testContext);
-    // Clear the test users
-    CommonHelper.clearUsers();
-    CommonHelper.addAllUser(CORE_USER_ACCOUNTS);
   }
 
   /**

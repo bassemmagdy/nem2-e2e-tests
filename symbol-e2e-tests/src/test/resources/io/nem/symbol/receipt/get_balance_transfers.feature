@@ -11,6 +11,9 @@ Feature: Get balance transfers
     And the mean block generation time is 15 seconds
     And Alice has 10000000 "network currency" in her account
 
+  Background:
+    Given Alice has 100 units of the network currency
+
   # Mosaic
   @bvt @bvt_group3
   Scenario: Alice wants to get the cost of registering an asset

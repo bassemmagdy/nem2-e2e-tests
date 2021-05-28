@@ -8,9 +8,10 @@ mongodbPort: 27017
 socketTimeoutInMilliseconds: 10000
 databaseQueryTimeoutInSeconds: 120
 minFeeMultiplier: 100
-restGatewayUrl: http://34.220.165.163:3000
+restGatewayUrl: http://localhost:3000
+#restGatewayUrl: http://ngl-dual-201.testnet.symboldev.network:3000
 repositoryFactoryType: Vertx
 
 #bootstrap
-userPrivateKey: 4294AD641E2A04C312D44D1F3ECF2A70629184FCCACC366ABA02AC79D80FB237
-harvesterPublicKey: 4F9159250895C3AFE65CBF0F4D01FF9E59A3B3FB32A3D18AC58BEEBCAC419F37
+userPrivateKey: C2C99B456D7C8CD79E2E0E9FF40876270C5199F1F93A871C5B34EAE34EA9B433
+harvesterPublicKey: 9FFE0B806DFD8536974562D3FB4958FF99E8B23C7EDE7EE350EEB4291E48C8F2

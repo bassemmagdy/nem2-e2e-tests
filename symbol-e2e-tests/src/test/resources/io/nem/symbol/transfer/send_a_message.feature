@@ -6,6 +6,12 @@ Feature: Send a message
     Given the mean block generation time is 15 seconds
     And the maximum message length is 1024
 
+  Background:
+    Given the following accounts exist with Network Currency:
+      | Alice | 100 |
+      | Bob   | 1   |
+      | Sue   | 1   |
+
   @bvt @bvt_group1
   Scenario Outline: An account sends a message to another account
     When Alice sends "<message>" to "<recipient>"

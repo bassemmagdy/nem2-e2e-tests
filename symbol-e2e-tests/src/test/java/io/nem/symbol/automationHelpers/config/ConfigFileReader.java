@@ -40,7 +40,7 @@ public class ConfigFileReader {
   private final Config config;
 
   /** Constructor. */
-  public ConfigFileReader() throws FileNotFoundException {
+  public ConfigFileReader() {
     final Path resourcePath = Paths
         .get(Thread.currentThread().getContextClassLoader().getResource(propertyFile).getPath());
     final ObjectMapper mapper = new ObjectMapper(new YAMLFactory()); // jackson databind
