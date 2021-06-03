@@ -1,0 +1,4 @@
+{
+    "baseUrl": "http://desktop-build.symboldev.com",
+    "defaultCommandTimeout": 60000
+}
