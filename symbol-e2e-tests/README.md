@@ -1,5 +1,7 @@
 # Symbol end-to-end behaviour tests
 
+[![Build Status](https://jenkins.symboldev.com/buildStatus/icon?job=Nem+Group+Limited%2Fnem2-e2e-tests%2Fmain)](https://jenkins.symboldev.com/job/Nem%20Group%20Limited/job/nem2-e2e-tests/job/main/)
+
 Integration and e2e tests for the symbol project.
 
 ## Prerequisites
