@@ -1,67 +1,57 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-
+import {s} from './variables'
 Cypress.Commands.add('responseApi', (address)=>{
-    cy.request(`http://ngl-dual-101.testnet.symboldev.network:3000/accounts/${address}`)
+    cy.request(`${Cypress.env('api_accounts')}/${address}`)
       .then(r=>{
         let body = JSON.parse(r.body.account.mosaics[0].amount)
         let res = body.toString()
-        if(res.slice(-1)=='0'){
-            return res.slice(0, 1) +','+res.slice(1, 4)+'.'+res.slice(-6, -1)
+        let fin_num = res.slice(0, 1) +','+res.slice(1, 4)+'.'+res.slice(-6)
+        while(fin_num.slice(-1)=='0'){
+          fin_num = fin_num.slice(0, -1)
         }
-        return res.slice(0, 1) +','+res.slice(1, 4)+'.'+res.slice(-6)
+        return fin_num
       })
 })
 
 Cypress.Commands.add('importSimpleAcc', (name, pass, mnem, address) => {
-    cy.get('.profile-type > :nth-child(2)').click()
-    cy.get(':nth-child(2) > .form-row-inner-container > .inputs-container').type(name)
-    cy.get('.ivu-select-selected-value').click()
+    cy.contains('Import mnemonic').click()
+    cy.get(s.profile_name_field).type(name)
+    cy.get(s.network_type_selector).click()
     cy.contains('Symbol Testnet').click()
-    cy.get(':nth-child(4) > .form-row-inner-container > .inputs-container').type(pass)
-    cy.get(':nth-child(5) > .form-row-inner-container > .inputs-container').type(pass)
-    cy.get('.inverted-button').click()
-    cy.get('.show-mnemonic').type(mnem)
-    cy.get('.inverted-button').click()
-    cy.responseApi(address).then(resp=>cy.get(':nth-child(1) > .table-item > .address-balance').should('have.text', resp))
-    cy.get(':nth-child(1) > .table-item > .address-value').click()
-    cy.get(':nth-child(2) > .table-item > .address-value').click()
-    cy.responseApi(address).then(resp=>cy.get(':nth-child(1) > .address-item > .table-item-content > .balance-row > .row > :nth-child(2)').should('have.text', resp))
-    cy.get('.inverted-button').click()
-    cy.get('.ivu-checkbox-input').check()
-    cy.get('.inverted-button').click()
-    cy.responseApi(address).then(resp=>cy.get('div.amount').should('have.text', resp))
-    cy.responseApi(address).then(resp=>cy.get('.mosaic_value > .amount').should('have.text', resp))
+    cy.get(s.password_create_acc_field).type(pass)
+    cy.get(s.confirm_password_create_acc_filed).type(pass)
+    cy.contains('Next').click()
+    cy.get(s.mnemonic_field).type(mnem)
+    cy.contains('Next').click()
+    cy.responseApi(address).then(resp=>cy.get(s.balance_address_to_interact).should('have.text', resp))
+    cy.get(s.first_address).click()
+    cy.get(s.second_address).click()
+    cy.responseApi(address).then(resp=>cy.get(s.balance_selected_account).should('have.text', resp))
+    cy.contains('Next').click()
+    cy.get(s.accept_checkbox).check()
+    cy.contains(' Finish ').click()
+    cy.responseApi(address).then(resp=>cy.get(s.balance_xym).should('have.text', resp))
+    cy.responseApi(address).then(resp=>cy.get(s.balance_assets).should('have.text', resp))
 })
 
 Cypress.Commands.add('importMultisigAcc', (name, pass, mnem, address) => {
-  cy.get('.profile-type > :nth-child(2)').click()
-  cy.get(':nth-child(2) > .form-row-inner-container > .inputs-container').type(name)
-  cy.get('.ivu-select-selected-value').click()
+  cy.contains('Import mnemonic').click()
+  cy.get(s.profile_name_field).type(name)
+  cy.get(s.network_type_selector).click()
   cy.contains('Symbol Testnet').click()
-  cy.get(':nth-child(4) > .form-row-inner-container > .inputs-container').type(pass)
-  cy.get(':nth-child(5) > .form-row-inner-container > .inputs-container').type(pass)
-  cy.get('.inverted-button').click()
-  cy.get('.show-mnemonic').type(mnem)
-  cy.get('.inverted-button').click()
-  cy.responseApi(address).then(resp=>cy.get(':nth-child(1) > .table-item > .address-balance').should('have.text', resp))
-  cy.get(':nth-child(1) > .table-item > .address-value').click()
-  cy.get(':nth-child(2) > .table-item > .address-value').click()
-  cy.get(':nth-child(3) > .table-item > .address-value').click()
-  cy.get(':nth-child(4) > .table-item > .address-value').click()
-  cy.responseApi(address).then(resp=>cy.get(':nth-child(1) > .address-item > .table-item-content > .balance-row > .row > :nth-child(2)').should('have.text', resp))
-  cy.get('.inverted-button').click()
-  cy.get('.ivu-checkbox-input').check()
-  cy.get('.inverted-button').click()
-  cy.responseApi(address).then(resp=>cy.get('div.amount').should('have.text', resp))
-  cy.responseApi(address).then(resp=>cy.get('.mosaic_value > .amount').should('have.text', resp))
+  cy.get(s.password_create_acc_field).type(pass)
+  cy.get(s.confirm_password_create_acc_filed).type(pass)
+  cy.contains('Next').click()
+  cy.get(s.mnemonic_field).type(mnem)
+  cy.contains('Next').click()
+  cy.responseApi(address).then(resp=>cy.get(s.balance_address_to_interact).should('have.text', resp))
+  cy.get(s.first_address).click()
+  cy.get(s.second_address).click()
+  cy.get(s.third_address).click()
+  cy.get(s.fourth_address).click()
+  cy.responseApi(address).then(resp=>cy.get(s.balance_selected_account).should('have.text', resp))
+  cy.contains('Next').click()
+  cy.get(s.accept_checkbox).check()
+  cy.contains(' Finish ').click()
+  cy.responseApi(address).then(resp=>cy.get(s.balance_xym).should('have.text', resp))
+  cy.responseApi(address).then(resp=>cy.get(s.balance_assets).should('have.text', resp))
 })
