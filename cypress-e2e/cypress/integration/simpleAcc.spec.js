@@ -1,5 +1,4 @@
 /// <reference types="cypress" />\
-import 'cypress-localstorage-commands'
 import {v, s} from '../support/variables'
 
 context('Actions', () => {
@@ -8,15 +7,20 @@ context('Actions', () => {
       cy.visit(Cypress.env('url'))
     })
 
-    afterEach(()=>{
-      cy.saveLocalStorage();
+    it('Import simple account', ()=>{
+      cy.importSimpleAcc(v.simple_name, v.account_pass, v.simple_mnem, v.simple_address)
     })
 
-    it('Initiate transaction from simple account', ()=>{
-      cy.importSimpleAcc(v.simple_name, v.account_pass, v.simple_mnem, v.simple_addres)
-      //Initiate transaction
+    it.skip('Initiate transaction from simple account', ()=>{
+      cy.getLocalStorage()
+      cy.contains('Click here to login now').click()
+      cy.get('.top-welcome-text').should('have.text', 'Welcome to Symbol')
+      cy.get(s.profile_name_login_field).clear().type(`${v.simple_name}{enter}`)
+      cy.get(s.password_login_field).type(v.account_pass)
+      cy.get('button').contains('Login').click()
+      cy.responseApi(v.simple_address).then(balance=>cy.get(s.balance_xym).should('have.text', balance))
       cy.get(s.send_tab).click()
-      cy.get(s.to_field).type(v.simple_target_addres)
+      cy.get(s.to_field).type(v.simple_target_address)
       cy.get(s.mosaic_amount_field).clear().type('1')
       cy.get(s.message_textarea).type(v.some_xym_text)
       cy.get(s.encrypt_message_textbox).check()
@@ -39,8 +43,45 @@ context('Actions', () => {
       cy.get(s.message_detailed_tx_form).should('have.text', v.some_xym_text)
     })
     
-    // it('Make transaction', ()=>{
-    //   cy.restoreLocalStorage()
-    //   cy.contains('Click here to login now').click()
-    // })
+    it.skip('Add Mosaic with metadata for simple account', ()=>{
+      cy.getLocalStorage()
+      cy.contains('Click here to login now').click()
+      cy.get('.top-welcome-text').should('have.text', 'Welcome to Symbol')
+      cy.get(s.profile_name_login_field).clear().type(`${v.simple_name}{enter}`)
+      cy.get(s.password_login_field).type(v.account_pass)
+      cy.get('button').contains('Login').click()
+      cy.responseApi(v.simple_address).then(balance=>cy.get(s.balance_xym).should('have.text', balance))
+      cy.get(s.mosaics_menuitem).click()
+      cy.contains('Create new mosaics').click()
+      cy.get(s.duration_field).clear().type('2')
+      cy.get(s.fee_selector).click()
+      cy.contains('Fast').click()
+      cy.get('button').contains('Send').click()
+      cy.get(':nth-child(3) > .transaction-details-item-inner-container > :nth-child(1) > .transaction-row-inner-container > .transaction-details-row-value-container > span')
+      .then(txt=>{
+        const m_id = txt.text()
+        cy.get(s.password_form_field).type(v.account_pass)
+        cy.get('button').contains('Confirm').click()
+        cy.get(s.toast_message).should('have.text', v.trans_signed_succs_toast)
+        cy.contains('Owned mosaics').click()
+        cy.get('.table-container').contains(m_id).should('have.text', ` ${m_id} `)
+        // Add metadata
+        // cy.contains('Add metadata').click()
+        // cy.get(s.target_mosaic_id_field).click()
+        // cy.contains(m_id).click()
+      })
+      //   cy.get(s.value_textarea).type('Test metadata')
+      //   cy.get(s.fee_selector).click()
+      //   cy.contains('Fast').click()
+      //   cy.get('button').contains('Send').click()
+      //   cy.get(s.toast_message).should('have.text', v.trans_signed_succs_toast)
+      //   cy.get(s.home_menuitem).click()
+      //   cy.get(s.height_column).contains('Unconfirmed').click()
+      //   cy.get(s.value_form).should('have.text', 'Test metadata')
+      // cy.get(s.password_form_field).type(v.account_pass)
+      // cy.get('button').contains('Confirm').click()
+      // cy.get(s.toast_message).should('have.text', v.trans_signed_succs_toast)
+      // cy.contains('Owned mosaics').click()
+      // cy.contains(Cypress.env('mosaic_id')).should('have.text', Cypress.env('mosaic_id'))
+    })
 })

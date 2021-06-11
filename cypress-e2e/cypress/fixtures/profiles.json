@@ -1,0 +1,35 @@
+{
+    "version": 8,
+    "data": {
+        "simple_ac": {
+            "profileName": "simple_ac",
+            "accounts": [
+                "29506CF1530CF085",
+                "717D6500DAC29A77"
+            ],
+            "seed": "465bc411cb6de9afdfcf6a0ab6d4de52b5a756788f5a834d4d80568445db2a1acFHagB6594eavrCxyNLDhG1k/4lGboEw44TqZlsyDc/WY2yWqdwIAtbvmTEInXPSVepp9OPKAdnXQtOvWmIVv0eqL//MTDhJnp67dxGohTK6MD7Ci+K3kKmUSh96YfVkKJX9qeHsw7RjfSsMR/OJ5fM+i5QKZ7a3vpfdwcaEB90s3lxpVbC+ewYp3BpDLsdzIHRuxQYMPd0rvjf3WEoZrA==",
+            "password": "61C7382AE0AC8A90A657DA9C9909131C4BF54851B3FCF3EC331FDEBEA3AE513432637C3FCFF9AB1A7D76CCC32CA5A749F55E83D02EB146665CCD638C7C938119",
+            "hint": "",
+            "networkType": 152,
+            "generationHash": "3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155",
+            "termsAndConditionsApproved": false,
+            "selectedNodeUrlToConnect": "http://ngl-dual-601.testnet.symboldev.network:3000"
+        },
+        "mult_ac": {
+            "profileName": "mult_ac",
+            "accounts": [
+                "C916A1D35A85D343",
+                "9890AC599FCC2DDC",
+                "90F1A18786C15049",
+                "0F055D1EB90A2549"
+            ],
+            "seed": "16bcdddb79138713fd54de2d2d28b6c9631777ddbc3c011d265fd24e2bb8a7c3+MAuFWs5dfgNo0yeAB8Mu+lNAeO7LiISUw5hUx8UGYlB3ieAjqLxTJ8gYsFd8PX98d8XxSKQz18pB9B+eh9rKhawQl0p1LEUPPTtqcmuDP5TVE9F7x76bhhmTAUgFFQjfBB12orLJsSyHstj7Vf8RLbdWR1R+Zh9gx27ENyXL93e1zQK5RAGdkPyfcx0W59LPY/z1qkGTfYV715U1ymmnA==",
+            "password": "61C7382AE0AC8A90A657DA9C9909131C4BF54851B3FCF3EC331FDEBEA3AE513432637C3FCFF9AB1A7D76CCC32CA5A749F55E83D02EB146665CCD638C7C938119",
+            "hint": "",
+            "networkType": 152,
+            "generationHash": "3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155",
+            "termsAndConditionsApproved": false,
+            "selectedNodeUrlToConnect": "http://ngl-dual-401.testnet.symboldev.network:3000"
+        }
+    }
+}

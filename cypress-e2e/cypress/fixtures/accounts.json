@@ -1,0 +1,77 @@
+{
+    "version": 7,
+    "data": {
+        "29506CF1530CF085": {
+            "id": "29506CF1530CF085",
+            "profileName": "simple_ac",
+            "name": "Seed Account 1",
+            "node": "",
+            "type": 1,
+            "address": "TCSVZEUJTKG622CV523OYANX6XHB5B3RXTFNYMA",
+            "publicKey": "DEE60E220C09CA14F9DAB6FDB0C5C8E5EFB404B510223830BAD699F8BD4CE110",
+            "encryptedPrivateKey": "8bd4bbdd0792ab265c8efc7c2d056e024a1ad4e3dc3c8d8f678fdb1306732d626mu9wrNbGwVTStbWythPsW+DXS3Etx+bYlHep6jEFmSScD60ApXSbV+xNuvNbtf1T4MJjH/pcWQCsdBT5JsxHKFUeyCPbbK2FVNdzjfyemI=",
+            "path": "m/44'/1'/0'/0'/0'",
+            "isMultisig": false
+        },
+        "717D6500DAC29A77": {
+            "id": "717D6500DAC29A77",
+            "profileName": "simple_ac",
+            "name": "Seed Account 2",
+            "node": "",
+            "type": 1,
+            "address": "TA7EXDQWLA4LWHY62C76KHJV2D7A4WITDQBFIWA",
+            "publicKey": "D60E9C974BFBD652537921453DA71DB2F367427932010455CA3E1BA9E345BC36",
+            "encryptedPrivateKey": "0b204cf564d6504e06d529f89390a679b49c75baf5b46bda00352d270b39a248LH1A0wxmrO+Qs/mzG1y0j5tDBy5HYVEZeTRKtaJ+SVG1uKUxyUHdgK20RSfVDHf8vzs4vEOfd7UVeehky1gFjDJenaHK3M58EE9Efby65hA=",
+            "path": "m/44'/1'/1'/0'/0'",
+            "isMultisig": false
+        },
+        "C916A1D35A85D343": {
+            "id": "C916A1D35A85D343",
+            "profileName": "mult_ac",
+            "name": "Seed Account 1",
+            "node": "",
+            "type": 1,
+            "address": "TCKJIXKEWFGNBDU7K7IKYTPHHA2KTXM4AFAFQPQ",
+            "publicKey": "E307914ECE227BACE4405DE916E8C2E36BA1F310F78B6D49203DEBDD8AB6C7D1",
+            "encryptedPrivateKey": "99af8f6a5f912a95a11b3dd027144787fa185c0630f2b4f960858452533a3492AOS5IXZq3TncADUotCQOvO+3XaGA48g707vVVBLZq0RHNzTR9O3Z6W+iubi8lcthqwbyZGP6vCbUezNU5sD2fOc6AxdnE6yiaf14klsNdDg=",
+            "path": "m/44'/1'/0'/0'/0'",
+            "isMultisig": true
+        },
+        "9890AC599FCC2DDC": {
+            "id": "9890AC599FCC2DDC",
+            "profileName": "mult_ac",
+            "name": "Seed Account 2",
+            "node": "",
+            "type": 1,
+            "address": "TADJM7M6BDX446EZLRDR32UHXYZ674DLPRDBBPI",
+            "publicKey": "F0222397A9C30962A544D79637C76D83E459EE002CEC306D80CC957555B5A503",
+            "encryptedPrivateKey": "356f73afaf142f36f61ca01015d99920147984e8957fcb2484a4423852ebd05fQCmg0cP5K9dsAdw4MulhKglsq87GmAyeXHhPgefd+PJtxbnOOu9LMG8j1/MQHA3ITHvHigF0XT0J1h41Zc8WWTiHaw+ukxdnrmZcyEUoRbk=",
+            "path": "m/44'/1'/1'/0'/0'",
+            "isMultisig": false
+        },
+        "90F1A18786C15049": {
+            "id": "90F1A18786C15049",
+            "profileName": "mult_ac",
+            "name": "Seed Account 3",
+            "node": "",
+            "type": 1,
+            "address": "TBKKTK7XXNEGYQR7ET2PFXZGUWAJFUYPHVYPUQI",
+            "publicKey": "834BC93FCB79FC8177A95A3229391D68BFECBB406CE638ED51A2B506F0FBFE23",
+            "encryptedPrivateKey": "2ab27224d4fb1d6af442c41afb91c0b052b3ec7b878b9074fbfe0f8b19c74380FQZhLT1FtxLDp0LbfyAZN4VxZrYojqpfFud0rd+TB/tKB+WCImF4VADnXpvdR+mySog8QitgZxiO6ms46Z17WXCUj3gDInjn6ev0ZVLdLD8=",
+            "path": "m/44'/1'/2'/0'/0'",
+            "isMultisig": false
+        },
+        "0F055D1EB90A2549": {
+            "id": "0F055D1EB90A2549",
+            "profileName": "mult_ac",
+            "name": "Seed Account 4",
+            "node": "",
+            "type": 1,
+            "address": "TCGEOPSITQJRJXHILDOGOLO4UZS2XJCVSTK5VCI",
+            "publicKey": "01DC0629E37B2386AC247AD1CCEBEE1E853B8BA88A82566C0B1B6ABE33D27B44",
+            "encryptedPrivateKey": "e1f4f5ddc0549afed417b081b9e51fe7df25dee1b156f9c8b999d3b0f07d7cfervLEon/yDLH89nsYKvXX/i1aI74MdLXgUYdNQ+4BCR8iOx/I5i+/UlI5DrTYUvgUgG5r5do62O068oosg+Gdg7X83/9ZAqepoOi11nGUqSU=",
+            "path": "m/44'/1'/3'/0'/0'",
+            "isMultisig": false
+        }
+    }
+}

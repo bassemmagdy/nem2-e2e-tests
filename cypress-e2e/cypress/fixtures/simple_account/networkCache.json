@@ -1,0 +1,57 @@
+{
+    "version": 9,
+    "data": {
+        "3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155": {
+            "generationHash": "3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155",
+            "data": {
+                "url": "http://ngl-dual-601.testnet.symboldev.network:3000",
+                "networkType": 152,
+                "generationHash": "3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155",
+                "networkConfiguration": {
+                    "maxMosaicDivisibility": 6,
+                    "namespaceGracePeriodDuration": 86400,
+                    "lockedFundsPerAggregate": "10000000",
+                    "maxCosignatoriesPerAccount": 25,
+                    "blockGenerationTargetTime": 30,
+                    "maxNamespaceDepth": 3,
+                    "maxMosaicDuration": 315360000,
+                    "minNamespaceDuration": 2592000,
+                    "maxNamespaceDuration": 157680000,
+                    "maxTransactionsPerAggregate": 100,
+                    "maxCosignedAccountsPerAccount": 25,
+                    "maxMessageSize": 1024,
+                    "maxMosaicAtomicUnits": 8999999999000000,
+                    "currencyMosaicId": "091F837E059AE13C",
+                    "harvestingMosaicId": "091F837E059AE13C",
+                    "defaultDynamicFeeMultiplier": 100,
+                    "epochAdjustment": 1616694977,
+                    "totalChainImportance": 7842928625000000,
+                    "generationHash": "3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155"
+                },
+                "transactionFees": {
+                    "averageFeeMultiplier": 6108,
+                    "medianFeeMultiplier": 100,
+                    "highestFeeMultiplier": 1136363,
+                    "lowestFeeMultiplier": 0,
+                    "minFeeMultiplier": 100
+                },
+                "nodeInfo": {
+                    "publicKey": "41F38D9C02F7D3D460A4CB0311E3D6E67CB063351434A6A00BB6F7AE64CD4FD7",
+                    "networkGenerationHashSeed": "3B5E1FA6445653C971A50687E75E6D09FB30481055E3990C84B25E9222DC1155",
+                    "port": 7900,
+                    "networkIdentifier": 152,
+                    "version": 16777472,
+                    "roles": [
+                        1,
+                        2,
+                        4
+                    ],
+                    "host": "ngl-dual-601.testnet.symboldev.network",
+                    "friendlyName": "ngl-dual-601",
+                    "nodePublicKey": "0DEDC3F9C08DC980131342EFE40042983E1AAFC7F45E4E633BFB7207115F176E"
+                }
+            },
+            "timestamp": 1623396036982
+        }
+    }
+}

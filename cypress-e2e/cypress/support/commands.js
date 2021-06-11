@@ -1,4 +1,5 @@
 import {s} from './variables'
+
 Cypress.Commands.add('responseApi', (address)=>{
     cy.request(`${Cypress.env('api_accounts')}/${address}`)
       .then(r=>{
@@ -54,4 +55,34 @@ Cypress.Commands.add('importMultisigAcc', (name, pass, mnem, address) => {
   cy.contains(' Finish ').click()
   cy.responseApi(address).then(resp=>cy.get(s.balance_xym).should('have.text', resp))
   cy.responseApi(address).then(resp=>cy.get(s.balance_assets).should('have.text', resp))
+})
+
+Cypress.Commands.add('getLocalStorage', ()=>{
+  const accountsJson = require('../fixtures/accounts.json')
+  // const harvModelJson = require('../fixtures/simple_account/harvestingModels.json')
+  const profilesJson = require('../fixtures/profiles.json')
+  // const settingsJson = require('../fixtures/simple_account/settings.json')
+  // const networkCacheJson = require('../fixtures/simple_account/networkCache.json')
+  // const nodeJson = require('../fixtures/simple_account/node.json')
+  // const netCurCacheJson = require('../fixtures/simple_account/networkCurrencyCache.json')
+  // const mosaicCacheJson = require('../fixtures/simple_account/mosaicCache.json')
+
+
+  localStorage.setItem('profiles', JSON.stringify(profilesJson))
+  // localStorage.setItem('settings', JSON.stringify(settingsJson))
+  // localStorage.setItem('networkCache', JSON.stringify(networkCacheJson))
+  // localStorage.setItem('node', JSON.stringify(nodeJson))
+  // localStorage.setItem('networkCurrencyCache', JSON.stringify(netCurCacheJson))
+  localStorage.setItem('accounts', JSON.stringify(accountsJson))
+  // localStorage.setItem('harvestingModels', JSON.stringify(harvModelJson))
+  // localStorage.setItem('mosaicCache', JSON.stringify(mosaicCacheJson))
+
+  localStorage.getItem('profiles')
+  // localStorage.getItem('settings')
+  // localStorage.getItem('networkCache')
+  // localStorage.getItem('node')
+  // localStorage.getItem('networkCurrencyCache')
+  localStorage.getItem('accounts')
+  // localStorage.getItem('harvestingModels')
+  // localStorage.getItem('mosaicCache')
 })

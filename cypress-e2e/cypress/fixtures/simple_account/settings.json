@@ -1,0 +1,12 @@
+{
+    "version": 8,
+    "data": {
+        "simple_ac": {
+            "profileName": "simple_ac",
+            "language": "en-US",
+            "defaultFee": 1,
+            "defaultAccount": "",
+            "explorerUrl": "http://explorer.testnet.symboldev.network/"
+        }
+    }
+}

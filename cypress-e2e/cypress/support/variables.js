@@ -2,12 +2,12 @@ export const v = {
     account_pass: "test12345",
     simple_name: "simple_ac",
     simple_mnem: "scan few robust chunk admit crop humor inform script mail south box diary reunion point morning wave evoke shiver update rib three cabbage razor ",
-    simple_addres: "TCSVZEUJTKG622CV523OYANX6XHB5B3RXTFNYMA",
-    simple_target_addres: "TA7EXDQWLA4LWHY62C76KHJV2D7A4WITDQBFIWA",
+    simple_address: "TCSVZEUJTKG622CV523OYANX6XHB5B3RXTFNYMA",
+    simple_target_address: "TA7EXDQWLA4LWHY62C76KHJV2D7A4WITDQBFIWA",
     multisig_name: "mult_ac",
     multisig_mnem: "library gate universe render response iron intact moral cinnamon receive expand state wise pride switch buzz rebuild vacuum swim climb dice walnut assault palm ",
-    multisig_addres: "TCKJIXKEWFGNBDU7K7IKYTPHHA2KTXM4AFAFQPQ",
-    multisig_target_addres: 'TCGEOPSITQJRJXHILDOGOLO4UZS2XJCVSTK5VCI',
+    multisig_address: "TCKJIXKEWFGNBDU7K7IKYTPHHA2KTXM4AFAFQPQ",
+    multisig_target_address: 'TCGEOPSITQJRJXHILDOGOLO4UZS2XJCVSTK5VCI',
     some_xym_text: "Some XYM",
     trans_signed_succs_toast: "Transaction(s) signed successfully.",
     new_unconf_trans_toast: "New unconfirmed transaction"
@@ -20,8 +20,13 @@ export const s = {
     toast_message: ".Vue-Toastification__toast-body",
 
     //Menu Items
-    accounts_menuitem: ".navigator-items-container > :nth-child(2)",
     home_menuitem: ".navigator-items-container > :nth-child(1)",
+    accounts_menuitem: ".navigator-items-container > :nth-child(2)",
+    mosaics_menuitem: ".navigator-items-container > :nth-child(3)",
+
+    //Login page
+    profile_name_login_field: ".ivu-input",
+    password_login_field: ":nth-child(6) > .ivu-tooltip > .ivu-tooltip-rel > input",
 
     //Import Account
     profile_name_field: ":nth-child(2) > .form-row-inner-container > .inputs-container",
@@ -46,8 +51,14 @@ export const s = {
     height_column: ".confirmation-cell",
     message_detailed_tx_form: ".form-wrapper > div > span",
     balance_xym: "div.amount",
-    balance_assets: ".mosaic_value > .amount",
+    balance_assets: ":nth-child(1) > .mosaic_value",
     from_selector: ".inputs-container > .select-size > .ivu-select-selection > div > .ivu-select-selected-value",
     top_alert: ".ivu-alert-message",
-    cosignatures_recieved: ".row-cosignatory-modification-display-cosignature > div > :nth-child(2)"
+    cosignatures_recieved: ".row-cosignatory-modification-display-cosignature > div > :nth-child(2)",
+
+    //Mosaics page
+    duration_field: ".chosenValue-container > .input-style",
+    target_mosaic_id_field: ".ivu-tooltip-rel > .select-size > .ivu-select-selection > div > .ivu-select-selected-value",
+    value_textarea: ".metadata-value-input",
+    value_form: ".transaction-details-item-inner-container > :nth-child(5) > .transaction-row-inner-container > .transaction-details-row-value-container > span"
 }
