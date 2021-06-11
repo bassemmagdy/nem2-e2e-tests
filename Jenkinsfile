@@ -53,6 +53,9 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
           script {
             echo 'Environment vars...'
             runScript('printenv | sort')
+            echo 'Jenkins Environment vars...'
+            echo(env.getEnvironment().collect({environmentVariable ->  "${environmentVariable.key} = ${environmentVariable.value}"}).join("\n"))
+            echo(System.getenv().collect({environmentVariable ->  "${environmentVariable.key} = ${environmentVariable.value}"}).join("\n"))
             runGradle('--project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses')
           }
         }
