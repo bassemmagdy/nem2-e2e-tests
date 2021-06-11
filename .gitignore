@@ -50,3 +50,7 @@ hs_err_pid*
 build
 symbol-e2e-tests/cucumber-report.html
 symbol-e2e-tests/cucumber-report.json
+
+# Ignore node_modules
+cypress-e2e/node_modules/
+symbol-e2e-tests/node_modules/

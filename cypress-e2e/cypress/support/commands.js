@@ -22,6 +22,7 @@ Cypress.Commands.add('importSimpleAcc', (name, pass, mnem, address) => {
     cy.get(s.confirm_password_create_acc_filed).type(pass)
     cy.contains('Next').click()
     cy.get(s.mnemonic_field).type(mnem)
+    cy.wait(1000)
     cy.contains('Next').click()
     cy.responseApi(address).then(resp=>cy.get(s.balance_address_to_interact).should('have.text', resp))
     cy.get(s.first_address).click()
