@@ -51,6 +51,8 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
       steps{
         catchError(buildResult: 'UNSTABLE', message: 'e2e tests compile failed', stageResult: 'FAILURE') {
           script {
+            echo 'Environment vars...'
+            runScript('printenv | sort')
             runGradle('--project-dir symbol-e2e-tests/ --refresh-dependencies --rerun-tasks clean testClasses')
           }
         }
@@ -156,7 +158,7 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
           echo "Automation user private key: ${AUTOMATION_TEST_USER_PRIVATE_KEY}"
           echo "Symbol API URL: ${env.SYMBOL_API_URL}"
           try {
-              runGradle('--project-dir symbol-e2e-tests/ tests')
+              runGradle('--project-dir symbol-e2e-tests/ -Dtest.ignoreFailures=true tests')
           }
           finally {
             dir ('symbol-e2e-tests') {
@@ -200,7 +202,7 @@ bootstrap: The tests will be executed against a clean bootstrap environment brou
         script {
           if (env.IS_BOOTSTRAP_RUN == 'true') {
             echo 'Stopping symbol bootstrap...'
-            runScript('symbol-bootstrap stop', 'Stop symbol bootstrap')
+            runScript('symbol-bootstrap stop;sudo rm -rf target', 'Stop symbol bootstrap')
           }
         }
       }
